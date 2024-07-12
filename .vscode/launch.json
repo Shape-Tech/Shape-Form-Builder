@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Web Prod",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define",
+                "AWS_USER_POOL_ID=us-east-2_0Bw7QSPQj",
+                "--dart-define",
+                "AWS_CLIENT_ID=4b51fvbupr6rs3bh8fmo70t7al",
+                "--dart-define",
+                "API_ENDPOINT=https://api.bookyourblock.com",					"--web-browser-flag=--disable-web-security",
+                "--web-port",
+                "8080"
+            ],
+            "flutterMode": "debug"
+        },
+
+        {
+            "name": "Web Dev",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define",
+                "AWS_USER_POOL_ID=us-east-2_0Bw7QSPQj",
+                "--dart-define",
+                "AWS_CLIENT_ID=4b51fvbupr6rs3bh8fmo70t7al",
+                "--dart-define",
+                "API_ENDPOINT=https://api.bookyourblock.com",
+                "--web-port",
+                "8080"
+            ],
+            "flutterMode": "debug"
+        },
+    ]
+}
