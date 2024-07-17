@@ -5,11 +5,10 @@ class CustomPhoneNumberField extends FormField<String> {
   CustomPhoneNumberField({
     required PhoneController phoneController,
     bool? isRequired,
-    required BuildContext context,
   }) : super(
             // onSaved: onSaved,
             builder: (FormFieldState<String> state) {
-          PhoneNumberInputValidator? _getValidator() {
+          PhoneNumberInputValidator? _getValidator(BuildContext context) {
             List<PhoneNumberInputValidator> validators = [];
             bool mobileOnly = false;
             if (mobileOnly) {
@@ -29,12 +28,9 @@ class CustomPhoneNumberField extends FormField<String> {
 
           return PhoneFormField(
             controller: phoneController,
-            shouldFormat: true && !false,
-            autofocus: false,
             autofillHints: const [AutofillHints.telephoneNumber],
             countrySelectorNavigator:
                 const CountrySelectorNavigator.dialog(width: 500),
-            defaultCountry: IsoCode.US,
             decoration: InputDecoration(
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -54,12 +50,8 @@ class CustomPhoneNumberField extends FormField<String> {
               // hintText: hintText ?? '',
             ),
             enabled: true,
-            showFlagInInput: true,
-            validator: _getValidator(),
+            validator: _getValidator(state.context),
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            // onSaved: (p) => onSaved(p!.getFormattedNsn()),
-            // onChanged: (p) => onSaved(p!.getFormattedNsn()),
-            isCountryChipPersistent: true,
           );
         });
 }

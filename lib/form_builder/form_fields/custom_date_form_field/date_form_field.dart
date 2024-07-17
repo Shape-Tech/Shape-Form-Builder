@@ -22,16 +22,11 @@ class DateFormField extends FormField<DateTime> {
             return Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
               child: Container(
-                decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: const Color(0x4D1E1E1E),
-                          offset: Offset.zero,
-                          blurRadius: 5,
-                          spreadRadius: 0)
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(

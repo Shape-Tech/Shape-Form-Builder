@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shape_form_builder/extensions/string_extensions.dart';
 
 class OptionsDataItem {
-  int id;
   String displayLabel;
   bool selected;
   Icon? icon;
@@ -10,7 +9,6 @@ class OptionsDataItem {
   Object? object;
 
   OptionsDataItem({
-    required this.id,
     required this.displayLabel,
     this.selected = false,
     this.icon,
@@ -20,7 +18,6 @@ class OptionsDataItem {
 
   OptionsDataItem deepCopy(OptionsDataItem original) {
     return OptionsDataItem(
-        id: original.id,
         displayLabel: original.displayLabel,
         selected: original.selected,
         icon: original.icon, // assuming Icon is immutable
@@ -52,16 +49,11 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
             return Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
               child: Container(
-                decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: const Color(0x4D1E1E1E),
-                          offset: Offset.zero,
-                          blurRadius: 5,
-                          spreadRadius: 0)
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -368,8 +360,8 @@ class _OptionListPickerState extends State<OptionListPicker> {
       if (widget.multiSelectEnabled == true) {
         widget.options[index].selected = !widget.options[index].selected;
         if (widget.options[index].selected == false) {
-          selectedItems
-              .removeWhere((element) => element.id == widget.options[index].id);
+          selectedItems.removeWhere(
+              (element) => element.object == widget.options[index].object);
         } else {
           selectedItems.add(widget.options[index]);
         }

@@ -4,10 +4,12 @@ import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 
 class ShapeFormBuilder extends StatelessWidget {
   ShapeForm formConfig;
+  Widget? loadingWidget;
 
   ShapeFormBuilder({
     super.key,
     required this.formConfig,
+    this.loadingWidget,
   });
 
   List<Widget> generateFormFields(ShapeForm form) {
@@ -30,7 +32,7 @@ class ShapeFormBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (_isProcessing) {
-      return CircularProgressIndicator();
+      return loadingWidget ?? CircularProgressIndicator();
     } else {
       return Form(
         key: _formKey,

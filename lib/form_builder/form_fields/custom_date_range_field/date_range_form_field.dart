@@ -26,15 +26,10 @@ class DateRangeFormField extends FormField<DateTimeRange> {
               decoration: disableDecoration == true
                   ? null
                   : BoxDecoration(
-                      boxShadow: [
-                          BoxShadow(
-                              color: Color(0x4D1E1E1E),
-                              offset: Offset.zero,
-                              blurRadius: 5,
-                              spreadRadius: 0)
-                        ],
                       color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: Border.all(color: Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Center(

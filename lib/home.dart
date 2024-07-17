@@ -40,6 +40,20 @@ class HomePage extends StatelessWidget {
                     }
                   }),
               ShapeFormQuestion(
+                  question: "Testing Secure Password",
+                  type: ShapeFormQuestionType.secureText,
+                  isRequired: true,
+                  hintText: "Testing",
+                  validator: (newValue) {
+                    if (newValue == null) {
+                      return "Is required";
+                    } else if ((newValue as String).isEmpty) {
+                      return "Is required";
+                    } else {
+                      return null;
+                    }
+                  }),
+              ShapeFormQuestion(
                 question: "Testing UI",
                 type: ShapeFormQuestionType.multiLineText,
                 isRequired: true,
@@ -123,6 +137,78 @@ class HomePage extends StatelessWidget {
                       return null;
                     }
                   }),
+              ShapeFormQuestion(
+                question: "Drop Down Options are good?",
+                type: ShapeFormQuestionType.dropdown,
+                isRequired: false,
+                options: [
+                  ShapeFormOption(
+                    label: 'Yes',
+                    selectedValue: "Yes",
+                  ),
+                  ShapeFormOption(
+                    label: 'No',
+                    selectedValue: "No",
+                  ),
+                  ShapeFormOption(
+                    label: 'AWESOME!',
+                    selectedValue: "AWESOME!",
+                  )
+                ],
+                validator: (newValue) {
+                  if (newValue == null) {
+                    return "Is required";
+                  } else if (newValue != null) {
+                    String selection = (newValue as String);
+
+                    if (selection != "AWESOME!") {
+                      return "Must be AWESOME!";
+                    } else {
+                      return null;
+                    }
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              ShapeFormQuestion(
+                question: "Pop Up Menus are better for multiple selection?",
+                type: ShapeFormQuestionType.optionList,
+                isRequired: false,
+                options: [
+                  ShapeFormOption(
+                    label: 'Kind Of',
+                    selectedValue: 1,
+                  ),
+                  ShapeFormOption(
+                    label: 'Not Really',
+                    selectedValue: 2,
+                  ),
+                  ShapeFormOption(
+                    label: "Don't have a opinion",
+                    selectedValue: 3,
+                  )
+                ],
+                validator: (newValue) {
+                  if (newValue == null) {
+                    return "Is required";
+                  } else if (newValue != null) {
+                    int selection = (newValue as int);
+
+                    if (selection != 1) {
+                      return "Must be Kind Of";
+                    } else {
+                      return null;
+                    }
+                  } else {
+                    return null;
+                  }
+                },
+              ),
+              ShapeFormQuestion(
+                  question: "What is your phone number",
+                  type: ShapeFormQuestionType.phone,
+                  isRequired: true),
             ])))),
       ),
     );

@@ -9,4 +9,6 @@ enum ShapeFormQuestionType {
   dropdown,
   optionList,
   imageUpload,
+  phone,
+  address,
 }

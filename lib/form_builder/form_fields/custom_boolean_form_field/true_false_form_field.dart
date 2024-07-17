@@ -16,21 +16,45 @@ class TrueFalseFormField extends FormField<bool> {
           validator: validator,
           initialValue: initialValue,
           builder: (FormFieldState<bool> state) {
+            Widget buildSelectedButton(bool value, String label) {
+              return ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.green),
+                ),
+                child: Text(label),
+                onPressed: (() {
+                  state.setState(() {
+                    state.setValue(value);
+                    initialValue = value;
+                  });
+                  onSaved(value);
+                }),
+              );
+            }
+
+            Widget buildNonSelectedButton(bool value, String label) {
+              return ElevatedButton(
+                child: Text(label),
+                onPressed: (() {
+                  state.setState(() {
+                    state.setValue(value);
+                    initialValue = value;
+                  });
+                  onSaved(value);
+                }),
+              );
+            }
+
             return Padding(
               padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
               child: Container(
                 decoration: disableDecoration == true
                     ? null
-                    : const BoxDecoration(
-                        boxShadow: [
-                            BoxShadow(
-                                color: const Color(0x4D1E1E1E),
-                                offset: Offset.zero,
-                                blurRadius: 5,
-                                spreadRadius: 0)
-                          ],
+                    : BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                        border: Border.all(color: Colors.grey, width: 1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Center(
@@ -55,64 +79,30 @@ class TrueFalseFormField extends FormField<bool> {
                                       const EdgeInsets.symmetric(vertical: 10),
                                   child: Row(
                                     children: [
-                                      if (state.value == null ||
-                                          state.value == false)
+                                      if (state.value != true)
                                         Expanded(
                                           flex: 1,
-                                          child: ElevatedButton(
-                                            child: Text(trueLabel),
-                                            onPressed: (() {
-                                              state.setState(() {
-                                                state.setValue(true);
-                                                initialValue = true;
-                                              });
-                                              onSaved(true);
-                                            }),
-                                          ),
+                                          child: buildNonSelectedButton(
+                                              true, trueLabel),
                                         ),
                                       if (state.value == true)
                                         Expanded(
                                           flex: 1,
-                                          child: ElevatedButton(
-                                            child: Text(trueLabel),
-                                            onPressed: (() {
-                                              state.setState(() {
-                                                state.setValue(true);
-                                                initialValue = true;
-                                              });
-                                              onSaved(true);
-                                            }),
-                                          ),
+                                          child: buildSelectedButton(
+                                              true, trueLabel),
                                         ),
                                       Container(width: 10),
-                                      if (state.value == null ||
-                                          state.value == true)
+                                      if (state.value != false)
                                         Expanded(
                                           flex: 1,
-                                          child: ElevatedButton(
-                                            child: Text(falseLabel),
-                                            onPressed: (() {
-                                              state.setState(() {
-                                                state.setValue(false);
-                                                initialValue = false;
-                                              });
-                                              onSaved(false);
-                                            }),
-                                          ),
+                                          child: buildNonSelectedButton(
+                                              false, falseLabel),
                                         ),
                                       if (state.value == false)
                                         Expanded(
                                           flex: 1,
-                                          child: ElevatedButton(
-                                            child: Text(falseLabel),
-                                            onPressed: (() {
-                                              state.setState(() {
-                                                state.setValue(false);
-                                                initialValue = false;
-                                              });
-                                              onSaved(false);
-                                            }),
-                                          ),
+                                          child: buildSelectedButton(
+                                              false, falseLabel),
                                         ),
                                     ],
                                   )),
