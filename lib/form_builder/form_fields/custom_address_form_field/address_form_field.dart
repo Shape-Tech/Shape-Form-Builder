@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
-import 'package:shape_form_builder/repositories/google_maps_repo.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
+import 'package:shape_form_builder/repositories/google_maps_repository_implemented.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -17,6 +18,7 @@ class AddressFormField extends FormField<Address> {
     Address? initialValue,
     Address? originalValue,
     bool? disableDecoration,
+    GoogleMapsRepo? mapsRepo,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -25,18 +27,11 @@ class AddressFormField extends FormField<Address> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                 child: Container(
-                  decoration: disableDecoration == true
-                      ? null
-                      : BoxDecoration(
-                          boxShadow: [
-                              BoxShadow(
-                                  color: const Color(0x4D1E1E1E),
-                                  offset: Offset.zero,
-                                  blurRadius: 5,
-                                  spreadRadius: 0)
-                            ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -66,6 +61,7 @@ class AddressFormField extends FormField<Address> {
                                   state.setValue(selectedAddress);
                                   onSaved(selectedAddress);
                                 },
+                                mapsRepo: mapsRepo,
                               ),
                               if (originalValue != null)
                                 Padding(
@@ -91,9 +87,13 @@ class AddressFormField extends FormField<Address> {
 class AddressFormFieldSearch extends StatefulWidget {
   String? Function(Address?)? validator;
   String? Function(Address?)? onAddressSelected;
-  AddressFormFieldSearch(
-      {Key? key, this.validator, required this.onAddressSelected})
-      : super(key: key);
+  GoogleMapsRepo? mapsRepo;
+  AddressFormFieldSearch({
+    Key? key,
+    this.validator,
+    required this.onAddressSelected,
+    this.mapsRepo,
+  }) : super(key: key);
 
   @override
   State<AddressFormFieldSearch> createState() => _AddressFormFieldSearchState();
@@ -121,7 +121,7 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
     if (selectedAddress == null) {
       if (_isProcessing) {
         return Center(child: CircularProgressIndicator());
-      } else if (enterAddressManually == false) {
+      } else if (enterAddressManually == false && widget.mapsRepo != null) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -276,7 +276,7 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                     child: Text("Select This Address"),
                     onPressed: () {
                       Address manualAddress = Address(
-                        address1: _addressOneController.text.trim(),
+                        addressLineOne: _addressOneController.text.trim(),
                         city: _addressCityController.text.trim(),
                         state: _addressStateController.text.trim(),
                         zip: _addressZipController.text.trim(),
@@ -288,17 +288,18 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                       });
                     }),
               ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: ElevatedButton(
-                child: Text("Use Address Lookup"),
-                onPressed: () {
-                  setState(() {
-                    enterAddressManually = false;
-                  });
-                },
+            if (widget.mapsRepo != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: ElevatedButton(
+                  child: Text("Use Address Lookup"),
+                  onPressed: () {
+                    setState(() {
+                      enterAddressManually = false;
+                    });
+                  },
+                ),
               ),
-            ),
           ],
         );
       }
@@ -344,18 +345,14 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
   }
 
   getSuggestion(String input) async {
-    Dio client = Dio();
-    GoogleMapsRepository mapsRepository = GoogleMapsRepository(client: client);
-    List<Suggestion> suggestions = await mapsRepository.getSuggestions(input);
+    List<Suggestion> suggestions = await widget.mapsRepo!.getSuggestions(input);
     setState(() {
       _placeList = suggestions;
     });
   }
 
   getPlace(String placeId) async {
-    Dio client = Dio();
-    GoogleMapsRepository mapsRepository = GoogleMapsRepository(client: client);
-    Address place = await mapsRepository.getPlace(placeId);
+    Address place = await widget.mapsRepo!.getPlace(placeId);
     setState(() {
       widget.onAddressSelected!(place);
       selectedAddress = place;
@@ -386,9 +383,9 @@ class AddressSelected extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(selectedAddress!.address1),
-            if (selectedAddress!.address2 != null)
-              Text(selectedAddress!.address2!),
+            Text(selectedAddress!.addressLineOne),
+            if (selectedAddress!.addressLineTwo != null)
+              Text(selectedAddress!.addressLineTwo!),
             Text(selectedAddress!.city),
             Text(selectedAddress!.state),
             Text(selectedAddress!.zip),

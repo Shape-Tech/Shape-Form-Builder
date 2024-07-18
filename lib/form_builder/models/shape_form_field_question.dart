@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:phone_form_field/phone_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_boolean_form_field/true_false_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_checkbox/custom_checkbox_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_date_form_field/date_form_field.dart';
@@ -31,8 +33,8 @@ class ShapeFormQuestion extends Equatable {
   dynamic originalValue;
   dynamic response;
   FormFieldTheme? overrideFormFieldTheme;
-
   TextInputAction? textInputAction;
+  GoogleMapsRepo? mapsRepoForAddress;
 
   ShapeFormQuestion({
     this.id,
@@ -49,6 +51,7 @@ class ShapeFormQuestion extends Equatable {
     this.response,
     this.overrideFormFieldTheme,
     this.textInputAction,
+    this.mapsRepoForAddress,
   });
 
   @override
@@ -266,6 +269,20 @@ class ShapeFormQuestion extends Equatable {
         return CustomPhoneNumberField(
           phoneController: phoneController,
           isRequired: isRequired,
+        );
+      case ShapeFormQuestionType.address:
+        return AddressFormField(
+          label: question,
+          labelDescription: description,
+          onSaved: (newValue) {},
+          validator: (newValue) {
+            if (newValue == null) {
+              return "Address is required";
+            } else {
+              return null;
+            }
+          },
+          mapsRepo: mapsRepoForAddress,
         );
       default:
         return null;

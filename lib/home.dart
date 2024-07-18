@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo_example.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
@@ -206,9 +207,16 @@ class HomePage extends StatelessWidget {
                 },
               ),
               ShapeFormQuestion(
-                  question: "What is your phone number",
-                  type: ShapeFormQuestionType.phone,
-                  isRequired: true),
+                question: "What is your phone number",
+                type: ShapeFormQuestionType.phone,
+                isRequired: true,
+              ),
+              ShapeFormQuestion(
+                question: "What is your address",
+                type: ShapeFormQuestionType.address,
+                isRequired: true,
+                mapsRepoForAddress: GoogleMapsRepoExample(),
+              ),
             ])))),
       ),
     );

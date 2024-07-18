@@ -9,6 +9,7 @@ class GoogleMapsRepository {
   GoogleMapsRepository({required this.client});
 
   String endpoint = String.fromEnvironment('API_ENDPOINT');
+
   Future<List<Suggestion>> getSuggestions(String? input) async {
     if (input != null) {
       try {

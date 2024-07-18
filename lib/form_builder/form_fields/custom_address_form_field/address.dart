@@ -2,18 +2,23 @@ import 'package:equatable/equatable.dart';
 
 class Address extends Equatable {
   int? id;
-  String address1;
-  String? address2;
+  String addressLineOne;
+  String? addressLineTwo;
+  String? addressLineThree;
+  String? addressLineFour;
   String city;
   String state;
   String zip;
   String? country;
   double? lat;
   double? long;
+
   Address({
     this.id,
-    required this.address1,
-    this.address2,
+    required this.addressLineOne,
+    this.addressLineTwo,
+    this.addressLineThree,
+    this.addressLineFour,
     required this.city,
     required this.state,
     required this.zip,
@@ -25,30 +30,35 @@ class Address extends Equatable {
   factory Address.fromJson(Map<String, dynamic> json) {
     return Address(
         id: json['id'],
-        address1: json['address1'] ?? "",
-        address2: json['address2'],
-        city: json['city'] ?? "",
-        state: json['state'] ?? "",
-        zip: json['zip_code'] ?? "",
+        addressLineOne: json['address_line_one'],
+        addressLineTwo: json['address_line_two'],
+        addressLineThree: json['address_line_three'],
+        addressLineFour: json['address_line_four'],
+        city: json['city'],
+        state: json['state'],
+        zip: json['zip_code'],
         country: json["country"],
         lat: json['lat'],
         long: json['long']);
   }
 
   factory Address.fromPlaceJson(Map<String, dynamic> json) {
-    String _line1 = "";
-    String? _line2;
-    String? _city;
-    String? _state;
-    String? _zip;
+    String? streetNumber;
+    String _lineOne = "";
+    String? _lineTwo;
+    String? _lineThree;
+    String? _lineFour;
+    String _city = "";
+    String _state = "";
+    String _zip = "";
     String? _country;
 
     List<PlaceComponent> addressComponents = List<PlaceComponent>.of(
         json["address_components"]
             .map<PlaceComponent>((c) => PlaceComponent.fromJson(c)));
 
-    String? streetNumber;
     String? route;
+
     for (var component in addressComponents) {
       if (component.types.contains("street_number")) {
         streetNumber = component.longName;
@@ -72,25 +82,27 @@ class Address extends Equatable {
         _country = component.longName;
       }
     }
-    _line1 = "$streetNumber $route";
+
+    _lineOne = "${streetNumber != null ? streetNumber + " " : ""}${route}";
 
     return Address(
-      address1: _line1,
-      address2: _line2,
-      city: _city ?? "",
-      state: _state ?? "",
-      zip: _zip ?? "",
-      country: _country ?? "",
+      addressLineOne: _lineOne,
+      addressLineTwo: _lineTwo,
+      city: _city,
+      state: _state,
+      zip: _zip,
+      country: _country,
     );
   }
 
   @override
-  List<Object?> get props => [address1, address2, city, state, zip, country];
+  List<Object?> get props =>
+      [addressLineOne, addressLineTwo, city, state, zip, country];
 
   toJson() {
     Map<String, dynamic> data = {};
-    data["address1"] = address1;
-    data["address2"] = address2;
+    data["address_line_one"] = addressLineOne;
+    data["address_line_two"] = addressLineTwo;
     data["city"] = city;
     data["state"] = state;
     data["zip"] = zip;
@@ -103,12 +115,12 @@ class Address extends Equatable {
   String toString() {
     List<String> addressComponents = [];
 
-    if (address1.trim().isNotEmpty) {
-      addressComponents.add(address1);
+    if (addressLineOne.trim().isNotEmpty) {
+      addressComponents.add(addressLineOne);
     }
 
-    if (address2 != null && address2!.trim().isNotEmpty) {
-      addressComponents.add(address2!);
+    if (addressLineTwo != null && addressLineTwo!.trim().isNotEmpty) {
+      addressComponents.add(addressLineTwo!);
     }
 
     if (city.trim().isNotEmpty) {
