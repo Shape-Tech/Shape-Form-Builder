@@ -1,5 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo_example.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo_example.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
@@ -217,6 +221,19 @@ class HomePage extends StatelessWidget {
                 isRequired: true,
                 mapsRepoForAddress: GoogleMapsRepoExample(),
               ),
+              ShapeFormQuestion(
+                  question: "Upload your logo",
+                  type: ShapeFormQuestionType.imageUpload,
+                  isRequired: true,
+                  // imageRepo: ImageRepoExample(),
+                  additionalOnSave: (imageFile) async {
+                    debugPrint(imageFile.toString());
+                    ImageRepoExample imageRepo = ImageRepoExample();
+                    await imageRepo.uploadImage(
+                        bucketId: "example",
+                        imageToUpload: imageFile as Uint8List,
+                        filePath: 'test.png');
+                  }),
             ])))),
       ),
     );

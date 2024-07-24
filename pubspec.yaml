@@ -42,6 +42,9 @@ dependencies:
   uuid: ^4.4.2
   google_maps_flutter: ^2.7.0
   gap: ^3.0.1
+  supabase: ^2.2.5
+  file_picker: ^8.0.6
+  flutter_dropzone: ^4.0.1
 
 dev_dependencies:
   flutter_test:

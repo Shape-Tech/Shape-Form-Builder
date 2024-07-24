@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/home.dart';
+import 'package:supabase/supabase.dart';
 
 void main() {
   runApp(const MyApp());

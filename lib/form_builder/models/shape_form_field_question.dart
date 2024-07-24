@@ -11,6 +11,8 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_date_form_fie
 import 'package:shape_form_builder/form_builder/form_fields/custom_date_range_field/date_range_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_drop_down_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/image_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_option_form_field/option_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_phone_number_field/custom_phone_number_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
@@ -35,6 +37,7 @@ class ShapeFormQuestion extends Equatable {
   FormFieldTheme? overrideFormFieldTheme;
   TextInputAction? textInputAction;
   GoogleMapsRepo? mapsRepoForAddress;
+  // ImageRepo? imageRepo;
 
   ShapeFormQuestion({
     this.id,
@@ -52,6 +55,7 @@ class ShapeFormQuestion extends Equatable {
     this.overrideFormFieldTheme,
     this.textInputAction,
     this.mapsRepoForAddress,
+    // this.imageRepo,
   });
 
   @override
@@ -283,6 +287,22 @@ class ShapeFormQuestion extends Equatable {
             }
           },
           mapsRepo: mapsRepoForAddress,
+        );
+      case ShapeFormQuestionType.imageUpload:
+        return ImageFormField(
+          label: "Upload Image",
+          onSaved: (image) {
+            if (additionalOnSave != null) {
+              additionalOnSave!(image);
+            }
+          },
+          validator: (newValue) {
+            if (newValue == null) {
+              return "Image is required";
+            } else {
+              return null;
+            }
+          },
         );
       default:
         return null;
