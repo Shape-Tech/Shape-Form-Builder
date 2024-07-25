@@ -24,61 +24,57 @@ class AddressFormField extends FormField<Address> {
             validator: validator,
             initialValue: initialValue,
             builder: (FormFieldState<Address> state) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(label),
-                              const Spacer(),
-                            ],
-                          ),
-                          if (labelDescription != null)
-                            Padding(
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label),
+                            const Spacer(),
+                          ],
+                        ),
+                        if (labelDescription != null)
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Text(labelDescription)),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AddressFormFieldSearch(
+                              validator: validator,
+                              onAddressSelected: (selectedAddress) {
+                                state.setValue(selectedAddress);
+                                onSaved(selectedAddress);
+                              },
+                              mapsRepo: mapsRepo,
+                            ),
+                            if (originalValue != null)
+                              Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                child: Text(labelDescription)),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AddressFormFieldSearch(
-                                validator: validator,
-                                onAddressSelected: (selectedAddress) {
-                                  state.setValue(selectedAddress);
-                                  onSaved(selectedAddress);
-                                },
-                                mapsRepo: mapsRepo,
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: AddressSelected(
+                                    selectedAddress: originalValue),
                               ),
-                              if (originalValue != null)
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: AddressSelected(
-                                      selectedAddress: originalValue),
-                                ),
-                              if (state.hasError == true)
-                                Text(
-                                  state.errorText!,
-                                  style: TextStyle(color: Colors.red),
-                                )
-                            ],
-                          ),
-                        ]),
-                  ),
+                            if (state.hasError == true)
+                              Text(
+                                state.errorText!,
+                                style: TextStyle(color: Colors.red),
+                              )
+                          ],
+                        ),
+                      ]),
                 ),
               );
             });
@@ -353,10 +349,10 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
 
   getPlace(String placeId) async {
     Address place = await widget.mapsRepo!.getPlace(placeId);
+    _isProcessing = false;
     setState(() {
       widget.onAddressSelected!(place);
       selectedAddress = place;
-      _isProcessing = false;
     });
   }
 }

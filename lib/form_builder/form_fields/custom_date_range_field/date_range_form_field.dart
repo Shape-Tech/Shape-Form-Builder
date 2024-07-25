@@ -11,7 +11,6 @@ class DateRangeFormField extends FormField<DateTimeRange> {
     required FormFieldValidator<DateTimeRange> validator,
     DateTimeRange? initialValue,
     DateTimeRange? originalValue,
-    bool? disableDecoration,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -23,13 +22,11 @@ class DateRangeFormField extends FormField<DateTimeRange> {
               }
             }
             return Container(
-              decoration: disableDecoration == true
-                  ? null
-                  : BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey, width: 1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey, width: 1),
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Center(
@@ -38,15 +35,14 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        if (disableDecoration != true)
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(label),
-                              const Spacer(),
-                            ],
-                          ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label),
+                            const Spacer(),
+                          ],
+                        ),
                         if (labelDescription != null)
                           Padding(
                               padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -87,7 +83,7 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                       ]),
                 ),
               ),
-            ).verticalPadding(disableDecoration == true ? 0 : 5);
+            );
           },
         );
 }

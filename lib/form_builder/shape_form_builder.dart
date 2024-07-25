@@ -45,6 +45,7 @@ class ShapeFormBuilder extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Validation Passed')),
                     );
+                    formConfig.submit();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Validation Failed')),

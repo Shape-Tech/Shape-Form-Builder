@@ -46,74 +46,70 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                 state.setValue(originalValue);
               }
             }
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey, width: 1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey, width: 1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(label),
+                          Spacer(),
+                        ],
+                      ),
+                      if (labelDescription != null)
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Text(labelDescription)),
+                      Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: OptionListPicker(
+                            buttonText: buttonText,
+                            multiSelectEnabled: multiSelectEnabled,
+                            options: options,
+                            onSaved: (value) {
+                              state.setState(() {
+                                state.setValue(value);
+                              });
+                              onSaved(value);
+                            },
+                            addOption: addOption,
+                          )),
+                      if (originalValue != null)
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(label),
-                            Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 5),
+                              child: Text("Original Value:"),
+                            ),
+                            ListView.builder(
+                                itemCount: originalValue.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return SelectedOptionsDataItem(
+                                      selectedItem: originalValue[index]);
+                                }),
                           ],
                         ),
-                        if (labelDescription != null)
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              child: Text(labelDescription)),
+                      if (state.hasError == true)
                         Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: OptionListPicker(
-                              buttonText: buttonText,
-                              multiSelectEnabled: multiSelectEnabled,
-                              options: options,
-                              onSaved: (value) {
-                                state.setState(() {
-                                  state.setValue(value);
-                                });
-                                onSaved(value);
-                              },
-                              addOption: addOption,
-                            )),
-                        if (originalValue != null)
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Text("Original Value:"),
-                              ),
-                              ListView.builder(
-                                  itemCount: originalValue.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    return SelectedOptionsDataItem(
-                                        selectedItem: originalValue[index]);
-                                  }),
-                            ],
-                          ),
-                        if (state.hasError == true)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(state.errorText!,
-                                style: TextStyle(color: Colors.red)),
-                          ),
-                      ]),
-                ),
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(state.errorText!,
+                              style: TextStyle(color: Colors.red)),
+                        ),
+                    ]),
               ),
             );
           },

@@ -7,7 +7,7 @@ class ShapeForm extends Equatable {
   int? formId;
   String? formName;
   ShapeFormData formData;
-  Function(ShapeFormData)? onSubmission;
+  Function(Map<String, dynamic>)? onSubmission;
   FormFieldTheme? theme;
 
   ShapeForm({
@@ -16,6 +16,20 @@ class ShapeForm extends Equatable {
     required this.formData,
     this.onSubmission,
   });
+
+  void submit() {
+    if (onSubmission != null) {
+      onSubmission!(returnData());
+    }
+  }
+
+  Map<String, dynamic> returnData() {
+    Map<String, dynamic> data = {};
+    for (var question in formData.questions) {
+      data[question.fieldName] = question.response;
+    }
+    return data;
+  }
 
   @override
   // TODO: implement props

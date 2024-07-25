@@ -8,7 +8,7 @@ class ImageRepoExample extends ImageRepo {
   static const String supabaseKey = String.fromEnvironment("SUPABASEKEY");
 
   @override
-  Future<Uint8List> uploadImage({
+  Future<String> uploadImage({
     required String bucketId,
     required Uint8List imageToUpload,
     required String filePath,
@@ -62,13 +62,17 @@ class ImageRepoExample extends ImageRepo {
       Uint8List? downloadedFile;
       try {
         downloadedFile =
-            await supabase.storage.from(bucketId).download(fullPath!);
+            await supabase.storage.from(bucketId).download(fullPath);
       } catch (e) {
         throw "Could not download uploaded file";
       }
 
       // return the file
-      return downloadedFile;
+      try {
+        return await supabase.storage.from(bucketId).getPublicUrl(fullPath);
+      } catch (e) {
+        throw "Could not get the public url";
+      }
     } catch (e) {
       debugPrint(e.toString());
       throw e;

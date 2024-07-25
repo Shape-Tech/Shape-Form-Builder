@@ -23,6 +23,7 @@ import 'package:shape_form_builder/form_builder/models/shape_form_option.dart';
 // ignore: must_be_immutable
 class ShapeFormQuestion extends Equatable {
   int? id;
+  String fieldName;
   String question;
   String? description;
   String? hintText;
@@ -41,6 +42,7 @@ class ShapeFormQuestion extends Equatable {
 
   ShapeFormQuestion({
     this.id,
+    required this.fieldName,
     required this.question,
     this.description,
     this.hintText,
@@ -73,6 +75,9 @@ class ShapeFormQuestion extends Equatable {
           hintText: hintText,
           initalText: originalValue as String?,
           textInputAction: textInputAction,
+          onSaved: (newVal) {
+            response = newVal;
+          },
           validator: (value) {
             if (validator != null) {
               return validator!(value);
@@ -88,6 +93,9 @@ class ShapeFormQuestion extends Equatable {
           secure: true,
           initalText: originalValue as String?,
           textInputAction: textInputAction,
+          onSaved: (newVal) {
+            response = newVal;
+          },
           validator: (value) {
             if (validator != null) {
               return validator!(value);
@@ -103,6 +111,9 @@ class ShapeFormQuestion extends Equatable {
           initalText: originalValue as String?,
           textInputAction: textInputAction,
           maxLines: 5,
+          onSaved: (newVal) {
+            response = newVal;
+          },
           validator: (value) {
             if (validator != null) {
               return validator!(value);
@@ -261,6 +272,9 @@ class ShapeFormQuestion extends Equatable {
           initalText: originalValue as String?,
           textInputAction: textInputAction,
           secure: true,
+          onSaved: (newVal) {
+            response = newVal;
+          },
           validator: (value) {
             if (validator != null) {
               return validator!(value);
@@ -273,12 +287,17 @@ class ShapeFormQuestion extends Equatable {
         return CustomPhoneNumberField(
           phoneController: phoneController,
           isRequired: isRequired,
+          onSaved: (newVal) {
+            response = newVal;
+          },
         );
       case ShapeFormQuestionType.address:
         return AddressFormField(
           label: question,
           labelDescription: description,
-          onSaved: (newValue) {},
+          onSaved: (newVal) {
+            response = newVal;
+          },
           validator: (newValue) {
             if (newValue == null) {
               return "Address is required";
@@ -291,9 +310,10 @@ class ShapeFormQuestion extends Equatable {
       case ShapeFormQuestionType.imageUpload:
         return ImageFormField(
           label: "Upload Image",
-          onSaved: (image) {
+          onSaved: (newVal) {
+            response = newVal;
             if (additionalOnSave != null) {
-              additionalOnSave!(image);
+              additionalOnSave!(newVal);
             }
           },
           validator: (newValue) {

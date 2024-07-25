@@ -19,71 +19,66 @@ class DateFormField extends FormField<DateTime> {
                 state.setValue(originalValue);
               }
             }
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey, width: 1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Center(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(label),
-                              Spacer(),
-                            ],
-                          ),
-                          if (labelDescription != null)
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey, width: 1),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label),
+                            Spacer(),
+                          ],
+                        ),
+                        if (labelDescription != null)
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Text(labelDescription)),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                             Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                child: Text(labelDescription)),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: DateFormFieldPicker(
+                                validator: (date) {
+                                  validator(date);
+                                },
+                                onDateSelected: (selectedDate) {
+                                  state.setValue(selectedDate);
+                                  onSaved(selectedDate);
+                                },
+                                preSelectedDate: originalValue,
+                                initialValue: initialValue,
+                              ),
+                            ),
+                            if (originalValue != null)
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: DateFormFieldPicker(
-                                  validator: (date) {
-                                    validator(date);
-                                  },
-                                  onDateSelected: (selectedDate) {
-                                    state.setValue(selectedDate);
-                                    onSaved(selectedDate);
-                                  },
-                                  preSelectedDate: originalValue,
-                                  initialValue: initialValue,
-                                ),
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: Text("Original Value: " +
+                                    DateFormat('E MMM d, ' 'yy')
+                                        .format(originalValue)),
                               ),
-                              if (originalValue != null)
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: Text("Original Value: " +
-                                      DateFormat('E MMM d, ' 'yy')
-                                          .format(originalValue)),
-                                ),
-                              if (state.hasError == true)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Text(state.errorText!,
-                                      style: TextStyle(color: Colors.red)),
-                                )
-                            ],
-                          ),
-                        ]),
-                  ),
+                            if (state.hasError == true)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(state.errorText!,
+                                    style: TextStyle(color: Colors.red)),
+                              )
+                          ],
+                        ),
+                      ]),
                 ),
               ),
             );

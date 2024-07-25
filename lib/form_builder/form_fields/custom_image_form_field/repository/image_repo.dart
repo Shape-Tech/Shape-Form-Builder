@@ -6,7 +6,7 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
 
 abstract class ImageRepo {
-  Future<Uint8List> uploadImage({
+  Future<String> uploadImage({
     required String bucketId,
     required Uint8List imageToUpload,
     required String filePath,

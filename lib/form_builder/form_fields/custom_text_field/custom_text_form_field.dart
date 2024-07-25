@@ -43,6 +43,9 @@ class CustomTextFormField extends FormField<String> {
                 keyboardType: textInputType,
                 onChanged: (value) {
                   state.setValue(value);
+                  if (onSaved != null) {
+                    onSaved(value);
+                  }
                 },
                 validator: validator,
                 inputFormatters: textInputFormatter,
