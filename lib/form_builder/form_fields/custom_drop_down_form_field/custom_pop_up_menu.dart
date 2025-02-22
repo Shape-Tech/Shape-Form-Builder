@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
 
 class CustomPopUpMenu extends StatefulWidget {
   CustomPopUpMenu({
@@ -9,9 +9,11 @@ class CustomPopUpMenu extends StatefulWidget {
     this.maxWidth,
     this.onOptionSelected,
     this.initialSelection,
+    this.hintText,
   });
 
   List<CustomPopUpMenuItem> menuItems;
+  String? hintText;
   CustomPopUpMenuItem? initialSelection;
   double? maxWidth;
   String? Function(CustomPopUpMenuItem)? onOptionSelected;
@@ -99,7 +101,7 @@ class _CustomPopUpMenuState extends State<CustomPopUpMenu> {
               widget.initialSelection!.value!.toString());
     } else {
       return Text(
-        'Select Option',
+        widget.hintText ?? 'Select Option',
       );
     }
   }

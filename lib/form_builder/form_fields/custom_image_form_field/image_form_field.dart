@@ -8,21 +8,21 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_fi
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/file_data_model.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
 
-class ImageFormField extends FormField<Uint8List> {
+class ImageFormField extends FormField<PlatformFile> {
   ImageFormField({
     required String label,
     String? labelDescription,
-    required FormFieldSetter<Uint8List> onSaved,
-    required FormFieldValidator<Uint8List> validator,
-    Uint8List? initialValue,
-    Uint8List? originalValue,
+    required FormFieldSetter<PlatformFile> onSaved,
+    required FormFieldValidator<PlatformFile> validator,
+    PlatformFile? initialValue,
+    PlatformFile? originalValue,
     bool? disableDecoration,
     // ImageRepo? imageRepo,
   }) : super(
             onSaved: onSaved,
             validator: validator,
             initialValue: initialValue,
-            builder: (FormFieldState<Uint8List> state) {
+            builder: (FormFieldState<PlatformFile> state) {
               return Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -60,8 +60,13 @@ class ImageFormField extends FormField<Uint8List> {
                                       width: double.infinity,
                                       height: 300,
                                       onSaved: (newFile) {
-                                        state.didChange(newFile);
-                                        onSaved(newFile);
+                                        PlatformFile file = PlatformFile(
+                                          name: newFile.name,
+                                          size: newFile.bytes,
+                                          bytes: newFile.data,
+                                        );
+                                        state.didChange(file);
+                                        onSaved(file);
                                       },
                                     ).verticalPadding(20),
                                   if (state.value != null)
@@ -72,7 +77,7 @@ class ImageFormField extends FormField<Uint8List> {
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
                                         child: Image.memory(
-                                          state.value!,
+                                          state.value!.bytes!,
                                           width: constraints.maxWidth > 600
                                               ? constraints.maxWidth / 2
                                               : constraints.maxWidth,
@@ -102,10 +107,10 @@ class ImageFormField extends FormField<Uint8List> {
                                       if (result != null &&
                                           file != null &&
                                           file.bytes != null) {
-                                        Uint8List fileBytes = file.bytes!;
+                                        // Uint8List fileBytes = file.bytes!;
 
-                                        state.didChange(fileBytes);
-                                        onSaved(fileBytes);
+                                        state.didChange(file);
+                                        onSaved(file);
                                       }
                                     },
                                     child: Text(state.value == null
@@ -119,7 +124,7 @@ class ImageFormField extends FormField<Uint8List> {
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
-                                child: Image.memory(originalValue),
+                                child: Image.memory(originalValue!.bytes!),
                               ),
                             if (state.hasError == true)
                               Text(

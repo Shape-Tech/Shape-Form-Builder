@@ -11,7 +11,7 @@ class CustomDropzoneView extends StatefulWidget {
     required this.width,
   });
 
-  Function(Uint8List) onSaved;
+  Function(FileDataModel) onSaved;
   double width;
   double height;
 
@@ -74,8 +74,8 @@ class _CustomDropzoneViewState extends State<CustomDropzoneView> {
               },
               onDrop: (dynamic ev) {
                 UploadedFile(ev).then((FileDataModel file) {
-                  Uint8List fileBytes = file.data;
-                  widget.onSaved(fileBytes);
+                  // Uint8List fileBytes = file.data;
+                  widget.onSaved(file);
                 });
               },
               onLeave: () => print('Zone left'),

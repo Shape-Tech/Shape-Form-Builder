@@ -1,16 +1,18 @@
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:phone_form_field/phone_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_boolean_form_field/true_false_form_field.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_checkbox/custom_checkbox_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_checkbox_form_field/custom_checkbox_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_date_form_field/date_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_date_range_field/date_range_form_field.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_drop_down_form_field.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_drop_down_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/image_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_option_form_field/option_form_field.dart';
@@ -61,8 +63,64 @@ class ShapeFormQuestion extends Equatable {
   });
 
   @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [
+        id,
+        fieldName,
+        question,
+        description,
+        hintText,
+        type,
+        isRequired,
+        options,
+        validator,
+        additionalOnSave,
+        initialValue,
+        originalValue,
+        response,
+        overrideFormFieldTheme,
+        textInputAction,
+        mapsRepoForAddress,
+      ];
+
+  dynamic getResponse() {
+    switch (type) {
+      case ShapeFormQuestionType.text:
+        return response;
+      case ShapeFormQuestionType.secureText:
+        return response;
+      case ShapeFormQuestionType.multiLineText:
+        return response;
+      case ShapeFormQuestionType.date:
+        return (response as DateTime).toIso8601String();
+      case ShapeFormQuestionType.dateRange:
+        return {
+          "start": (response as DateTimeRange).start.toIso8601String(),
+          "end": (response as DateTimeRange).end.toIso8601String()
+        };
+      case ShapeFormQuestionType.checkbox:
+        return response;
+      case ShapeFormQuestionType.boolean:
+        return response;
+      case ShapeFormQuestionType.dropdown:
+        return response;
+      case ShapeFormQuestionType.optionList:
+        return response;
+      case ShapeFormQuestionType.phone:
+        return response;
+      case ShapeFormQuestionType.address:
+        return {
+          "address": (response as Address).addressLineOne,
+          "city": (response as Address).city,
+          "state": (response as Address).state,
+          "zip": (response as Address).zip,
+          "country": (response as Address).country
+        };
+      case ShapeFormQuestionType.imageUpload:
+        return (response as PlatformFile).name;
+      default:
+        return null;
+    }
+  }
 
   Widget? buildUI() {
     TextEditingController textController = TextEditingController();
@@ -79,8 +137,16 @@ class ShapeFormQuestion extends Equatable {
             response = newVal;
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -97,8 +163,16 @@ class ShapeFormQuestion extends Equatable {
             response = newVal;
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -115,8 +189,16 @@ class ShapeFormQuestion extends Equatable {
             response = newVal;
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -137,8 +219,16 @@ class ShapeFormQuestion extends Equatable {
             }
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -159,8 +249,16 @@ class ShapeFormQuestion extends Equatable {
             }
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -179,8 +277,16 @@ class ShapeFormQuestion extends Equatable {
             }
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -201,8 +307,16 @@ class ShapeFormQuestion extends Equatable {
             }
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -210,11 +324,18 @@ class ShapeFormQuestion extends Equatable {
         );
       case ShapeFormQuestionType.dropdown:
         return CustomDropDownFormField(
-          // hint: Text(question),
-          // labelDescription: description,
+          hintText: hintText,
           validator: (value) {
-            if (validator != null) {
-              return validator!(value?.value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -233,17 +354,23 @@ class ShapeFormQuestion extends Equatable {
         return OptionFormField(
           label: question,
           labelDescription: description,
+          multiSelectEnabled: true,
           validator: (value) {
-            if (validator != null) {
-              if (value != null) {
-                List<dynamic> selectedOptionValues = [];
-                for (OptionsDataItem option
-                    in value.where((elem) => elem.selected == true)) {
-                  selectedOptionValues.add(option.object);
-                }
-                return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
               } else {
-                validator!(value);
+                if (validator != null) {
+                  debugPrint("Option List Validator");
+                  List<dynamic> selectedOptionValues = [];
+                  for (OptionsDataItem option
+                      in value.where((elem) => elem.selected == true)) {
+                    selectedOptionValues.add(option.object);
+                  }
+                  return validator!(selectedOptionValues);
+                } else {
+                  return null;
+                }
               }
             } else {
               return null;
@@ -276,8 +403,16 @@ class ShapeFormQuestion extends Equatable {
             response = newVal;
           },
           validator: (value) {
-            if (validator != null) {
-              return validator!(value);
+            if (isRequired) {
+              if (value == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -299,8 +434,16 @@ class ShapeFormQuestion extends Equatable {
             response = newVal;
           },
           validator: (newValue) {
-            if (newValue == null) {
-              return "Address is required";
+            if (isRequired) {
+              if (newValue == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(newValue);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }
@@ -317,8 +460,16 @@ class ShapeFormQuestion extends Equatable {
             }
           },
           validator: (newValue) {
-            if (newValue == null) {
-              return "Image is required";
+            if (isRequired) {
+              if (newValue == null) {
+                return "Is required";
+              } else {
+                if (validator != null) {
+                  return validator!(newValue);
+                } else {
+                  return null;
+                }
+              }
             } else {
               return null;
             }

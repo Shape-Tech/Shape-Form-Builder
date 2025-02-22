@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_pop_up_menu.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
 
 class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
   CustomDropDownFormField({
@@ -8,6 +8,7 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
     FormFieldValidator<CustomPopUpMenuItem>? validator,
     CustomPopUpMenuItem? initialValue,
     CustomPopUpMenuItem? originalValue,
+    String? hintText,
     required List<CustomPopUpMenuItem> menuItems,
   }) : super(
             onSaved: onSaved,
@@ -27,6 +28,7 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CustomPopUpMenu(
+                              hintText: hintText,
                               maxWidth: constraints.maxWidth,
                               menuItems: menuItems,
                               initialSelection: initialValue,

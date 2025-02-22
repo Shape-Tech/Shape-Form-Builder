@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:shape_form_builder/form_builder/models/form_field_theme.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
+import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
 
 // ignore: must_be_immutable
 class ShapeForm extends Equatable {
@@ -25,8 +26,8 @@ class ShapeForm extends Equatable {
 
   Map<String, dynamic> returnData() {
     Map<String, dynamic> data = {};
-    for (var question in formData.questions) {
-      data[question.fieldName] = question.response;
+    for (ShapeFormQuestion question in formData.questions) {
+      data[question.fieldName] = question.getResponse();
     }
     return data;
   }

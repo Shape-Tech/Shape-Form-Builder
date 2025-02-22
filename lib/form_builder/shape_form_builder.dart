@@ -41,6 +41,7 @@ class ShapeFormBuilder extends StatelessWidget {
             ...generateFormFields(formConfig),
             ElevatedButton(
                 onPressed: () {
+                  debugPrint("Pressed");
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Validation Passed')),
