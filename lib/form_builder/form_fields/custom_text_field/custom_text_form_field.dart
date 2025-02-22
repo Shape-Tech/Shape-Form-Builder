@@ -13,9 +13,11 @@ class CustomTextFormField extends FormField<String> {
     int? maxLines,
     Function(dynamic value)? onSaved,
     TextInputAction? textInputAction,
+    Function(String value)? onChanged,
   }) : super(
             initialValue: initalText,
             validator: validator,
+
             // onSaved: onSaved,
             builder: (FormFieldState<String> state) {
               return TextFormField(
@@ -45,6 +47,9 @@ class CustomTextFormField extends FormField<String> {
                   state.setValue(value);
                   if (onSaved != null) {
                     onSaved(value);
+                  }
+                  if (onChanged != null) {
+                    onChanged(value);
                   }
                 },
                 validator: validator,

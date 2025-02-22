@@ -44,20 +44,12 @@ class HomePage extends StatelessWidget {
     return ShapeFormData(
       questions: [
         ShapeFormQuestion(
-            fieldName: "name",
-            question: "What is your name?",
-            type: ShapeFormQuestionType.text,
-            isRequired: true,
-            hintText: "Enter your name",
-            validator: (newValue) {
-              if (newValue == null) {
-                return "Is required";
-              } else if ((newValue as String).isEmpty) {
-                return "Is required";
-              } else {
-                return null;
-              }
-            }),
+          fieldName: "name",
+          question: "What is your name?",
+          type: ShapeFormQuestionType.text,
+          isRequired: true,
+          hintText: "Enter your name",
+        ),
         ShapeFormQuestion(
             fieldName: "password",
             question: "Enter your password",
@@ -133,6 +125,18 @@ class HomePage extends StatelessWidget {
               } else {
                 return null;
               }
+            },
+            conditionalQuestions: [
+              ShapeFormQuestion(
+                fieldName: 'which_friends',
+                question: "Which friends?",
+                type: ShapeFormQuestionType.text,
+                isRequired: true,
+                hintText: "Enter the names of the friends you want to invite",
+              )
+            ],
+            showConditionalQuestions: (response) {
+              return (response as bool);
             }),
         ShapeFormQuestion(
             fieldName: "need_vegan_options",

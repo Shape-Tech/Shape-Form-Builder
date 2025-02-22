@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:gap/gap.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
@@ -40,6 +41,10 @@ class ShapeFormQuestion extends Equatable {
   FormFieldTheme? overrideFormFieldTheme;
   TextInputAction? textInputAction;
   MapsRepo? mapsRepoForAddress;
+  List<ShapeFormQuestion>? conditionalQuestions;
+  bool Function(dynamic)? showConditionalQuestions;
+  final TextEditingController textController = TextEditingController();
+  final PhoneController phoneController = PhoneController();
   // ImageRepo? imageRepo;
 
   ShapeFormQuestion({
@@ -59,8 +64,12 @@ class ShapeFormQuestion extends Equatable {
     this.overrideFormFieldTheme,
     this.textInputAction,
     this.mapsRepoForAddress,
+    this.conditionalQuestions,
+    this.showConditionalQuestions,
     // this.imageRepo,
-  });
+  }) {
+    textController.text = response?.toString() ?? '';
+  }
 
   @override
   List<Object?> get props => [
@@ -80,6 +89,8 @@ class ShapeFormQuestion extends Equatable {
         overrideFormFieldTheme,
         textInputAction,
         mapsRepoForAddress,
+        conditionalQuestions,
+        showConditionalQuestions,
       ];
 
   dynamic getResponse() {
@@ -122,358 +133,386 @@ class ShapeFormQuestion extends Equatable {
     }
   }
 
-  Widget? buildUI() {
-    TextEditingController textController = TextEditingController();
-    PhoneController phoneController = PhoneController();
+  Widget? buildUI({VoidCallback? onResponseChanged}) {
+    void updateResponse(dynamic newValue) {
+      response = newValue;
+      if (additionalOnSave != null) {
+        additionalOnSave!(newValue);
+      }
+      if (onResponseChanged != null) {
+        onResponseChanged();
+      }
+    }
+
+    Widget buildConditionalQuestions() {
+      if (conditionalQuestions != null &&
+          showConditionalQuestions != null &&
+          response != null &&
+          showConditionalQuestions!(response)) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: conditionalQuestions!.map((question) {
+            Widget questionWidget =
+                question.buildUI(onResponseChanged: onResponseChanged) ??
+                    Container();
+            return Column(
+              children: [
+                const Gap(10),
+                questionWidget,
+              ],
+            );
+          }).toList(),
+        );
+      }
+      return Container();
+    }
+
+    Widget wrapWithConditional(Widget field) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          field,
+          buildConditionalQuestions(),
+        ],
+      );
+    }
 
     switch (type) {
       case ShapeFormQuestionType.text:
-        return CustomTextFormField(
-          textfieldController: textController,
-          hintText: hintText,
-          initalText: originalValue as String?,
-          textInputAction: textInputAction,
-          onSaved: (newVal) {
-            response = newVal;
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+        return wrapWithConditional(
+          CustomTextFormField(
+            textfieldController: textController,
+            hintText: hintText,
+            initalText: originalValue as String?,
+            textInputAction: textInputAction,
+            onChanged: (value) {
+              updateResponse(value);
+            },
+            onSaved: (newVal) {
+              updateResponse(newVal);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.secureText:
-        return CustomTextFormField(
-          textfieldController: textController,
-          hintText: hintText,
-          secure: true,
-          initalText: originalValue as String?,
-          textInputAction: textInputAction,
-          onSaved: (newVal) {
-            response = newVal;
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+        return wrapWithConditional(
+          CustomTextFormField(
+            textfieldController: textController,
+            hintText: hintText,
+            secure: true,
+            initalText: originalValue as String?,
+            textInputAction: textInputAction,
+            onChanged: (value) {
+              updateResponse(value);
+            },
+            onSaved: (newVal) {
+              updateResponse(newVal);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.multiLineText:
-        return CustomTextFormField(
-          textfieldController: textController,
-          hintText: hintText,
-          initalText: originalValue as String?,
-          textInputAction: textInputAction,
-          maxLines: 5,
-          onSaved: (newVal) {
-            response = newVal;
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+        return wrapWithConditional(
+          CustomTextFormField(
+            textfieldController: textController,
+            hintText: hintText,
+            initalText: originalValue as String?,
+            textInputAction: textInputAction,
+            maxLines: 5,
+            onChanged: (value) {
+              updateResponse(value);
+            },
+            onSaved: (newVal) {
+              updateResponse(newVal);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.date:
-        return DateFormField(
-          label: question,
-          labelDescription: description,
-          initialValue: initialValue as DateTime?,
-          originalValue: originalValue as DateTime?,
-          onSaved: (newValue) {
-            if (newValue != null) {
-              response = newValue;
-              if (additionalOnSave != null) {
-                additionalOnSave!(newValue);
+        return wrapWithConditional(
+          DateFormField(
+            label: question,
+            labelDescription: description,
+            initialValue: initialValue as DateTime?,
+            originalValue: originalValue as DateTime?,
+            onSaved: (newValue) {
+              if (newValue != null) {
+                updateResponse(newValue);
               }
-            }
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.dateRange:
-        return DateRangeFormField(
-          label: question,
-          labelDescription: description,
-          initialValue: initialValue as DateTimeRange?,
-          originalValue: originalValue as DateTimeRange?,
-          onSaved: (newValue) {
-            if (newValue != null) {
-              response = newValue;
-              if (additionalOnSave != null) {
-                additionalOnSave!(newValue);
+        return wrapWithConditional(
+          DateRangeFormField(
+            label: question,
+            labelDescription: description,
+            initialValue: initialValue as DateTimeRange?,
+            originalValue: originalValue as DateTimeRange?,
+            onSaved: (newValue) {
+              if (newValue != null) {
+                updateResponse(newValue);
               }
-            }
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.checkbox:
-        return CustomCheckboxFormField(
-          title: Text(question),
-          description: description,
-          onSaved: (newValue) {
-            if (newValue != null) {
-              response = newValue;
-              if (additionalOnSave != null) {
-                additionalOnSave!(newValue);
+        return wrapWithConditional(
+          CustomCheckboxFormField(
+            title: Text(question),
+            description: description,
+            onSaved: (newValue) {
+              if (newValue != null) {
+                updateResponse(newValue);
               }
-            }
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.boolean:
-        return TrueFalseFormField(
-          label: question,
-          labelDescription: description,
-          trueLabel: options?[0].label ?? '',
-          falseLabel: options?[1].label ?? '',
-          onSaved: (newValue) {
-            if (newValue != null) {
-              response = newValue;
-              if (additionalOnSave != null) {
-                additionalOnSave!(newValue);
+        return wrapWithConditional(
+          TrueFalseFormField(
+            label: question,
+            labelDescription: description,
+            trueLabel: options?[0].label ?? '',
+            falseLabel: options?[1].label ?? '',
+            onSaved: (newValue) {
+              if (newValue != null) {
+                updateResponse(newValue);
               }
-            }
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+            },
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.dropdown:
-        return CustomDropDownFormField(
-          hintText: hintText,
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(value);
+        return wrapWithConditional(
+          CustomDropDownFormField(
+            hintText: hintText,
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(value);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
-          menuItems: buildDropDownMenuItems(options),
-          onSaved: (newValue) {
-            if (newValue != null) {
-              response = newValue.value;
-              if (additionalOnSave != null) {
-                additionalOnSave!(newValue.value);
+            },
+            menuItems: buildDropDownMenuItems(options),
+            onSaved: (newValue) {
+              if (newValue != null) {
+                updateResponse(newValue.value);
               }
-            }
-          },
+            },
+          ),
         );
       case ShapeFormQuestionType.optionList:
-        return OptionFormField(
-          label: question,
-          labelDescription: description,
-          multiSelectEnabled: true,
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  debugPrint("Option List Validator");
-                  List<dynamic> selectedOptionValues = [];
-                  for (OptionsDataItem option
-                      in value.where((elem) => elem.selected == true)) {
-                    selectedOptionValues.add(option.object);
+        return wrapWithConditional(
+          OptionFormField(
+            label: question,
+            labelDescription: description,
+            multiSelectEnabled: true,
+            validator: (value) {
+              if (isRequired) {
+                if (value == null) {
+                  return "Is required";
+                } else {
+                  if (validator != null) {
+                    debugPrint("Option List Validator");
+                    List<dynamic> selectedOptionValues = [];
+                    for (OptionsDataItem option
+                        in value.where((elem) => elem.selected == true)) {
+                      selectedOptionValues.add(option.object);
+                    }
+                    return validator!(selectedOptionValues);
+                  } else {
+                    return null;
                   }
-                  return validator!(selectedOptionValues);
-                } else {
-                  return null;
                 }
-              }
-            } else {
-              return null;
-            }
-          },
-          options: buildOptionItems(options),
-          onSaved: (newValue) {
-            if (newValue != null) {
-              List<dynamic> selectedOptionValues = [];
-              for (OptionsDataItem option
-                  in newValue.where((elem) => elem.selected == true)) {
-                selectedOptionValues.add(option.object);
-              }
-              response = selectedOptionValues;
-              if (additionalOnSave != null) {
-                additionalOnSave!(selectedOptionValues);
-              }
-            }
-          },
-          buttonText: 'Select',
-        );
-      case ShapeFormQuestionType.secureText:
-        return CustomTextFormField(
-          textfieldController: textController,
-          hintText: hintText,
-          initalText: originalValue as String?,
-          textInputAction: textInputAction,
-          secure: true,
-          onSaved: (newVal) {
-            response = newVal;
-          },
-          validator: (value) {
-            if (isRequired) {
-              if (value == null) {
-                return "Is required";
               } else {
-                if (validator != null) {
-                  return validator!(value);
-                } else {
-                  return null;
-                }
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+            options: buildOptionItems(options),
+            onSaved: (newValue) {
+              if (newValue != null) {
+                List<dynamic> selectedOptionValues = [];
+                for (OptionsDataItem option
+                    in newValue.where((elem) => elem.selected == true)) {
+                  selectedOptionValues.add(option.object);
+                }
+                updateResponse(selectedOptionValues);
+              }
+            },
+            buttonText: 'Select',
+          ),
         );
       case ShapeFormQuestionType.phone:
-        return CustomPhoneNumberField(
-          phoneController: phoneController,
-          isRequired: isRequired,
-          onSaved: (newVal) {
-            response = newVal;
-          },
+        return wrapWithConditional(
+          CustomPhoneNumberField(
+            phoneController: phoneController,
+            isRequired: isRequired,
+            onSaved: (newVal) {
+              updateResponse(newVal);
+            },
+          ),
         );
       case ShapeFormQuestionType.address:
-        return AddressFormField(
-          label: question,
-          labelDescription: description,
-          onSaved: (newVal) {
-            response = newVal;
-          },
-          validator: (newValue) {
-            if (isRequired) {
-              if (newValue == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(newValue);
+        return wrapWithConditional(
+          AddressFormField(
+            label: question,
+            labelDescription: description,
+            onSaved: (newVal) {
+              updateResponse(newVal);
+            },
+            validator: (newValue) {
+              if (isRequired) {
+                if (newValue == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(newValue);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
-          mapsRepo: mapsRepoForAddress,
+            },
+            mapsRepo: mapsRepoForAddress,
+          ),
         );
       case ShapeFormQuestionType.imageUpload:
-        return ImageFormField(
-          label: "Upload Image",
-          onSaved: (newVal) {
-            response = newVal;
-            if (additionalOnSave != null) {
-              additionalOnSave!(newVal);
-            }
-          },
-          validator: (newValue) {
-            if (isRequired) {
-              if (newValue == null) {
-                return "Is required";
-              } else {
-                if (validator != null) {
-                  return validator!(newValue);
+        return wrapWithConditional(
+          ImageFormField(
+            label: "Upload Image",
+            onSaved: (newVal) {
+              updateResponse(newVal);
+            },
+            validator: (newValue) {
+              if (isRequired) {
+                if (newValue == null) {
+                  return "Is required";
                 } else {
-                  return null;
+                  if (validator != null) {
+                    return validator!(newValue);
+                  } else {
+                    return null;
+                  }
                 }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          },
+            },
+          ),
         );
       default:
         return null;
