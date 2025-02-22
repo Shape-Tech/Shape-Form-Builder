@@ -39,7 +39,7 @@ class ShapeFormQuestion extends Equatable {
   dynamic response;
   FormFieldTheme? overrideFormFieldTheme;
   TextInputAction? textInputAction;
-  GoogleMapsRepo? mapsRepoForAddress;
+  MapsRepo? mapsRepoForAddress;
   // ImageRepo? imageRepo;
 
   ShapeFormQuestion({

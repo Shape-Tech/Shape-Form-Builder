@@ -3,7 +3,7 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
 
-class GoogleMapsRepoExample extends GoogleMapsRepo {
+class GoogleMapsRepoExample extends MapsRepo {
   @override
   Future<LatLng> getCoordinates(String placeId) async {
     await Future.delayed(Duration(seconds: 1));
@@ -28,9 +28,10 @@ class GoogleMapsRepoExample extends GoogleMapsRepo {
   @override
   Future<List<Suggestion>> getSuggestions(String? input) async {
     List<Suggestion> suggestions = [
-      Suggestion("001", "7 Theresa Mews"),
-      Suggestion("002", "65 Main Street"),
-      Suggestion("003", "101 Nwe York Place"),
+      Suggestion(
+        placeId: "001",
+        description: "7 Theresa Mews",
+      ),
     ];
     await Future.delayed(Duration(seconds: 2));
     return suggestions

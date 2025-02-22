@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
-import 'package:shape_form_builder/repositories/google_maps_repository_implemented.dart';
+import 'package:shape_form_builder/repositories/new_maps_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -18,7 +18,7 @@ class AddressFormField extends FormField<Address> {
     Address? initialValue,
     Address? originalValue,
     bool? disableDecoration,
-    GoogleMapsRepo? mapsRepo,
+    MapsRepo? mapsRepo,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -83,7 +83,7 @@ class AddressFormField extends FormField<Address> {
 class AddressFormFieldSearch extends StatefulWidget {
   String? Function(Address?)? validator;
   String? Function(Address?)? onAddressSelected;
-  GoogleMapsRepo? mapsRepo;
+  MapsRepo? mapsRepo;
   AddressFormFieldSearch({
     Key? key,
     this.validator,
@@ -153,7 +153,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                       setState(() {
                         _isProcessing = true;
                       });
-                      getPlace(_placeList[index].placeId);
+
+                      getPlace(_placeList[index]);
                     }
                   },
                 );
@@ -347,13 +348,20 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
     });
   }
 
-  getPlace(String placeId) async {
-    Address place = await widget.mapsRepo!.getPlace(placeId);
-    _isProcessing = false;
-    setState(() {
-      widget.onAddressSelected!(place);
-      selectedAddress = place;
-    });
+  getPlace(Suggestion suggestion) async {
+    if (suggestion.address == null) {
+      Address place = await widget.mapsRepo!.getPlace(suggestion.placeId);
+      _isProcessing = false;
+      setState(() {
+        widget.onAddressSelected!(place);
+        selectedAddress = place;
+      });
+    } else {
+      setState(() {
+        widget.onAddressSelected!(suggestion.address);
+        selectedAddress = suggestion.address;
+      });
+    }
   }
 }
 
@@ -396,8 +404,9 @@ class AddressSelected extends StatelessWidget {
 class Suggestion {
   final String placeId;
   final String description;
+  final Address? address;
 
-  Suggestion(this.placeId, this.description);
+  Suggestion({required this.placeId, required this.description, this.address});
 
   @override
   String toString() {

@@ -30,6 +30,8 @@
                 "SUPABASEURL=https://ngjrxoojrtrsykvzlajl.supabase.co",
                 "--dart-define",
                 "SUPABASEKEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nanJ4b29qcnRyc3lrdnpsYWpsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTc3OTE0MTMsImV4cCI6MjAxMzM2NzQxM30.kA9UzmOXkZxiX2jv0FKFVIccAVg38N1Ycqibw7jcl_k",
+                "--dart-define",
+                "API_KEY=3ddadb378879486b97e64c43979948d9",
                 "--web-port",
                 "8080"
             ],

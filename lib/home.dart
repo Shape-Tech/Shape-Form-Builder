@@ -2,8 +2,6 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo_example.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo_example.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
@@ -11,6 +9,7 @@ import 'package:shape_form_builder/form_builder/models/shape_form_field_question
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question_type.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_option.dart';
 import 'package:shape_form_builder/form_builder/shape_form_builder.dart';
+import 'package:shape_form_builder/repositories/new_maps_repository.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -33,6 +32,7 @@ class HomePage extends StatelessWidget {
                 formData: createFormData(),
                 onSubmission: (data) {
                   debugPrint(data.toString());
+                  // TODO: Use this validated data in a bloc event
                 },
               ),
             )),
@@ -249,7 +249,7 @@ class HomePage extends StatelessWidget {
           question: "What is your address",
           type: ShapeFormQuestionType.address,
           isRequired: true,
-          mapsRepoForAddress: GoogleMapsRepoExample(),
+          mapsRepoForAddress: NewMapsRepository(),
         ),
         ShapeFormQuestion(
             fieldName: "profile_image",
