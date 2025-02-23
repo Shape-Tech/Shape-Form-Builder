@@ -137,12 +137,16 @@ class OptionListPicker extends StatefulWidget {
 
 class _OptionListPickerState extends State<OptionListPicker> {
   List<OptionsDataItem> selectedItems = [];
+  List<OptionsDataItem> dialogOptions = [];
+  @override
+  void initState() {
+    super.initState();
+    selectedItems =
+        widget.options.where((element) => element.selected == true).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    selectedItems =
-        widget.options.where((element) => element.selected == true).toList();
-
     return Column(mainAxisSize: MainAxisSize.min, children: [
       if (selectedItems.isNotEmpty)
         ListView.builder(
@@ -175,7 +179,35 @@ class _OptionListPickerState extends State<OptionListPicker> {
       return a.displayLabel.compareTo(b.displayLabel);
     });
 
-    List<OptionsDataItem> dialogOptions = widget.options;
+    for (var option in widget.options) {
+      bool inSelectedOptions = selectedItems
+          .where((element) =>
+              element.displayLabel == option.displayLabel &&
+              element.displayDescription == option.displayDescription)
+          .isNotEmpty;
+      bool containsOption = dialogOptions
+          .where((dialoOption) =>
+              dialoOption.displayLabel == option.displayLabel &&
+              dialoOption.displayDescription == option.displayDescription)
+          .isNotEmpty;
+
+      if (containsOption == false) {
+        dialogOptions.add(OptionsDataItem(
+          displayLabel: option.displayLabel,
+          selected:
+              inSelectedOptions == false ? option.selected : inSelectedOptions,
+          object: option.object,
+        ));
+      } else {
+        dialogOptions
+                .where((dialoOption) =>
+                    dialoOption.displayLabel == option.displayLabel &&
+                    dialoOption.displayDescription == option.displayDescription)
+                .first
+                .selected =
+            inSelectedOptions == false ? option.selected : inSelectedOptions;
+      }
+    }
     TextEditingController searchController = TextEditingController();
 
     return showDialog(
@@ -354,23 +386,74 @@ class _OptionListPickerState extends State<OptionListPicker> {
   selectItem(int index, BuildContext dialogContext, Function refreshState) {
     refreshState(() {
       if (widget.multiSelectEnabled == true) {
-        widget.options[index].selected = !widget.options[index].selected;
-        if (widget.options[index].selected == false) {
-          selectedItems.removeWhere(
-              (element) => element.object == widget.options[index].object);
+        // Toggle the selection state
+        bool newSelectedState = !widget.options[index].selected;
+        widget.options[index].selected = newSelectedState;
+
+        // Find and update the corresponding dialogOption
+        final dialogIndex = dialogOptions.indexWhere((element) =>
+            element.displayLabel == widget.options[index].displayLabel &&
+            element.displayDescription ==
+                widget.options[index].displayDescription);
+        if (dialogIndex != -1) {
+          dialogOptions[dialogIndex].selected = newSelectedState;
+        }
+
+        // Update selectedItems list
+        if (!newSelectedState) {
+          selectedItems.removeWhere((element) =>
+              element.displayLabel == widget.options[index].displayLabel &&
+              element.displayDescription ==
+                  widget.options[index].displayDescription);
         } else {
-          selectedItems.add(widget.options[index]);
+          if (!selectedItems.any((element) =>
+              element.displayLabel == widget.options[index].displayLabel &&
+              element.displayDescription ==
+                  widget.options[index].displayDescription)) {
+            selectedItems.add(widget.options[index]);
+          }
         }
-        // widget.onSaved(widget.options);
-        widget.onSaved(selectedItems);
+
+        // Call setState to ensure the parent widget updates
+        setState(() {});
+        widget.onSaved(selectedItems.isEmpty ? null : selectedItems);
       } else {
-        for (var element in widget.options) {
-          element.selected = false;
+        // For single select, check if we're clicking the already selected item
+        if (widget.options[index].selected) {
+          // Unselect the item
+          widget.options[index].selected = false;
+          final dialogIndex = dialogOptions.indexWhere((element) =>
+              element.displayLabel == widget.options[index].displayLabel &&
+              element.displayDescription ==
+                  widget.options[index].displayDescription);
+          if (dialogIndex != -1) {
+            dialogOptions[dialogIndex].selected = false;
+          }
+          selectedItems = [];
+          setState(() {});
+          widget.onSaved(null);
+        } else {
+          // Select new item
+          for (var element in widget.options) {
+            element.selected = false;
+          }
+          for (var element in dialogOptions) {
+            element.selected = false;
+          }
+
+          widget.options[index].selected = true;
+          final dialogIndex = dialogOptions.indexWhere((element) =>
+              element.displayLabel == widget.options[index].displayLabel &&
+              element.displayDescription ==
+                  widget.options[index].displayDescription);
+          if (dialogIndex != -1) {
+            dialogOptions[dialogIndex].selected = true;
+          }
+
+          selectedItems = [widget.options[index]];
+          setState(() {});
+          widget.onSaved(selectedItems);
         }
-        widget.options[index].selected = true;
-        selectedItems.insert(0, widget.options[index]);
-        // widget.onSaved(widget.options);
-        widget.onSaved(selectedItems);
       }
     });
   }

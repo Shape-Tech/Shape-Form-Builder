@@ -12,7 +12,25 @@ import 'package:shape_form_builder/form_builder/shape_form_builder.dart';
 import 'package:shape_form_builder/repositories/new_maps_repository.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  List<ShapeFormOption> foodOptions = [
+    ShapeFormOption(
+      label: 'Italian',
+      selectedValue: "Italian",
+      object: "Italian",
+    ),
+    ShapeFormOption(
+      label: 'Mexican',
+      selectedValue: "Mexican",
+      object: "Mexican",
+    ),
+    ShapeFormOption(
+      label: "Japanese",
+      selectedValue: "Japanese",
+      object: "Japanese",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -209,23 +227,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.optionList,
           isRequired: true,
           hintText: "Select your preferred lunch options",
-          options: [
-            ShapeFormOption(
-              label: 'Italian',
-              selectedValue: "Italian",
-              object: "Italian",
-            ),
-            ShapeFormOption(
-              label: 'Mexican',
-              selectedValue: "Mexican",
-              object: "Mexican",
-            ),
-            ShapeFormOption(
-              label: "Japanese",
-              selectedValue: "Japanese",
-              object: "Japanese",
-            )
-          ],
+          options: foodOptions,
           validator: (newValue) {
             if (newValue == null) {
               return "Is required";

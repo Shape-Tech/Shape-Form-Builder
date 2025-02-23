@@ -27,6 +27,10 @@ class ShapeForm extends Equatable {
   Map<String, dynamic> returnData() {
     Map<String, dynamic> data = {};
     for (ShapeFormQuestion question in formData.questions) {
+      for (ShapeFormQuestion conditionalQuestion
+          in question.conditionalQuestions ?? []) {
+        data[conditionalQuestion.fieldName] = conditionalQuestion.getResponse();
+      }
       data[question.fieldName] = question.getResponse();
     }
     return data;

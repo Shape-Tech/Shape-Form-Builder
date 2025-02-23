@@ -17,9 +17,9 @@ class TrueFalseFormField extends FormField<bool> {
           builder: (FormFieldState<bool> state) {
             Widget buildSelectedButton(bool value, String label) {
               return ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.green),
-                ),
+                // style: ButtonStyle(
+                //   backgroundColor: WidgetStatePropertyAll(Colors.green),
+                // ),
                 child: Text(label),
                 onPressed: (() {
                   state.setState(() {
@@ -32,7 +32,10 @@ class TrueFalseFormField extends FormField<bool> {
             }
 
             Widget buildNonSelectedButton(bool value, String label) {
-              return ElevatedButton(
+              return TextButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.grey.shade100),
+                ),
                 child: Text(label),
                 onPressed: (() {
                   state.setState(() {
