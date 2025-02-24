@@ -7,6 +7,7 @@ import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/custom_dropzone_view.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/file_data_model.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class ImageFormField extends FormField<PlatformFile> {
   ImageFormField({
@@ -17,6 +18,7 @@ class ImageFormField extends FormField<PlatformFile> {
     PlatformFile? initialValue,
     PlatformFile? originalValue,
     bool? disableDecoration,
+    ShapeFormStyling? styling,
     // ImageRepo? imageRepo,
   }) : super(
             onSaved: onSaved,
@@ -24,13 +26,16 @@ class ImageFormField extends FormField<PlatformFile> {
             initialValue: initialValue,
             builder: (FormFieldState<PlatformFile> state) {
               return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey, width: 1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: styling?.containerDecoration ??
+                    BoxDecoration(
+                      color: styling?.background ?? Colors.white,
+                      border: Border.all(
+                          color: styling?.border ?? Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(
+                          styling?.borderRadiusMedium ?? 10),
+                    ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,6 +73,7 @@ class ImageFormField extends FormField<PlatformFile> {
                                         state.didChange(file);
                                         onSaved(file);
                                       },
+                                      styling: styling,
                                     ).verticalPadding(20),
                                   if (state.value != null)
                                     LayoutBuilder(builder:
@@ -113,9 +119,16 @@ class ImageFormField extends FormField<PlatformFile> {
                                         onSaved(file);
                                       }
                                     },
-                                    child: Text(state.value == null
-                                        ? 'Pick Image'
-                                        : "Replace Image"),
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Text(state.value == null
+                                            ? 'Pick Image'
+                                            : "Replace Image"),
+                                      ),
+                                    ),
+                                    style: styling?.secondaryButtonStyle ??
+                                        FormButtonStyles.secondaryButton,
                                   ),
                                 ],
                               ),
@@ -129,7 +142,8 @@ class ImageFormField extends FormField<PlatformFile> {
                             if (state.hasError == true)
                               Text(
                                 state.errorText!,
-                                style: const TextStyle(color: Colors.red),
+                                style: TextStyle(
+                                    color: styling?.error ?? Colors.red),
                               )
                           ],
                         ),

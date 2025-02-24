@@ -9,6 +9,7 @@ class FormFieldTheme extends Equatable {
   TextStyle? descriptionText;
   TextStyle? hintText;
   Color? buttonColor;
+  double? borderRadius;
 
   FormFieldTheme({
     this.successText,
@@ -17,6 +18,7 @@ class FormFieldTheme extends Equatable {
     this.descriptionText,
     this.hintText,
     this.buttonColor,
+    this.borderRadius,
   });
 
   @override

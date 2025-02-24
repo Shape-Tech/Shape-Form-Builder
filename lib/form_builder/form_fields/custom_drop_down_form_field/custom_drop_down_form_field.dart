@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
   CustomDropDownFormField({
@@ -10,6 +11,7 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
     CustomPopUpMenuItem? originalValue,
     String? hintText,
     required List<CustomPopUpMenuItem> menuItems,
+    ShapeFormStyling? styling,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -38,6 +40,7 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                                   onSaved(newOption);
                                 }
                               },
+                              styling: styling,
                             ),
                             if (originalValue != null)
                               Container(
@@ -57,7 +60,8 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(state.errorText!,
-                                    style: TextStyle(color: Colors.red)),
+                                    style: TextStyle(
+                                        color: styling?.error ?? Colors.red)),
                               )
                           ],
                         ),

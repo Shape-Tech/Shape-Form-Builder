@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class DateRangeFormField extends FormField<DateTimeRange> {
   DateRangeFormField({
@@ -11,6 +12,7 @@ class DateRangeFormField extends FormField<DateTimeRange> {
     required FormFieldValidator<DateTimeRange> validator,
     DateTimeRange? initialValue,
     DateTimeRange? originalValue,
+    ShapeFormStyling? styling,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -22,13 +24,15 @@ class DateRangeFormField extends FormField<DateTimeRange> {
               }
             }
             return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
+              decoration: styling?.containerDecoration ??
+                  BoxDecoration(
+                      color: styling?.background ?? Colors.white,
+                      border: Border.all(
+                          color: styling?.border ?? Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(
+                          styling?.borderRadiusMedium ?? 8)),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
                 child: Center(
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -63,6 +67,7 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                                 preSelectedStartDate: originalValue?.start,
                                 preSelectedEndDate: originalValue?.end,
                                 initialValue: initialValue,
+                                styling: styling,
                               ),
                             ),
                             if (originalValue != null)
@@ -76,7 +81,8 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(state.errorText!,
-                                    style: TextStyle(color: Colors.red)),
+                                    style: TextStyle(
+                                        color: styling?.error ?? Colors.red)),
                               )
                           ],
                         ),
@@ -94,13 +100,14 @@ class DateRangeFormFiledPicker extends StatefulWidget {
   DateTime? preSelectedStartDate;
   DateTime? preSelectedEndDate;
   DateTimeRange? initialValue;
-
+  ShapeFormStyling? styling;
   DateRangeFormFiledPicker(
       {this.validator,
       this.onDateSelected,
       this.preSelectedStartDate,
       this.preSelectedEndDate,
-      this.initialValue});
+      this.initialValue,
+      this.styling});
 
   @override
   State<DateRangeFormFiledPicker> createState() =>
@@ -132,20 +139,28 @@ class _DateRangeFormFiledPickerState extends State<DateRangeFormFiledPicker> {
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      style: BorderStyle.solid, color: Colors.grey, width: 2),
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+              decoration: widget.styling?.containerDecoration ??
+                  BoxDecoration(
+                      border: Border.all(
+                          style: BorderStyle.solid,
+                          color: widget.styling?.border ?? Colors.grey,
+                          width: 2),
+                      color: widget.styling?.background ?? Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(
+                          widget.styling?.borderRadiusMedium ?? 8))),
               child: Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(widget.styling?.spacingMedium ?? 10.0),
                 child: Text(
                     "${DateFormat('E MMM d, ' 'yy').format(_selectedStartDate!)} - ${DateFormat('E MMM d, ' 'yy').format(_selectedEndDate!)}"),
               ),
             ),
           ),
           ElevatedButton(
-            child: Text("Select Different Dates"),
+            style: widget.styling?.secondaryButtonStyle ??
+                FormButtonStyles.secondaryButton,
+            child: Container(
+                width: double.infinity,
+                child: Center(child: Text("Select Different Dates"))),
             onPressed: () {
               _selectDate(context, _selectedStartDate, _selectedEndDate,
                   widget.initialValue);
@@ -157,7 +172,11 @@ class _DateRangeFormFiledPickerState extends State<DateRangeFormFiledPicker> {
       return Column(
         children: [
           ElevatedButton(
-            child: Text("Select Dates"),
+            style: widget.styling?.secondaryButtonStyle ??
+                FormButtonStyles.secondaryButton,
+            child: Container(
+                width: double.infinity,
+                child: Center(child: Text("Select Dates"))),
             onPressed: () {
               _selectDate(context, _selectedStartDate, _selectedEndDate,
                   widget.initialValue);
@@ -189,7 +208,10 @@ class _DateRangeFormFiledPickerState extends State<DateRangeFormFiledPicker> {
           return Theme(
               data: ThemeData().copyWith(
                   colorScheme: ColorScheme.light(
-                primary: Colors.grey,
+                primary: widget.styling?.secondary ?? FormColors.secondary,
+                secondary:
+                    widget.styling?.secondaryLight ?? FormColors.secondaryLight,
+                surface: widget.styling?.background ?? Colors.white,
               )),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:phone_form_field/phone_form_field.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomPhoneNumberField extends FormField<String> {
   CustomPhoneNumberField({
     required PhoneController phoneController,
     bool? isRequired,
     Function(String?)? onSaved,
+    ShapeFormStyling? styling,
   }) : super(
             onSaved: onSaved,
             builder: (FormFieldState<String> state) {
@@ -36,18 +38,19 @@ class CustomPhoneNumberField extends FormField<String> {
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: Colors.grey,
+                        color: styling?.border ?? Colors.grey,
                         width: 1,
                       )),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: Colors.grey,
+                        color: styling?.border ?? Colors.grey,
                         width: 1,
                       )),
                   filled: true,
-                  hintStyle: TextStyle(color: Colors.grey),
-                  fillColor: Colors.white,
+                  hintStyle:
+                      TextStyle(color: styling?.textDisabled ?? Colors.grey),
+                  fillColor: styling?.background ?? Colors.white,
                   // hintText: hintText ?? '',
                 ),
                 enabled: true,
