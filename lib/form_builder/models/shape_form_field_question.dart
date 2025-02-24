@@ -15,7 +15,6 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_date_range_fi
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_drop_down_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/image_form_field.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_option_form_field/option_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_phone_number_field/custom_phone_number_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';

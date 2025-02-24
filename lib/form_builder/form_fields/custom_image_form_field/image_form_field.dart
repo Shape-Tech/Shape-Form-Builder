@@ -1,12 +1,7 @@
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/custom_dropzone_view.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/file_data_model.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class ImageFormField extends FormField<PlatformFile> {

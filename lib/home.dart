@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/repository/image_repo_example.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
@@ -271,19 +270,20 @@ class HomePage extends StatelessWidget {
           mapsRepoForAddress: NewMapsRepository(),
         ),
         ShapeFormQuestion(
-            fieldName: "profile_image",
-            question: "Upload your profile image",
-            type: ShapeFormQuestionType.imageUpload,
-            isRequired: true,
-            // imageRepo: ImageRepoExample(),
-            additionalOnSave: (imageFile) async {
-              debugPrint(imageFile.toString());
-              ImageRepoExample imageRepo = ImageRepoExample();
-              String url = await imageRepo.uploadImage(
-                  bucketId: "example",
-                  imageToUpload: (imageFile as PlatformFile).bytes!,
-                  filePath: (imageFile as PlatformFile).name);
-            }),
+          fieldName: "profile_image",
+          question: "Upload your profile image",
+          type: ShapeFormQuestionType.imageUpload,
+          isRequired: true,
+
+          // additionalOnSave: (imageFile) async {
+          //   debugPrint(imageFile.toString());
+          //   ImageRepoExample imageRepo = ImageRepoExample();
+          //   String url = await imageRepo.uploadImage(
+          //       bucketId: "example",
+          //       imageToUpload: (imageFile as PlatformFile).bytes!,
+          //       filePath: (imageFile as PlatformFile).name);
+          // }
+        ),
       ],
     );
   }
