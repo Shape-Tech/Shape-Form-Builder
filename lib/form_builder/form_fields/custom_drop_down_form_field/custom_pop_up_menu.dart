@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomPopUpMenu extends StatefulWidget {
   CustomPopUpMenu({
@@ -10,6 +11,7 @@ class CustomPopUpMenu extends StatefulWidget {
     this.onOptionSelected,
     this.initialSelection,
     this.hintText,
+    this.styling,
   });
 
   List<CustomPopUpMenuItem> menuItems;
@@ -17,6 +19,7 @@ class CustomPopUpMenu extends StatefulWidget {
   CustomPopUpMenuItem? initialSelection;
   double? maxWidth;
   String? Function(CustomPopUpMenuItem)? onOptionSelected;
+  ShapeFormStyling? styling;
 
   @override
   State<CustomPopUpMenu> createState() => _CustomPopUpMenuState();
@@ -33,6 +36,7 @@ class _CustomPopUpMenuState extends State<CustomPopUpMenu> {
       controller: _menuController,
       builder: (BuildContext context, _menuController, Widget? child) {
         return InkWell(
+          borderRadius: BorderRadius.circular(10),
           onTap: () {
             if (_menuController.isOpen) {
               _menuController.close();
@@ -42,23 +46,43 @@ class _CustomPopUpMenuState extends State<CustomPopUpMenu> {
           },
           child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.grey, width: 1),
-              borderRadius: BorderRadius.circular(10),
-            ),
+            decoration: widget.styling?.containerDecoration ??
+                BoxDecoration(
+                  color: widget.styling?.background ?? Colors.white,
+                  border: Border.all(
+                      color: widget.styling?.border ?? Colors.grey, width: 1),
+                  borderRadius: BorderRadius.circular(
+                      widget.styling?.borderRadiusMedium ?? 10),
+                ),
             child: dropDownCurrentSelection()
-                .verticalPadding(10)
-                .horizontalPadding(20),
+                .verticalPadding(widget.styling?.spacingSmall ?? 10)
+                .horizontalPadding(widget.styling?.spacingMedium ?? 20),
           ),
         );
       },
       menuChildren: List<Container>.generate(
         widget.menuItems.length,
         (int index) => Container(
+          decoration: BoxDecoration(
+            color: widget.styling?.background ?? Colors.white,
+            border: Border(
+                bottom: BorderSide(
+                    color: widget.styling?.border ?? Colors.grey, width: 1)),
+            borderRadius: BorderRadius.only(
+              topLeft: index == 0 ? Radius.circular(7) : Radius.zero,
+              topRight: index == 0 ? Radius.circular(7) : Radius.zero,
+              bottomLeft: index == widget.menuItems.length - 1
+                  ? Radius.circular(7)
+                  : Radius.zero,
+              bottomRight: index == widget.menuItems.length - 1
+                  ? Radius.circular(7)
+                  : Radius.zero,
+            ),
+          ),
           width: widget.maxWidth,
           child: widget.menuItems[index].customDisplay != null
               ? InkWell(
+                  borderRadius: BorderRadius.circular(7),
                   child: widget.menuItems[index].customDisplay,
                   onTap: () {
                     if (widget.onOptionSelected != null) {

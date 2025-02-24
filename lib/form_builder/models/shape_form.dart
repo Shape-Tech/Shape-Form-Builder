@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:shape_form_builder/form_builder/models/form_field_theme.dart';
+import 'package:flutter/material.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 // ignore: must_be_immutable
 class ShapeForm extends Equatable {
@@ -9,13 +10,16 @@ class ShapeForm extends Equatable {
   String? formName;
   ShapeFormData formData;
   Function(Map<String, dynamic>)? onSubmission;
-  FormFieldTheme? theme;
+  Widget? errorWidget;
+  String? submitButtonText;
 
   ShapeForm({
     this.formId,
     this.formName,
     required this.formData,
     this.onSubmission,
+    this.errorWidget,
+    this.submitButtonText,
   });
 
   void submit() {

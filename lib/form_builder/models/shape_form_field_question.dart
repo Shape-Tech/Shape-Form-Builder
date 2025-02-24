@@ -22,6 +22,7 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/cu
 import 'package:shape_form_builder/form_builder/models/form_field_theme.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question_type.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_option.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 // ignore: must_be_immutable
 class ShapeFormQuestion extends Equatable {
@@ -46,6 +47,7 @@ class ShapeFormQuestion extends Equatable {
   final TextEditingController textController = TextEditingController();
   final PhoneController phoneController = PhoneController();
   // ImageRepo? imageRepo;
+  ShapeFormStyling? styling;
 
   ShapeFormQuestion({
     this.id,
@@ -133,7 +135,10 @@ class ShapeFormQuestion extends Equatable {
     }
   }
 
-  Widget? buildUI({VoidCallback? onResponseChanged}) {
+  Widget? buildUI({
+    VoidCallback? onResponseChanged,
+    ShapeFormStyling? styling,
+  }) {
     void updateResponse(dynamic newValue) {
       response = newValue;
       if (additionalOnSave != null) {
@@ -152,14 +157,17 @@ class ShapeFormQuestion extends Equatable {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: styling?.spacingMedium ?? 10,
           children: conditionalQuestions!.map((question) {
-            Widget questionWidget =
-                question.buildUI(onResponseChanged: onResponseChanged) ??
-                    Container();
+            Widget questionWidget = question.buildUI(
+                  onResponseChanged: onResponseChanged,
+                  styling: styling,
+                ) ??
+                Container();
             return Column(
               children: [
-                const Gap(10),
                 questionWidget,
+                Gap(styling?.spacingMedium ?? 10),
               ],
             );
           }).toList(),
@@ -174,7 +182,13 @@ class ShapeFormQuestion extends Equatable {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           field,
-          buildConditionalQuestions(),
+          if (conditionalQuestions != null &&
+              showConditionalQuestions != null &&
+              response != null &&
+              showConditionalQuestions!(response)) ...[
+            Gap(styling?.spacingMedium ?? 10),
+            buildConditionalQuestions(),
+          ]
         ],
       );
     }
@@ -187,6 +201,7 @@ class ShapeFormQuestion extends Equatable {
             hintText: hintText,
             initalText: originalValue as String?,
             textInputAction: textInputAction,
+            styling: styling,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -195,18 +210,14 @@ class ShapeFormQuestion extends Equatable {
             },
             validator: (value) {
               if (isRequired) {
-                if (value == null) {
+                if (value == null || value.isEmpty) {
                   return "Is required";
-                } else {
-                  if (validator != null) {
-                    return validator!(value);
-                  } else {
-                    return null;
-                  }
                 }
-              } else {
-                return null;
+                if (validator != null) {
+                  return validator!(value);
+                }
               }
+              return null;
             },
           ),
         );
@@ -218,6 +229,7 @@ class ShapeFormQuestion extends Equatable {
             secure: true,
             initalText: originalValue as String?,
             textInputAction: textInputAction,
+            styling: styling,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -226,18 +238,14 @@ class ShapeFormQuestion extends Equatable {
             },
             validator: (value) {
               if (isRequired) {
-                if (value == null) {
+                if (value == null || value.isEmpty) {
                   return "Is required";
-                } else {
-                  if (validator != null) {
-                    return validator!(value);
-                  } else {
-                    return null;
-                  }
                 }
-              } else {
-                return null;
+                if (validator != null) {
+                  return validator!(value);
+                }
               }
+              return null;
             },
           ),
         );
@@ -249,6 +257,7 @@ class ShapeFormQuestion extends Equatable {
             initalText: originalValue as String?,
             textInputAction: textInputAction,
             maxLines: 5,
+            styling: styling,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -257,18 +266,14 @@ class ShapeFormQuestion extends Equatable {
             },
             validator: (value) {
               if (isRequired) {
-                if (value == null) {
+                if (value == null || value.isEmpty) {
                   return "Is required";
-                } else {
-                  if (validator != null) {
-                    return validator!(value);
-                  } else {
-                    return null;
-                  }
                 }
-              } else {
-                return null;
+                if (validator != null) {
+                  return validator!(value);
+                }
               }
+              return null;
             },
           ),
         );
@@ -284,6 +289,7 @@ class ShapeFormQuestion extends Equatable {
                 updateResponse(newValue);
               }
             },
+            styling: styling,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
@@ -308,6 +314,7 @@ class ShapeFormQuestion extends Equatable {
             labelDescription: description,
             initialValue: initialValue as DateTimeRange?,
             originalValue: originalValue as DateTimeRange?,
+            styling: styling,
             onSaved: (newValue) {
               if (newValue != null) {
                 updateResponse(newValue);
@@ -340,6 +347,7 @@ class ShapeFormQuestion extends Equatable {
                 updateResponse(newValue);
               }
             },
+            styling: styling,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
@@ -362,6 +370,7 @@ class ShapeFormQuestion extends Equatable {
           TrueFalseFormField(
             label: question,
             labelDescription: description,
+            styling: styling,
             trueLabel: options?[0].label ?? '',
             falseLabel: options?[1].label ?? '',
             onSaved: (newValue) {
@@ -411,6 +420,7 @@ class ShapeFormQuestion extends Equatable {
                 updateResponse(newValue.value);
               }
             },
+            styling: styling,
           ),
         );
       case ShapeFormQuestionType.optionList:
@@ -440,6 +450,7 @@ class ShapeFormQuestion extends Equatable {
                 return null;
               }
             },
+            styling: styling,
             options: buildOptionItems(options),
             onSaved: (newValue) {
               if (newValue != null) {
@@ -462,6 +473,7 @@ class ShapeFormQuestion extends Equatable {
             onSaved: (newVal) {
               updateResponse(newVal);
             },
+            styling: styling,
           ),
         );
       case ShapeFormQuestionType.address:
@@ -488,15 +500,17 @@ class ShapeFormQuestion extends Equatable {
               }
             },
             mapsRepo: mapsRepoForAddress,
+            styling: styling,
           ),
         );
       case ShapeFormQuestionType.imageUpload:
         return wrapWithConditional(
           ImageFormField(
-            label: "Upload Image",
+            label: question,
             onSaved: (newVal) {
               updateResponse(newVal);
             },
+            styling: styling,
             validator: (newValue) {
               if (isRequired) {
                 if (newValue == null) {

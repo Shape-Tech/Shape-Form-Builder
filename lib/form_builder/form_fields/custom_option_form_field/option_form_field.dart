@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/extensions/string_extensions.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class OptionsDataItem {
   String displayLabel;
@@ -37,6 +39,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
     required FormFieldValidator<List<OptionsDataItem>> validator,
     Function()? addOption,
     List<OptionsDataItem>? originalValue,
+    ShapeFormStyling? styling,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -47,13 +50,16 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
               }
             }
             return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
+              decoration: styling?.containerDecoration ??
+                  BoxDecoration(
+                    color: styling?.background ?? Colors.white,
+                    border: Border.all(
+                        color: styling?.border ?? Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(
+                        styling?.borderRadiusMedium ?? 10),
+                  ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -84,6 +90,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                               onSaved(value);
                             },
                             addOption: addOption,
+                            styling: styling,
                           )),
                       if (originalValue != null)
                         Column(
@@ -122,6 +129,7 @@ class OptionListPicker extends StatefulWidget {
   List<OptionsDataItem> options;
   FormFieldSetter<List<OptionsDataItem>> onSaved;
   Function()? addOption;
+  ShapeFormStyling? styling;
   OptionListPicker({
     Key? key,
     required this.buttonText,
@@ -129,6 +137,7 @@ class OptionListPicker extends StatefulWidget {
     required this.options,
     required this.onSaved,
     this.addOption,
+    this.styling,
   }) : super(key: key);
 
   @override
@@ -157,10 +166,14 @@ class _OptionListPickerState extends State<OptionListPicker> {
                   selectedItem: selectedItems[index]);
             }),
       ElevatedButton(
-        child: Text(widget.buttonText),
+        child: Container(
+            width: double.infinity,
+            child: Center(child: Text(widget.buttonText))),
         onPressed: () {
           _showOptionPicker(context, widget.multiSelectEnabled);
         },
+        style: widget.styling?.secondaryButtonStyle ??
+            FormButtonStyles.secondaryButton,
       ),
     ]);
   }
@@ -236,17 +249,20 @@ class _OptionListPickerState extends State<OptionListPicker> {
           }
 
           return Dialog(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    widget.styling?.borderRadiusMedium ?? 10)),
             elevation: 10,
             child: ConstrainedBox(
               constraints: BoxConstraints(
                   minWidth: 200.00, maxWidth: 600.00, maxHeight: 700),
               child: Scaffold(
+                backgroundColor: widget.styling?.background ?? Colors.white,
                 appBar: AppBar(
                   automaticallyImplyLeading: false,
                   centerTitle: true,
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor:
+                      widget.styling?.primary ?? FormColors.primary,
                   foregroundColor: Colors.white,
                   title: Text(widget.buttonText),
                   actions: [
@@ -293,70 +309,83 @@ class _OptionListPickerState extends State<OptionListPicker> {
                 ),
                 body: Column(
                   children: [
-                    Container(
-                      child: TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.search),
-                            hintText: 'Search',
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(),
-                            )),
+                    Padding(
+                      padding:
+                          EdgeInsets.all(widget.styling?.spacingMedium ?? 10),
+                      child: CustomTextFormField(
+                        textfieldController: searchController,
+                        hintText: "Search",
                         onChanged: searchOptions,
                       ),
                     ),
                     Expanded(
                       child: ListView.builder(
                         itemBuilder: (context, index) {
-                          return Card(
-                            child: ListTile(
-                              title: Text(dialogOptions[index]
-                                  .displayLabel
-                                  .capitalizeLabelCase()),
-                              subtitle:
-                                  dialogOptions[index].displayDescription !=
-                                          null
-                                      ? Text((dialogOptions[index]
-                                                  .displayDescription ??
-                                              "")
-                                          .capitalizeLabelCase())
-                                      : null,
-                              trailing: Checkbox(
-                                  value: dialogOptions[index].selected,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectItem(
-                                          widget.options.indexWhere((element) =>
-                                              element.displayLabel ==
-                                                  dialogOptions[index]
-                                                      .displayLabel &&
-                                              element.displayDescription ==
-                                                  dialogOptions[index]
-                                                      .displayDescription),
-                                          dialogContext,
-                                          setDialogState);
-                                    });
-                                    if (widget.multiSelectEnabled == false) {
-                                      Navigator.pop(dialogContext);
-                                    }
-                                  }),
-                              onTap: () {
-                                setState(() {
-                                  selectItem(
-                                      widget.options.indexWhere((element) =>
-                                          element.displayLabel ==
-                                              dialogOptions[index]
-                                                  .displayLabel &&
-                                          element.displayDescription ==
-                                              dialogOptions[index]
-                                                  .displayDescription),
-                                      dialogContext,
-                                      setDialogState);
-                                });
-                                if (widget.multiSelectEnabled == false) {
-                                  Navigator.pop(dialogContext);
-                                }
-                              },
+                          return Padding(
+                            padding: EdgeInsets.only(
+                                bottom: widget.styling?.spacingMedium ?? 10),
+                            child: Container(
+                              decoration: widget.styling?.containerDecoration ??
+                                  BoxDecoration(
+                                    color: widget.styling?.background ??
+                                        Colors.white,
+                                    border: Border.all(
+                                        color: widget.styling?.border ??
+                                            Colors.grey,
+                                        width: 1),
+                                    borderRadius: BorderRadius.circular(
+                                        widget.styling?.borderRadiusMedium ??
+                                            10),
+                                  ),
+                              child: ListTile(
+                                title: Text(dialogOptions[index]
+                                    .displayLabel
+                                    .capitalizeLabelCase()),
+                                subtitle:
+                                    dialogOptions[index].displayDescription !=
+                                            null
+                                        ? Text((dialogOptions[index]
+                                                    .displayDescription ??
+                                                "")
+                                            .capitalizeLabelCase())
+                                        : null,
+                                trailing: Checkbox(
+                                    value: dialogOptions[index].selected,
+                                    activeColor: widget.styling?.secondary ??
+                                        FormColors.secondary,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectItem(
+                                            widget.options
+                                                .firstWhere((element) =>
+                                                    element.displayLabel ==
+                                                    dialogOptions[index]
+                                                        .displayLabel)
+                                                .displayLabel,
+                                            dialogContext,
+                                            setDialogState);
+                                      });
+                                      if (widget.multiSelectEnabled == false) {
+                                        Navigator.pop(dialogContext);
+                                      }
+                                    }),
+                                onTap: () {
+                                  setState(() {
+                                    selectItem(
+                                        widget.options
+                                            .firstWhere((element) =>
+                                                element.displayLabel ==
+                                                dialogOptions[index]
+                                                    .displayLabel)
+                                            .displayLabel,
+                                        dialogContext,
+                                        setDialogState);
+                                  });
+                                  if (widget.multiSelectEnabled == false) {
+                                    Navigator.pop(dialogContext);
+                                  }
+                                },
+                              ),
                             ),
                           );
                         },
@@ -373,7 +402,9 @@ class _OptionListPickerState extends State<OptionListPicker> {
                       child: Text("Save Selection"),
                       onPressed: () {
                         Navigator.pop(dialogContext);
-                      })
+                      },
+                      style: widget.styling?.secondaryButtonStyle ??
+                          FormButtonStyles.secondaryButton)
                 ],
               ),
             ),
@@ -383,34 +414,30 @@ class _OptionListPickerState extends State<OptionListPicker> {
     );
   }
 
-  selectItem(int index, BuildContext dialogContext, Function refreshState) {
+  selectItem(
+      String displayLabel, BuildContext dialogContext, Function refreshState) {
     refreshState(() {
       if (widget.multiSelectEnabled == true) {
         // Toggle the selection state
-        bool newSelectedState = !widget.options[index].selected;
-        widget.options[index].selected = newSelectedState;
-
-        // Find and update the corresponding dialogOption
-        final dialogIndex = dialogOptions.indexWhere((element) =>
-            element.displayLabel == widget.options[index].displayLabel &&
-            element.displayDescription ==
-                widget.options[index].displayDescription);
-        if (dialogIndex != -1) {
-          dialogOptions[dialogIndex].selected = newSelectedState;
-        }
+        bool newSelectedState = !dialogOptions
+            .where((element) => element.displayLabel == displayLabel)
+            .first
+            .selected;
+        dialogOptions
+            .where((element) => element.displayLabel == displayLabel)
+            .first
+            .selected = newSelectedState;
 
         // Update selectedItems list
         if (!newSelectedState) {
-          selectedItems.removeWhere((element) =>
-              element.displayLabel == widget.options[index].displayLabel &&
-              element.displayDescription ==
-                  widget.options[index].displayDescription);
+          selectedItems
+              .removeWhere((element) => element.displayLabel == displayLabel);
         } else {
-          if (!selectedItems.any((element) =>
-              element.displayLabel == widget.options[index].displayLabel &&
-              element.displayDescription ==
-                  widget.options[index].displayDescription)) {
-            selectedItems.add(widget.options[index]);
+          if (!selectedItems
+              .any((element) => element.displayLabel == displayLabel)) {
+            selectedItems.add(widget.options
+                .where((element) => element.displayLabel == displayLabel)
+                .first);
           }
         }
 
@@ -419,13 +446,17 @@ class _OptionListPickerState extends State<OptionListPicker> {
         widget.onSaved(selectedItems.isEmpty ? null : selectedItems);
       } else {
         // For single select, check if we're clicking the already selected item
-        if (widget.options[index].selected) {
+        if (widget.options
+            .where((element) => element.displayLabel == displayLabel)
+            .first
+            .selected) {
           // Unselect the item
-          widget.options[index].selected = false;
-          final dialogIndex = dialogOptions.indexWhere((element) =>
-              element.displayLabel == widget.options[index].displayLabel &&
-              element.displayDescription ==
-                  widget.options[index].displayDescription);
+          widget.options
+              .where((element) => element.displayLabel == displayLabel)
+              .first
+              .selected = false;
+          final dialogIndex = dialogOptions
+              .indexWhere((element) => element.displayLabel == displayLabel);
           if (dialogIndex != -1) {
             dialogOptions[dialogIndex].selected = false;
           }
@@ -441,16 +472,21 @@ class _OptionListPickerState extends State<OptionListPicker> {
             element.selected = false;
           }
 
-          widget.options[index].selected = true;
-          final dialogIndex = dialogOptions.indexWhere((element) =>
-              element.displayLabel == widget.options[index].displayLabel &&
-              element.displayDescription ==
-                  widget.options[index].displayDescription);
+          widget.options
+              .where((element) => element.displayLabel == displayLabel)
+              .first
+              .selected = true;
+          final dialogIndex = dialogOptions
+              .indexWhere((element) => element.displayLabel == displayLabel);
           if (dialogIndex != -1) {
             dialogOptions[dialogIndex].selected = true;
           }
 
-          selectedItems = [widget.options[index]];
+          selectedItems = [
+            widget.options
+                .where((element) => element.displayLabel == displayLabel)
+                .first
+          ];
           setState(() {});
           widget.onSaved(selectedItems);
         }

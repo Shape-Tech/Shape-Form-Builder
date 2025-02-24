@@ -9,7 +9,9 @@ import 'package:shape_form_builder/form_builder/models/shape_form_field_question
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question_type.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_option.dart';
 import 'package:shape_form_builder/form_builder/shape_form_builder.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 import 'package:shape_form_builder/repositories/new_maps_repository.dart';
+import 'package:shape_form_builder/styling_implemented.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -46,6 +48,7 @@ class HomePage extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.all(18.0),
             child: ShapeFormBuilder(
+              styling: styleImplemented,
               formConfig: ShapeForm(
                 formData: createFormData(),
                 onSubmission: (data) {
@@ -151,6 +154,18 @@ class HomePage extends StatelessWidget {
                 type: ShapeFormQuestionType.text,
                 isRequired: true,
                 hintText: "Enter the names of the friends you want to invite",
+                showConditionalQuestions: (response) {
+                  return (response as String).toLowerCase().contains("anna");
+                },
+                conditionalQuestions: [
+                  ShapeFormQuestion(
+                    fieldName: 'why_anna',
+                    question: "Why Anna?",
+                    type: ShapeFormQuestionType.text,
+                    isRequired: true,
+                    hintText: "Enter the reason why Anna is invited",
+                  )
+                ],
               )
             ],
             showConditionalQuestions: (response) {
@@ -172,19 +187,17 @@ class HomePage extends StatelessWidget {
                 selectedValue: false,
               )
             ],
-            validator: (newValue) {
-              if (newValue == null) {
-                return "Is required";
-              } else if (newValue != null) {
-                bool selection = (newValue as bool);
-
-                if (selection != true) {
-                  return "Must be yes";
-                }
-              } else {
-                return null;
-              }
-            }),
+            showConditionalQuestions: (response) {
+              return (response as bool) == false;
+            },
+            conditionalQuestions: [
+              ShapeFormQuestion(
+                  fieldName: 'why_no',
+                  question: "Why no?",
+                  type: ShapeFormQuestionType.text,
+                  isRequired: true,
+                  hintText: "Enter the reason why no")
+            ]),
         ShapeFormQuestion(
           fieldName: "preffered_lunch_time",
           question: "What is your preferred lunch time?",

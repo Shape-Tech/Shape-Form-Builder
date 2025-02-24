@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 import 'package:shape_form_builder/repositories/new_maps_repository.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
@@ -19,22 +21,27 @@ class AddressFormField extends FormField<Address> {
     Address? originalValue,
     bool? disableDecoration,
     MapsRepo? mapsRepo,
+    ShapeFormStyling? styling,
   }) : super(
             onSaved: onSaved,
             validator: validator,
             initialValue: initialValue,
             builder: (FormFieldState<Address> state) {
               return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.grey, width: 1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: styling?.containerDecoration ??
+                    BoxDecoration(
+                      color: styling?.background ?? Colors.white,
+                      border: Border.all(
+                          color: styling?.border ?? Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(
+                          styling?.borderRadiusMedium ?? 10),
+                    ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: styling?.spacingMedium ?? 10,
                       children: <Widget>[
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,6 +58,7 @@ class AddressFormField extends FormField<Address> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
+                          spacing: styling?.spacingMedium ?? 10,
                           children: [
                             AddressFormFieldSearch(
                               validator: validator,
@@ -59,18 +67,15 @@ class AddressFormField extends FormField<Address> {
                                 onSaved(selectedAddress);
                               },
                               mapsRepo: mapsRepo,
+                              styling: styling,
                             ),
                             if (originalValue != null)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                child: AddressSelected(
-                                    selectedAddress: originalValue),
-                              ),
+                              AddressSelected(selectedAddress: originalValue),
                             if (state.hasError == true)
                               Text(
                                 state.errorText!,
-                                style: TextStyle(color: Colors.red),
+                                style: TextStyle(
+                                    color: styling?.error ?? Colors.red),
                               )
                           ],
                         ),
@@ -84,11 +89,13 @@ class AddressFormFieldSearch extends StatefulWidget {
   String? Function(Address?)? validator;
   String? Function(Address?)? onAddressSelected;
   MapsRepo? mapsRepo;
+  ShapeFormStyling? styling;
   AddressFormFieldSearch({
     Key? key,
     this.validator,
     required this.onAddressSelected,
     this.mapsRepo,
+    this.styling,
   }) : super(key: key);
 
   @override
@@ -123,14 +130,9 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child: TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: "Type your address here...",
-                  focusColor: Colors.white,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  prefixIcon: const Icon(Icons.location_pin),
-                ),
+              child: CustomTextFormField(
+                textfieldController: _controller,
+                hintText: "Type your address here...",
                 onChanged: (value) {
                   if (_sessionToken == null) {
                     setState(() {
@@ -163,7 +165,9 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: ElevatedButton(
-                  child: Text("Enter Address Manually"),
+                  style: widget.styling?.secondaryButtonStyle ??
+                      FormButtonStyles.secondaryButton,
+                  child: Center(child: Text("Enter Address Manually")),
                   onPressed: () {
                     setState(() {
                       enterAddressManually = true;
@@ -175,16 +179,12 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
       } else {
         return Column(
           mainAxisSize: MainAxisSize.min,
+          spacing: widget.styling?.spacingSmall ?? 5,
           children: [
             Container(
-              child: TextFormField(
-                controller: _addressOneController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Address Line 1",
-                    prefixIcon: Icon(Icons.pin_drop_outlined),
-                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 5)),
+              child: CustomTextFormField(
+                textfieldController: _addressOneController,
+                hintText: "Address Line 1",
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Please enter your address";
@@ -194,14 +194,9 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
               ),
             ),
             Container(
-              child: TextFormField(
-                controller: _addressCityController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Address City",
-                    prefixIcon: Icon(Icons.pin_drop_outlined),
-                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 5)),
+              child: CustomTextFormField(
+                textfieldController: _addressCityController,
+                hintText: "Address City",
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Please enter your address";
@@ -211,14 +206,9 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
               ),
             ),
             Container(
-              child: TextFormField(
-                controller: _addressStateController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Address State",
-                    prefixIcon: Icon(Icons.pin_drop_outlined),
-                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 5)),
+              child: CustomTextFormField(
+                textfieldController: _addressStateController,
+                hintText: "Address State",
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Please enter your address";
@@ -228,14 +218,9 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
               ),
             ),
             Container(
-              child: TextFormField(
-                controller: _addressZipController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Address Zip/Postal Code",
-                    prefixIcon: Icon(Icons.pin_drop_outlined),
-                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 5)),
+              child: CustomTextFormField(
+                textfieldController: _addressZipController,
+                hintText: "Address Zip/Postal Code",
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Please enter your address";
@@ -245,14 +230,9 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
               ),
             ),
             Container(
-              child: TextFormField(
-                controller: _addressCountryController,
-                decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: "Address Country",
-                    prefixIcon: Icon(Icons.pin_drop_outlined),
-                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 5)),
+              child: CustomTextFormField(
+                textfieldController: _addressCountryController,
+                hintText: "Address Country",
                 validator: (value) {
                   if (value!.isEmpty) {
                     return "Please enter your address";
@@ -270,26 +250,31 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: ElevatedButton(
-                    child: Text("Select This Address"),
-                    onPressed: () {
-                      Address manualAddress = Address(
-                        addressLineOne: _addressOneController.text.trim(),
-                        city: _addressCityController.text.trim(),
-                        state: _addressStateController.text.trim(),
-                        zip: _addressZipController.text.trim(),
-                        country: _addressCountryController.text.trim(),
-                      );
-                      widget.onAddressSelected!(manualAddress);
-                      setState(() {
-                        selectedAddress = manualAddress;
-                      });
-                    }),
+                  child: Text("Select This Address"),
+                  onPressed: () {
+                    Address manualAddress = Address(
+                      addressLineOne: _addressOneController.text.trim(),
+                      city: _addressCityController.text.trim(),
+                      state: _addressStateController.text.trim(),
+                      zip: _addressZipController.text.trim(),
+                      country: _addressCountryController.text.trim(),
+                    );
+                    widget.onAddressSelected!(manualAddress);
+                    setState(() {
+                      selectedAddress = manualAddress;
+                    });
+                  },
+                  style: widget.styling?.primaryButtonStyle ??
+                      FormButtonStyles.primaryButton,
+                ),
               ),
             if (widget.mapsRepo != null)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: ElevatedButton(
-                  child: Text("Use Address Lookup"),
+                  style: widget.styling?.secondaryButtonStyle ??
+                      FormButtonStyles.secondaryButton,
+                  child: Center(child: Text("Use Address Lookup")),
                   onPressed: () {
                     setState(() {
                       enterAddressManually = false;
@@ -305,16 +290,22 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: AddressSelected(selectedAddress: selectedAddress),
+            child: AddressSelected(
+              selectedAddress: selectedAddress,
+              styling: widget.styling,
+            ),
           ),
           ElevatedButton(
-            child: Text("Change Address"),
+            style: widget.styling?.secondaryButtonStyle ??
+                FormButtonStyles.secondaryButton,
+            child: Center(child: Text("Change Address")),
             onPressed: () {
               widget.onAddressSelected!(null);
               setState(
                 () {
                   selectedAddress = null;
                   enterAddressManually = false;
+                  _isProcessing = false;
                 },
               );
             },
@@ -369,21 +360,27 @@ class AddressSelected extends StatelessWidget {
   const AddressSelected({
     Key? key,
     required this.selectedAddress,
+    this.styling,
   }) : super(key: key);
 
   final Address? selectedAddress;
-
+  final ShapeFormStyling? styling;
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-          border: Border.all(
-              style: BorderStyle.solid, color: Colors.grey, width: 2),
-          color: Colors.white,
-          borderRadius: new BorderRadius.all(const Radius.circular(10))),
+      decoration: styling?.containerDecoration ??
+          BoxDecoration(
+            color: styling?.background ?? Colors.white,
+            border: Border.all(
+              color: styling?.border ?? Colors.grey,
+              width: 1,
+            ),
+            borderRadius:
+                BorderRadius.circular(styling?.borderRadiusMedium ?? 10),
+          ),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(styling?.spacingMedium ?? 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

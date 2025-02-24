@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class ShapeFormBuilder extends StatefulWidget {
   final ShapeForm formConfig;
   final Widget? loadingWidget;
+  final ShapeFormStyling? styling;
 
   const ShapeFormBuilder({
     super.key,
     required this.formConfig,
     this.loadingWidget,
+    this.styling,
   });
 
   @override
@@ -24,17 +27,18 @@ class _ShapeFormBuilderState extends State<ShapeFormBuilder> {
 
   List<Widget> generateFormFields(ShapeForm form) {
     List<Widget> children = [];
-    form.formData.questions.forEach((question) {
+    for (var question in form.formData.questions) {
       Widget? newQuestionUI = question.buildUI(
         onResponseChanged: () {
           setState(() {}); // Rebuild the form when any response changes
         },
+        styling: widget.styling,
       );
       if (newQuestionUI != null) {
         children.add(newQuestionUI);
-        children.add(const Gap(10));
+        children.add(Gap(widget.styling?.spacingMedium ?? 10));
       }
-    });
+    }
     return children;
   }
 
@@ -62,16 +66,18 @@ class _ShapeFormBuilderState extends State<ShapeFormBuilder> {
                   );
                 }
               },
-              child: const Text("Validate"),
+              child: Container(
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      widget.formConfig.submitButtonText ?? "Submit Form",
+                    ),
+                  )),
+              style: widget.styling?.primaryButtonStyle ??
+                  FormButtonStyles.primaryButton,
             ),
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                child: Text(
-                  _errorMessage ?? "",
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
+            if (widget.formConfig.errorWidget != null)
+              widget.formConfig.errorWidget!,
           ],
         ),
       );

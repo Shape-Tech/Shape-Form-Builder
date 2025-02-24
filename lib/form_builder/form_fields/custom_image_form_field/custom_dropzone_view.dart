@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'dart:typed_data';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/file_data_model.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomDropzoneView extends StatefulWidget {
   CustomDropzoneView({
@@ -9,11 +10,13 @@ class CustomDropzoneView extends StatefulWidget {
     required this.onSaved,
     required this.height,
     required this.width,
+    this.styling,
   });
 
   Function(FileDataModel) onSaved;
   double width;
   double height;
+  ShapeFormStyling? styling;
 
   @override
   State<CustomDropzoneView> createState() => _CustomDropzoneViewState();
@@ -53,9 +56,13 @@ class _CustomDropzoneViewState extends State<CustomDropzoneView> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: isHovering == false ? Colors.white : Colors.grey[300],
-              border: Border.all(color: Colors.grey[200]!, width: 1),
-              borderRadius: BorderRadius.circular(10),
+              color: isHovering == false
+                  ? Colors.white
+                  : (widget.styling?.secondaryLight ?? Colors.grey[100]),
+              border: Border.all(
+                  color: widget.styling?.border ?? Colors.grey[200]!, width: 1),
+              borderRadius: BorderRadius.circular(
+                  widget.styling?.borderRadiusMedium ?? 10),
             ),
             child: DropzoneView(
               operation: DragOperation.copy,
@@ -81,13 +88,14 @@ class _CustomDropzoneViewState extends State<CustomDropzoneView> {
               onLeave: () => print('Zone left'),
             ),
           ),
-          const Center(
+          Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.cloud_upload_outlined,
                   size: 80,
+                  color: widget.styling?.primary ?? FormColors.primary,
                 ),
                 Text(
                   'Drop Files Here',

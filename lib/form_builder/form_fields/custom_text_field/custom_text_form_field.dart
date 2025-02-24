@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomTextFormField extends FormField<String> {
   CustomTextFormField({
@@ -14,6 +15,7 @@ class CustomTextFormField extends FormField<String> {
     Function(dynamic value)? onSaved,
     TextInputAction? textInputAction,
     Function(String value)? onChanged,
+    ShapeFormStyling? styling,
   }) : super(
             initialValue: initalText,
             validator: validator,
@@ -24,21 +26,32 @@ class CustomTextFormField extends FormField<String> {
                 initialValue: initalText,
                 controller: textfieldController,
                 decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                          styling?.borderRadiusMedium ?? 10.0),
                       borderSide: BorderSide(
-                        color: Colors.grey,
+                        color: styling?.secondary ?? FormColors.primary,
+                        width: 1,
+                      )),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                          styling?.borderRadiusMedium ?? 10.0),
+                      borderSide: BorderSide(
+                        color: styling?.border ?? FormColors.border,
                         width: 1,
                       )),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(
+                          styling?.borderRadiusMedium ?? 10.0),
                       borderSide: BorderSide(
-                        color: Colors.grey,
+                        color: styling?.border ?? FormColors.border,
                         width: 1,
                       )),
                   filled: true,
-                  hintStyle: TextStyle(color: Colors.grey),
-                  fillColor: Colors.white,
+                  hintStyle:
+                      TextStyle(color: styling?.textSecondary ?? Colors.grey),
+                  fillColor: styling?.background ?? Colors.white,
+                  focusColor: styling?.secondary ?? Colors.black,
                   hintText: hintText ?? '',
                 ),
                 obscureText: secure ?? false,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class TrueFalseFormField extends FormField<bool> {
   TrueFalseFormField({
@@ -10,6 +12,7 @@ class TrueFalseFormField extends FormField<bool> {
     required FormFieldValidator<bool> validator,
     bool? initialValue,
     bool? originalValue,
+    ShapeFormStyling? styling,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -28,14 +31,15 @@ class TrueFalseFormField extends FormField<bool> {
                   });
                   onSaved(value);
                 }),
+                style: styling?.secondaryButtonStyle ??
+                    FormButtonStyles.secondaryButton,
               );
             }
 
             Widget buildNonSelectedButton(bool value, String label) {
               return TextButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.grey.shade100),
-                ),
+                style: styling?.outlinedButtonStyle ??
+                    FormButtonStyles.outlinedButton,
                 child: Text(label),
                 onPressed: (() {
                   state.setState(() {
@@ -48,13 +52,16 @@ class TrueFalseFormField extends FormField<bool> {
             }
 
             return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
+              decoration: styling?.containerDecoration ??
+                  BoxDecoration(
+                    color: styling?.background ?? Colors.white,
+                    border: Border.all(
+                        color: styling?.border ?? Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(
+                        styling?.borderRadiusMedium ?? 10),
+                  ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
                 child: Center(
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -88,7 +95,7 @@ class TrueFalseFormField extends FormField<bool> {
                                         child: buildSelectedButton(
                                             true, trueLabel),
                                       ),
-                                    Container(width: 10),
+                                    Gap(styling?.spacingMedium ?? 10),
                                     if (state.value != false)
                                       Expanded(
                                         flex: 1,
@@ -118,11 +125,15 @@ class TrueFalseFormField extends FormField<bool> {
                                       ElevatedButton(
                                         child: Text(trueLabel),
                                         onPressed: (() {}),
+                                        style: styling?.secondaryButtonStyle ??
+                                            FormButtonStyles.secondaryButton,
                                       ),
                                     if (originalValue == false)
                                       ElevatedButton(
                                         child: Text(falseLabel),
                                         onPressed: (() {}),
+                                        style: styling?.secondaryButtonStyle ??
+                                            FormButtonStyles.secondaryButton,
                                       ),
                                   ],
                                 ),
@@ -131,7 +142,8 @@ class TrueFalseFormField extends FormField<bool> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
                                 child: Text(state.errorText!,
-                                    style: TextStyle(color: Colors.red)),
+                                    style: TextStyle(
+                                        color: styling?.error ?? Colors.red)),
                               )
                           ],
                         ),

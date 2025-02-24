@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class DateFormField extends FormField<DateTime> {
   DateFormField({
@@ -9,6 +10,7 @@ class DateFormField extends FormField<DateTime> {
     required FormFieldValidator<DateTime> validator,
     DateTime? initialValue,
     DateTime? originalValue,
+    ShapeFormStyling? styling,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -20,13 +22,16 @@ class DateFormField extends FormField<DateTime> {
               }
             }
             return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.grey, width: 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
+              decoration: styling?.containerDecoration ??
+                  BoxDecoration(
+                    color: styling?.background ?? Colors.white,
+                    border: Border.all(
+                        color: styling?.border ?? FormColors.border, width: 1),
+                    borderRadius:
+                        BorderRadius.circular(styling?.borderRadiusMedium ?? 8),
+                  ),
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
                 child: Center(
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -60,6 +65,7 @@ class DateFormField extends FormField<DateTime> {
                                 },
                                 preSelectedDate: originalValue,
                                 initialValue: initialValue,
+                                styling: styling,
                               ),
                             ),
                             if (originalValue != null)
@@ -72,9 +78,11 @@ class DateFormField extends FormField<DateTime> {
                               ),
                             if (state.hasError == true)
                               Padding(
-                                padding: const EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.only(
+                                    top: styling?.spacingMedium ?? 10),
                                 child: Text(state.errorText!,
-                                    style: TextStyle(color: Colors.red)),
+                                    style: TextStyle(
+                                        color: styling?.error ?? Colors.red)),
                               )
                           ],
                         ),
@@ -91,11 +99,13 @@ class DateFormFieldPicker extends StatefulWidget {
   String? Function(DateTime?)? onDateSelected;
   DateTime? preSelectedDate;
   DateTime? initialValue;
+  ShapeFormStyling? styling;
   DateFormFieldPicker(
       {this.validator,
       this.onDateSelected,
       this.preSelectedDate,
-      this.initialValue});
+      this.initialValue,
+      this.styling});
 
   @override
   State<DateFormFieldPicker> createState() => _DateFormFieldPickerState();
@@ -113,40 +123,54 @@ class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
 
     if (_selectedDate != null) {
       return Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: widget.styling?.spacingMedium ?? 10,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      style: BorderStyle.solid, color: Colors.grey, width: 2),
-                  color: Colors.white,
-                  borderRadius:
-                      new BorderRadius.all(const Radius.circular(10))),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child:
-                    Text(DateFormat('E MMM d, ' 'yy').format(_selectedDate!)),
-              ),
+          Container(
+            width: double.infinity,
+            decoration: widget.styling?.containerDecoration ??
+                BoxDecoration(
+                    border: Border.all(
+                        style: BorderStyle.solid,
+                        color: widget.styling?.border ?? Colors.grey,
+                        width: 2),
+                    color: widget.styling?.background ?? Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(
+                        widget.styling?.borderRadiusMedium ?? 10))),
+            child: Padding(
+              padding: EdgeInsets.all(widget.styling?.spacingMedium ?? 10.0),
+              child: Text(DateFormat('E MMM d, ' 'yy').format(_selectedDate!)),
             ),
           ),
           ElevatedButton(
-            child: Text("Select Different Date"),
+            child: Container(
+                width: double.infinity,
+                child: Center(child: Text("Select Different Date"))),
             onPressed: () {
               _selectDate(context, _selectedDate, widget.initialValue);
             },
+            style: widget.styling?.secondaryButtonStyle ??
+                FormButtonStyles.secondaryButton,
           ),
         ],
       );
     } else {
       return Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ElevatedButton(
-            child: Text("Select Date"),
+            child: Container(
+                width: double.infinity,
+                child: Center(child: Text("Select Date"))),
             onPressed: () {
               _selectDate(context, _selectedDate, widget.initialValue);
             },
+            style: widget.styling?.secondaryButtonStyle ??
+                FormButtonStyles.secondaryButton,
           ),
         ],
       );
@@ -170,8 +194,10 @@ class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
       lastDate: DateTime.now().add(Duration(days: 365 * 3)),
       builder: (context, child) {
         return Theme(
-            data: ThemeData()
-                .copyWith(colorScheme: ColorScheme.light(primary: Colors.grey)),
+            data: ThemeData().copyWith(
+                colorScheme: ColorScheme.light(
+                    primary:
+                        widget.styling?.secondary ?? FormColors.secondary)),
             child: child!);
       },
     );
