@@ -69,7 +69,11 @@ class ShapeFormQuestion extends Equatable {
     this.showConditionalQuestions,
     // this.imageRepo,
   }) {
-    textController.text = response?.toString() ?? '';
+    if (response != null) {
+      textController.text = response?.toString() ?? '';
+    } else {
+      textController.text = originalValue?.toString() ?? '';
+    }
   }
 
   @override

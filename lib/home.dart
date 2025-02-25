@@ -69,6 +69,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.text,
           isRequired: true,
           hintText: "Enter your name",
+          originalValue: "John Doe",
         ),
         ShapeFormQuestion(
             fieldName: "password",

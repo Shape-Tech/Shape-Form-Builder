@@ -23,7 +23,6 @@ class CustomTextFormField extends FormField<String> {
             // onSaved: onSaved,
             builder: (FormFieldState<String> state) {
               return TextFormField(
-                initialValue: initalText,
                 controller: textfieldController,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
