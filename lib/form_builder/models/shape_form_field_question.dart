@@ -71,8 +71,13 @@ class ShapeFormQuestion extends Equatable {
   }) {
     if (response != null) {
       textController.text = response?.toString() ?? '';
-    } else {
-      textController.text = originalValue?.toString() ?? '';
+    } else if (originalValue != null) {
+      if (type == ShapeFormQuestionType.text ||
+          type == ShapeFormQuestionType.secureText ||
+          type == ShapeFormQuestionType.multiLineText) {
+        textController.text = originalValue?.toString() ?? '';
+        response = originalValue as String;
+      }
     }
   }
 
