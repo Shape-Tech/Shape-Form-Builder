@@ -48,6 +48,7 @@ class ShapeFormQuestion extends Equatable {
   final TextEditingController textController = TextEditingController();
   final PhoneController phoneController = PhoneController();
   ShapeFormStyling? styling;
+  bool? showOuterContainer;
 
   ShapeFormQuestion({
     this.id,
@@ -69,6 +70,7 @@ class ShapeFormQuestion extends Equatable {
     this.conditionalQuestions,
     this.showConditionalQuestionsCase,
     this.conditionalQuestionsCase,
+    this.showOuterContainer = true,
   }) {
     if (response != null) {
       textController.text = response?.toString() ?? '';
@@ -212,6 +214,7 @@ class ShapeFormQuestion extends Equatable {
             hintText: hintText,
             initalText: originalValue as String?,
             textInputAction: textInputAction,
+            label: question,
             styling: styling,
             onChanged: (value) {
               updateResponse(value);
@@ -230,6 +233,7 @@ class ShapeFormQuestion extends Equatable {
               }
               return null;
             },
+            showOuterContainer: showOuterContainer,
           ),
         );
       case ShapeFormQuestionType.secureText:
@@ -239,6 +243,7 @@ class ShapeFormQuestion extends Equatable {
             hintText: hintText,
             secure: true,
             initalText: originalValue as String?,
+            label: question,
             textInputAction: textInputAction,
             styling: styling,
             onChanged: (value) {
@@ -258,6 +263,7 @@ class ShapeFormQuestion extends Equatable {
               }
               return null;
             },
+            showOuterContainer: showOuterContainer,
           ),
         );
       case ShapeFormQuestionType.multiLineText:
@@ -265,6 +271,7 @@ class ShapeFormQuestion extends Equatable {
           CustomTextFormField(
             textfieldController: textController,
             hintText: hintText,
+            label: question,
             initalText: originalValue as String?,
             textInputAction: textInputAction,
             maxLines: 5,
@@ -286,6 +293,7 @@ class ShapeFormQuestion extends Equatable {
               }
               return null;
             },
+            showOuterContainer: showOuterContainer,
           ),
         );
       case ShapeFormQuestionType.date:
@@ -505,6 +513,7 @@ class ShapeFormQuestion extends Equatable {
               updateResponse(newVal);
             },
             styling: styling,
+            label: question,
           ),
         );
       case ShapeFormQuestionType.address:

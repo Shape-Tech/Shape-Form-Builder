@@ -143,6 +143,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 }
                 getSuggestion(value);
               },
+              styling: widget.styling,
+              showOuterContainer: false,
             ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -189,6 +191,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                   }
                   return null;
                 },
+                styling: widget.styling,
+                showOuterContainer: false,
               ),
             ),
             Gap(spacing),
@@ -202,6 +206,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                   }
                   return null;
                 },
+                styling: widget.styling,
+                showOuterContainer: false,
               ),
             ),
             Gap(spacing),
@@ -215,6 +221,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                   }
                   return null;
                 },
+                styling: widget.styling,
+                showOuterContainer: false,
               ),
             ),
             Gap(spacing),
@@ -228,6 +236,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                   }
                   return null;
                 },
+                styling: widget.styling,
+                showOuterContainer: false,
               ),
             ),
             Gap(spacing),
@@ -241,6 +251,8 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                   }
                   return null;
                 },
+                styling: widget.styling,
+                showOuterContainer: false,
               ),
             ),
             Gap(spacing),
