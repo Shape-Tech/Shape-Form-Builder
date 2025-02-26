@@ -150,6 +150,7 @@ class ShapeFormQuestion extends Equatable {
   Widget? buildUI({
     VoidCallback? onResponseChanged,
     ShapeFormStyling? styling,
+    dynamic parentResponse,
   }) {
     void updateResponse(dynamic newValue) {
       response = newValue;
@@ -171,7 +172,10 @@ class ShapeFormQuestion extends Equatable {
         for (ShapeFormQuestion question in conditionalQuestions ?? []) {
           if (question.conditionalQuestionsCase == caseToShow) {
             Widget? questionWidget = question.buildUI(
-                onResponseChanged: onResponseChanged, styling: styling);
+              onResponseChanged: onResponseChanged,
+              styling: styling,
+              parentResponse: response,
+            );
             if (questionWidget != null) {
               conditionalQuestionsToShow
                   .add(Gap(styling?.spacingSmall ?? spacing));
@@ -301,7 +305,6 @@ class ShapeFormQuestion extends Equatable {
           DateFormField(
             label: question,
             labelDescription: description,
-            initialValue: initialValue as DateTime?,
             originalValue: originalValue as DateTime?,
             onSaved: (newValue) {
               if (newValue != null) {
@@ -324,6 +327,9 @@ class ShapeFormQuestion extends Equatable {
                 return null;
               }
             },
+            initialValue: parentResponse != null
+                ? (parentResponse as DateTimeRange).start
+                : initialValue as DateTime?,
           ),
         );
       case ShapeFormQuestionType.dateRange:

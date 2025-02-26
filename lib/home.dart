@@ -97,20 +97,6 @@ class HomePage extends StatelessWidget {
           hintText: "Describe your lunch",
         ),
         ShapeFormQuestion(
-            fieldName: "lunch_date",
-            question: "What is the date of your lunch?",
-            type: ShapeFormQuestionType.date,
-            isRequired: true,
-            validator: (newValue) {
-              if (newValue == null) {
-                return "Is required";
-              } else if ((newValue as DateTime).compareTo(DateTime.now()) < 0) {
-                return "Must be in the future";
-              } else {
-                return null;
-              }
-            }),
-        ShapeFormQuestion(
             fieldName: "next_lunch_availability",
             question: "What is the next lunch availability?",
             type: ShapeFormQuestionType.dateRange,
@@ -130,7 +116,32 @@ class HomePage extends StatelessWidget {
               } else {
                 return null;
               }
-            }),
+            },
+            showConditionalQuestionsCase: (response) {
+              if (response != null) {
+                return 1;
+              }
+              return 0;
+            },
+            conditionalQuestions: [
+              ShapeFormQuestion(
+                fieldName: "lunch_date",
+                question: "What is the date of your lunch?",
+                type: ShapeFormQuestionType.date,
+                isRequired: true,
+                validator: (newValue) {
+                  if (newValue == null) {
+                    return "Is required";
+                  } else if ((newValue as DateTime).compareTo(DateTime.now()) <
+                      0) {
+                    return "Must be in the future";
+                  } else {
+                    return null;
+                  }
+                },
+                conditionalQuestionsCase: 1,
+              ),
+            ]),
         ShapeFormQuestion(
             fieldName: "invite_friends",
             question: "Tick this box if you want to invite friends",
