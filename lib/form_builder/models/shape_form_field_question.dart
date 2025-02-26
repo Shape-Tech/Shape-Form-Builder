@@ -491,8 +491,7 @@ class ShapeFormQuestion extends Equatable {
             onSaved: (newValue) {
               if (newValue != null) {
                 List<dynamic> selectedOptionValues = [];
-                for (OptionsDataItem option
-                    in newValue.where((elem) => elem.selected == true)) {
+                for (OptionsDataItem option in newValue) {
                   selectedOptionValues.add(option.object);
                 }
                 updateResponse(selectedOptionValues);
