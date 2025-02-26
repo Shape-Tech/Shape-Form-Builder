@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomCheckboxFormField extends FormField<bool> {
@@ -26,9 +27,11 @@ class CustomCheckboxFormField extends FormField<bool> {
                           styling?.borderRadiusMedium ?? 10),
                     ),
                 child: CheckboxListTile(
-                  contentPadding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                   title: title,
                   value: state.value,
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: styling?.spacingMedium ?? padding,
+                      vertical: styling?.spacingSmall ?? spacing),
                   activeColor: styling?.secondary ?? FormColors.secondary,
                   onChanged: (newValue) {
                     if (newValue != null) {
@@ -51,9 +54,7 @@ class CustomCheckboxFormField extends FormField<bool> {
                       : description != null
                           ? Text(description)
                           : null,
-                )
-                    .horizontalPadding(styling?.spacingMedium ?? 20)
-                    .verticalPadding(styling?.small ?? 10),
+                ),
               );
             });
 }

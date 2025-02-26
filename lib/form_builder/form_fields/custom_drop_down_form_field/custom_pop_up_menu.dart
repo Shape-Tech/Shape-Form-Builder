@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
@@ -46,17 +47,16 @@ class _CustomPopUpMenuState extends State<CustomPopUpMenu> {
           },
           child: Container(
             width: double.infinity,
-            decoration: widget.styling?.containerDecoration ??
-                BoxDecoration(
-                  color: widget.styling?.background ?? Colors.white,
-                  border: Border.all(
-                      color: widget.styling?.border ?? Colors.grey, width: 1),
-                  borderRadius: BorderRadius.circular(
-                      widget.styling?.borderRadiusMedium ?? 10),
-                ),
+            decoration: BoxDecoration(
+              color: widget.styling?.background ?? Colors.white,
+              border: Border.all(
+                  color: widget.styling?.secondary ?? Colors.grey, width: 1),
+              borderRadius: BorderRadius.circular(
+                  widget.styling?.borderRadiusMedium ?? 10),
+            ),
             child: dropDownCurrentSelection()
-                .verticalPadding(widget.styling?.spacingSmall ?? 10)
-                .horizontalPadding(widget.styling?.spacingMedium ?? 20),
+                .verticalPadding(widget.styling?.spacingSmall ?? spacing)
+                .horizontalPadding(widget.styling?.spacingMedium ?? padding),
           ),
         );
       },

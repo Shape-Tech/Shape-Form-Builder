@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:http/http.dart';
+import 'package:shape_form_builder/extensions/widget_extensions.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
@@ -36,51 +39,52 @@ class AddressFormField extends FormField<Address> {
                       borderRadius: BorderRadius.circular(
                           styling?.borderRadiusMedium ?? 10),
                     ),
-                child: Padding(
-                  padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: styling?.spacingMedium ?? 10,
-                      children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(label),
-                            const Spacer(),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(label),
+                          const Spacer(),
+                        ],
+                      ),
+                      if (labelDescription != null) ...[
+                        Gap(spacing),
+                        Text(labelDescription),
+                      ],
+                      Gap(spacing),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: styling?.spacingMedium ?? 10,
+                        children: [
+                          AddressFormFieldSearch(
+                            validator: validator,
+                            onAddressSelected: (selectedAddress) {
+                              state.setValue(selectedAddress);
+                              onSaved(selectedAddress);
+                            },
+                            mapsRepo: mapsRepo,
+                            styling: styling,
+                          ),
+                          if (originalValue != null) ...[
+                            Gap(spacing),
+                            AddressSelected(selectedAddress: originalValue),
                           ],
-                        ),
-                        if (labelDescription != null)
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              child: Text(labelDescription)),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: styling?.spacingMedium ?? 10,
-                          children: [
-                            AddressFormFieldSearch(
-                              validator: validator,
-                              onAddressSelected: (selectedAddress) {
-                                state.setValue(selectedAddress);
-                                onSaved(selectedAddress);
-                              },
-                              mapsRepo: mapsRepo,
-                              styling: styling,
-                            ),
-                            if (originalValue != null)
-                              AddressSelected(selectedAddress: originalValue),
-                            if (state.hasError == true)
-                              Text(
-                                state.errorText!,
-                                style: TextStyle(
-                                    color: styling?.error ?? Colors.red),
-                              )
+                          if (state.hasError == true) ...[
+                            Gap(spacing),
+                            Text(
+                              state.errorText!,
+                              style: TextStyle(
+                                  color: styling?.error ?? Colors.red),
+                            )
                           ],
-                        ),
-                      ]),
-                ),
+                        ],
+                      ),
+                    ]).allPadding(styling?.spacingMedium ?? padding),
               );
             });
 }
@@ -128,20 +132,17 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: CustomTextFormField(
-                textfieldController: _controller,
-                hintText: "Type your address here...",
-                onChanged: (value) {
-                  if (_sessionToken == null) {
-                    setState(() {
-                      _sessionToken = uuid.v4();
-                    });
-                  }
-                  getSuggestion(value);
-                },
-              ),
+            CustomTextFormField(
+              textfieldController: _controller,
+              hintText: "Type your address here...",
+              onChanged: (value) {
+                if (_sessionToken == null) {
+                  setState(() {
+                    _sessionToken = uuid.v4();
+                  });
+                }
+                getSuggestion(value);
+              },
             ),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -162,24 +163,21 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 );
               },
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: ElevatedButton(
-                  style: widget.styling?.secondaryButtonStyle ??
-                      FormButtonStyles.secondaryButton,
-                  child: Center(child: Text("Enter Address Manually")),
-                  onPressed: () {
-                    setState(() {
-                      enterAddressManually = true;
-                    });
-                  }),
-            ),
+            Gap(spacing),
+            ElevatedButton(
+                style: widget.styling?.secondaryButtonStyle ??
+                    FormButtonStyles.secondaryButton,
+                child: Center(child: Text("Enter Address Manually")),
+                onPressed: () {
+                  setState(() {
+                    enterAddressManually = true;
+                  });
+                }),
           ],
         );
       } else {
         return Column(
           mainAxisSize: MainAxisSize.min,
-          spacing: widget.styling?.spacingSmall ?? 5,
           children: [
             Container(
               child: CustomTextFormField(
@@ -193,6 +191,7 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 },
               ),
             ),
+            Gap(spacing),
             Container(
               child: CustomTextFormField(
                 textfieldController: _addressCityController,
@@ -205,6 +204,7 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 },
               ),
             ),
+            Gap(spacing),
             Container(
               child: CustomTextFormField(
                 textfieldController: _addressStateController,
@@ -217,6 +217,7 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 },
               ),
             ),
+            Gap(spacing),
             Container(
               child: CustomTextFormField(
                 textfieldController: _addressZipController,
@@ -229,6 +230,7 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 },
               ),
             ),
+            Gap(spacing),
             Container(
               child: CustomTextFormField(
                 textfieldController: _addressCountryController,
@@ -241,60 +243,62 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
                 },
               ),
             ),
+            Gap(spacing),
             if (showSelectAddressButton(
                 addressOne: _addressOneController.text.trim(),
                 addressCity: _addressCityController.text.trim(),
                 addressState: _addressStateController.text.trim(),
                 addressZip: _addressZipController.text.trim(),
-                addressCountry: _addressCountryController.text.trim()))
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: ElevatedButton(
-                  child: Text("Select This Address"),
-                  onPressed: () {
-                    Address manualAddress = Address(
-                      addressLineOne: _addressOneController.text.trim(),
-                      city: _addressCityController.text.trim(),
-                      state: _addressStateController.text.trim(),
-                      zip: _addressZipController.text.trim(),
-                      country: _addressCountryController.text.trim(),
-                    );
-                    widget.onAddressSelected!(manualAddress);
-                    setState(() {
-                      selectedAddress = manualAddress;
-                    });
-                  },
-                  style: widget.styling?.primaryButtonStyle ??
-                      FormButtonStyles.primaryButton,
-                ),
+                addressCountry: _addressCountryController.text.trim())) ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      child: Text("Select This Address"),
+                      onPressed: () {
+                        Address manualAddress = Address(
+                          addressLineOne: _addressOneController.text.trim(),
+                          city: _addressCityController.text.trim(),
+                          state: _addressStateController.text.trim(),
+                          zip: _addressZipController.text.trim(),
+                          country: _addressCountryController.text.trim(),
+                        );
+                        widget.onAddressSelected!(manualAddress);
+                        setState(() {
+                          selectedAddress = manualAddress;
+                        });
+                      },
+                      style: widget.styling?.primaryButtonStyle ??
+                          FormButtonStyles.primaryButton,
+                    ),
+                  ),
+                ],
               ),
-            if (widget.mapsRepo != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: ElevatedButton(
-                  style: widget.styling?.secondaryButtonStyle ??
-                      FormButtonStyles.secondaryButton,
-                  child: Center(child: Text("Use Address Lookup")),
-                  onPressed: () {
-                    setState(() {
-                      enterAddressManually = false;
-                    });
-                  },
-                ),
+            ],
+            if (widget.mapsRepo != null) ...[
+              Gap(spacing),
+              TextButton(
+                style: widget.styling?.outlinedButtonStyle ??
+                    FormButtonStyles.outlinedButton,
+                child: Center(child: Text("Use Address Lookup")),
+                onPressed: () {
+                  setState(() {
+                    enterAddressManually = false;
+                  });
+                },
               ),
+            ],
           ],
         );
       }
     } else {
       return Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: AddressSelected(
-              selectedAddress: selectedAddress,
-              styling: widget.styling,
-            ),
+          AddressSelected(
+            selectedAddress: selectedAddress,
+            styling: widget.styling,
           ),
+          Gap(spacing),
           ElevatedButton(
             style: widget.styling?.secondaryButtonStyle ??
                 FormButtonStyles.secondaryButton,

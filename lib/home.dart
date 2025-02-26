@@ -25,6 +25,7 @@ class HomePage extends StatelessWidget {
       label: 'Mexican',
       selectedValue: "Mexican",
       object: "Mexican",
+      isSelected: true,
     ),
     ShapeFormOption(
       label: "Japanese",
@@ -154,9 +155,16 @@ class HomePage extends StatelessWidget {
                 type: ShapeFormQuestionType.text,
                 isRequired: true,
                 hintText: "Enter the names of the friends you want to invite",
-                showConditionalQuestions: (response) {
-                  return (response as String).toLowerCase().contains("anna");
+                showConditionalQuestionsCase: (response) {
+                  if ((response as String).toLowerCase().contains("anna")) {
+                    return 1;
+                  }
+                  if ((response as String).toLowerCase().contains("phil")) {
+                    return 2;
+                  }
+                  return 0;
                 },
+                conditionalQuestionsCase: 1,
                 conditionalQuestions: [
                   ShapeFormQuestion(
                     fieldName: 'why_anna',
@@ -164,12 +172,21 @@ class HomePage extends StatelessWidget {
                     type: ShapeFormQuestionType.text,
                     isRequired: true,
                     hintText: "Enter the reason why Anna is invited",
+                    conditionalQuestionsCase: 1,
+                  ),
+                  ShapeFormQuestion(
+                    fieldName: 'why_phil',
+                    question: "Why Phil?",
+                    type: ShapeFormQuestionType.text,
+                    isRequired: true,
+                    hintText: "Enter the reason why Phil is invited",
+                    conditionalQuestionsCase: 2,
                   )
                 ],
               )
             ],
-            showConditionalQuestions: (response) {
-              return (response as bool);
+            showConditionalQuestionsCase: (response) {
+              return (response as bool) ? 1 : 0;
             }),
         ShapeFormQuestion(
             fieldName: "need_vegan_options",
@@ -187,8 +204,8 @@ class HomePage extends StatelessWidget {
                 selectedValue: false,
               )
             ],
-            showConditionalQuestions: (response) {
-              return (response as bool) == false;
+            showConditionalQuestionsCase: (response) {
+              return (response as bool) == false ? 1 : 0;
             },
             conditionalQuestions: [
               ShapeFormQuestion(
@@ -218,6 +235,10 @@ class HomePage extends StatelessWidget {
               selectedValue: "14:00",
             )
           ],
+          initialValue: ShapeFormOption(
+            label: '12:00',
+            selectedValue: "12:00",
+          ),
           validator: (newValue) {
             if (newValue == null) {
               return "Is required";
@@ -256,6 +277,12 @@ class HomePage extends StatelessWidget {
               return null;
             }
           },
+          originalValue: [
+            ShapeFormOption(
+              label: 'Italian',
+              selectedValue: "Italian",
+            ),
+          ],
         ),
         ShapeFormQuestion(
           fieldName: "phone_number",
@@ -275,15 +302,6 @@ class HomePage extends StatelessWidget {
           question: "Upload your profile image",
           type: ShapeFormQuestionType.imageUpload,
           isRequired: true,
-
-          // additionalOnSave: (imageFile) async {
-          //   debugPrint(imageFile.toString());
-          //   ImageRepoExample imageRepo = ImageRepoExample();
-          //   String url = await imageRepo.uploadImage(
-          //       bucketId: "example",
-          //       imageToUpload: (imageFile as PlatformFile).bytes!,
-          //       filePath: (imageFile as PlatformFile).name);
-          // }
         ),
       ],
     );

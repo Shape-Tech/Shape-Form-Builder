@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:shape_form_builder/extensions/widget_extensions.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class DateFormField extends FormField<DateTime> {
@@ -30,65 +33,56 @@ class DateFormField extends FormField<DateTime> {
                     borderRadius:
                         BorderRadius.circular(styling?.borderRadiusMedium ?? 8),
                   ),
-              child: Padding(
-                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
-                child: Center(
-                  child: Column(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(label),
-                            Spacer(),
-                          ],
+                      children: [
+                        Text(label),
+                        Spacer(),
+                      ],
+                    ),
+                    if (labelDescription != null) ...[
+                      Gap(spacing),
+                      Text(labelDescription),
+                    ],
+                    Gap(spacing),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        DateFormFieldPicker(
+                          validator: (date) {
+                            validator(date);
+                          },
+                          onDateSelected: (selectedDate) {
+                            state.setValue(selectedDate);
+                            onSaved(selectedDate);
+                          },
+                          preSelectedDate: originalValue,
+                          initialValue: initialValue,
+                          styling: styling,
                         ),
-                        if (labelDescription != null)
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              child: Text(labelDescription)),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: DateFormFieldPicker(
-                                validator: (date) {
-                                  validator(date);
-                                },
-                                onDateSelected: (selectedDate) {
-                                  state.setValue(selectedDate);
-                                  onSaved(selectedDate);
-                                },
-                                preSelectedDate: originalValue,
-                                initialValue: initialValue,
-                                styling: styling,
-                              ),
-                            ),
-                            if (originalValue != null)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Text("Original Value: " +
-                                    DateFormat('E MMM d, ' 'yy')
-                                        .format(originalValue)),
-                              ),
-                            if (state.hasError == true)
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: styling?.spacingMedium ?? 10),
-                                child: Text(state.errorText!,
-                                    style: TextStyle(
-                                        color: styling?.error ?? Colors.red)),
-                              )
-                          ],
-                        ),
-                      ]),
-                ),
-              ),
+                        if (originalValue != null) ...[
+                          Gap(spacing),
+                          Text("Original Value: " +
+                              DateFormat('E MMM d, ' 'yy')
+                                  .format(originalValue)),
+                        ],
+                        if (state.hasError == true) ...[
+                          Gap(spacing),
+                          Text(state.errorText!,
+                              style: TextStyle(
+                                  color: styling?.error ?? Colors.red)),
+                        ],
+                      ],
+                    ),
+                  ]).allPadding(padding),
             );
           },
         );
