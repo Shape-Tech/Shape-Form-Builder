@@ -109,7 +109,11 @@ class _CustomPopUpMenuState extends State<CustomPopUpMenu> {
                     }
                   },
                   title: Text(
-                      "${widget.menuItems[index].label ?? widget.menuItems[index].value.toString()}")),
+                      "${widget.menuItems[index].label ?? widget.menuItems[index].value.toString()}"),
+                  subtitle: widget.menuItems[index].description != null
+                      ? Text(widget.menuItems[index].description!)
+                      : null,
+                ),
         ),
       ),
     );

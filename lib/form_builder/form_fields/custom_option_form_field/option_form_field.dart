@@ -213,6 +213,7 @@ class _OptionListPickerState extends State<OptionListPicker> {
       if (containsOption == false) {
         dialogOptions.add(OptionsDataItem(
           displayLabel: option.displayLabel,
+          displayDescription: option.displayDescription,
           selected:
               inSelectedOptions == false ? option.selected : inSelectedOptions,
           object: option.object,
@@ -244,7 +245,6 @@ class _OptionListPickerState extends State<OptionListPicker> {
               final searchedOptions = dialogOptions.where((option) {
                 final optionLabel = option.displayLabel.toLowerCase();
                 final input = query.toLowerCase();
-
                 return optionLabel.contains(input);
               }).toList();
 
@@ -322,6 +322,8 @@ class _OptionListPickerState extends State<OptionListPicker> {
                       textfieldController: searchController,
                       hintText: "Search",
                       onChanged: searchOptions,
+                      styling: widget.styling,
+                      showOuterContainer: false,
                     ),
                     Gap(spacing),
                     Expanded(

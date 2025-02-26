@@ -18,6 +18,7 @@ class HomePage extends StatelessWidget {
   List<ShapeFormOption> foodOptions = [
     ShapeFormOption(
       label: 'Italian',
+      description: "Italian is a delicious food",
       selectedValue: "Italian",
       object: "Italian",
     ),
@@ -225,6 +226,7 @@ class HomePage extends StatelessWidget {
           options: [
             ShapeFormOption(
               label: '12:00',
+              description: "PM",
               selectedValue: "12:00",
             ),
             ShapeFormOption(
@@ -281,6 +283,7 @@ class HomePage extends StatelessWidget {
           originalValue: [
             ShapeFormOption(
               label: 'Italian',
+              description: "Italian is a delicious food",
               selectedValue: "Italian",
             ),
           ],
