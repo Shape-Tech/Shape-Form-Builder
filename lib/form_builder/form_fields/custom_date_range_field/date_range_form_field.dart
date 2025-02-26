@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class DateRangeFormField extends FormField<DateTimeRange> {
@@ -31,64 +33,55 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                           color: styling?.border ?? Colors.grey, width: 1),
                       borderRadius: BorderRadius.circular(
                           styling?.borderRadiusMedium ?? 8)),
-              child: Padding(
-                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
-                child: Center(
-                  child: Column(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(label),
-                            const Spacer(),
-                          ],
+                      children: [
+                        Text(label),
+                        const Spacer(),
+                      ],
+                    ),
+                    if (labelDescription != null) ...[
+                      Gap(spacing),
+                      Text(labelDescription),
+                    ],
+                    Gap(spacing),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DateRangeFormFiledPicker(
+                          validator: (dateRange) {
+                            validator(dateRange);
+                          },
+                          onDateSelected: (selectedDateRange) {
+                            state.setValue(selectedDateRange);
+                            onSaved(selectedDateRange);
+                          },
+                          preSelectedStartDate: originalValue?.start,
+                          preSelectedEndDate: originalValue?.end,
+                          initialValue: initialValue,
+                          styling: styling,
                         ),
-                        if (labelDescription != null)
-                          Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              child: Text(labelDescription)),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: DateRangeFormFiledPicker(
-                                validator: (dateRange) {
-                                  validator(dateRange);
-                                },
-                                onDateSelected: (selectedDateRange) {
-                                  state.setValue(selectedDateRange);
-                                  onSaved(selectedDateRange);
-                                },
-                                preSelectedStartDate: originalValue?.start,
-                                preSelectedEndDate: originalValue?.end,
-                                initialValue: initialValue,
-                                styling: styling,
-                              ),
-                            ),
-                            if (originalValue != null)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5),
-                                child: Text(
-                                    "Original Value: ${DateFormat('E MMM d, ' 'yy').format(originalValue.start)} - ${DateFormat('E MMM d, ' 'yy').format(originalValue.end)}"),
-                              ),
-                            if (state.hasError == true)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: Text(state.errorText!,
-                                    style: TextStyle(
-                                        color: styling?.error ?? Colors.red)),
-                              )
-                          ],
-                        ),
-                      ]),
-                ),
-              ),
+                        if (originalValue != null) ...[
+                          Gap(spacing),
+                          Text(
+                            "Original Value: ${DateFormat('E MMM d, ' 'yy').format(originalValue.start)} - ${DateFormat('E MMM d, ' 'yy').format(originalValue.end)}",
+                          ),
+                        ],
+                        if (state.hasError == true) ...[
+                          Gap(spacing),
+                          Text(state.errorText!,
+                              style: TextStyle(
+                                  color: styling?.error ?? Colors.red)),
+                        ],
+                      ],
+                    ),
+                  ]).allPadding(padding),
             );
           },
         );
@@ -135,26 +128,22 @@ class _DateRangeFormFiledPickerState extends State<DateRangeFormFiledPicker> {
     if (_selectedStartDate != null && _selectedEndDate != null) {
       return Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Container(
-              width: double.infinity,
-              decoration: widget.styling?.containerDecoration ??
-                  BoxDecoration(
-                      border: Border.all(
-                          style: BorderStyle.solid,
-                          color: widget.styling?.border ?? Colors.grey,
-                          width: 2),
-                      color: widget.styling?.background ?? Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(
-                          widget.styling?.borderRadiusMedium ?? 8))),
-              child: Padding(
-                padding: EdgeInsets.all(widget.styling?.spacingMedium ?? 10.0),
-                child: Text(
-                    "${DateFormat('E MMM d, ' 'yy').format(_selectedStartDate!)} - ${DateFormat('E MMM d, ' 'yy').format(_selectedEndDate!)}"),
-              ),
-            ),
+          Container(
+            width: double.infinity,
+            decoration: widget.styling?.containerDecoration ??
+                BoxDecoration(
+                    border: Border.all(
+                        style: BorderStyle.solid,
+                        color: widget.styling?.border ?? Colors.grey,
+                        width: 2),
+                    color: widget.styling?.background ?? Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(
+                        widget.styling?.borderRadiusMedium ?? 8))),
+            child: Text(
+                    "${DateFormat('E MMM d, ' 'yy').format(_selectedStartDate!)} - ${DateFormat('E MMM d, ' 'yy').format(_selectedEndDate!)}")
+                .allPadding(padding / 2),
           ),
+          Gap(spacing),
           ElevatedButton(
             style: widget.styling?.secondaryButtonStyle ??
                 FormButtonStyles.secondaryButton,

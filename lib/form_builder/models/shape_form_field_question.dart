@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:gap/gap.dart';
 import 'package:phone_form_field/phone_form_field.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
@@ -42,10 +43,10 @@ class ShapeFormQuestion extends Equatable {
   TextInputAction? textInputAction;
   MapsRepo? mapsRepoForAddress;
   List<ShapeFormQuestion>? conditionalQuestions;
-  bool Function(dynamic)? showConditionalQuestions;
+  int Function(dynamic)? showConditionalQuestionsCase;
+  int? conditionalQuestionsCase;
   final TextEditingController textController = TextEditingController();
   final PhoneController phoneController = PhoneController();
-  // ImageRepo? imageRepo;
   ShapeFormStyling? styling;
 
   ShapeFormQuestion({
@@ -66,8 +67,8 @@ class ShapeFormQuestion extends Equatable {
     this.textInputAction,
     this.mapsRepoForAddress,
     this.conditionalQuestions,
-    this.showConditionalQuestions,
-    // this.imageRepo,
+    this.showConditionalQuestionsCase,
+    this.conditionalQuestionsCase,
   }) {
     if (response != null) {
       textController.text = response?.toString() ?? '';
@@ -100,7 +101,8 @@ class ShapeFormQuestion extends Equatable {
         textInputAction,
         mapsRepoForAddress,
         conditionalQuestions,
-        showConditionalQuestions,
+        showConditionalQuestionsCase,
+        conditionalQuestionsCase,
       ];
 
   dynamic getResponse() {
@@ -159,27 +161,30 @@ class ShapeFormQuestion extends Equatable {
 
     Widget buildConditionalQuestions() {
       if (conditionalQuestions != null &&
-          showConditionalQuestions != null &&
-          response != null &&
-          showConditionalQuestions!(response)) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: styling?.spacingMedium ?? 10,
-          children: conditionalQuestions!.map((question) {
-            Widget questionWidget = question.buildUI(
-                  onResponseChanged: onResponseChanged,
-                  styling: styling,
-                ) ??
-                Container();
-            return Column(
-              children: [
-                questionWidget,
-                Gap(styling?.spacingMedium ?? 10),
-              ],
-            );
-          }).toList(),
-        );
+          showConditionalQuestionsCase != null &&
+          response != null) {
+        int caseToShow = showConditionalQuestionsCase!(response);
+
+        List<Widget> conditionalQuestionsToShow = [];
+        for (ShapeFormQuestion question in conditionalQuestions ?? []) {
+          if (question.conditionalQuestionsCase == caseToShow) {
+            Widget? questionWidget = question.buildUI(
+                onResponseChanged: onResponseChanged, styling: styling);
+            if (questionWidget != null) {
+              conditionalQuestionsToShow
+                  .add(Gap(styling?.spacingSmall ?? spacing));
+              conditionalQuestionsToShow.add(questionWidget);
+            }
+          }
+        }
+        if (conditionalQuestionsToShow.isNotEmpty) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: conditionalQuestionsToShow,
+          );
+        }
+        return Container();
       }
       return Container();
     }
@@ -191,10 +196,8 @@ class ShapeFormQuestion extends Equatable {
         children: [
           field,
           if (conditionalQuestions != null &&
-              showConditionalQuestions != null &&
-              response != null &&
-              showConditionalQuestions!(response)) ...[
-            Gap(styling?.spacingMedium ?? 10),
+              showConditionalQuestionsCase != null &&
+              response != null) ...[
             buildConditionalQuestions(),
           ]
         ],
@@ -428,7 +431,24 @@ class ShapeFormQuestion extends Equatable {
                 updateResponse(newValue.value);
               }
             },
+            label: question,
             styling: styling,
+            initialValue: initialValue != null
+                ? CustomPopUpMenuItem(
+                    label: (initialValue as ShapeFormOption).label ?? '',
+                    description:
+                        (initialValue as ShapeFormOption).description ?? '',
+                    value:
+                        (initialValue as ShapeFormOption).selectedValue ?? '')
+                : null,
+            originalValue: originalValue != null
+                ? CustomPopUpMenuItem(
+                    label: (originalValue as ShapeFormOption).label ?? '',
+                    description:
+                        (originalValue as ShapeFormOption).description ?? '',
+                    value:
+                        (originalValue as ShapeFormOption).selectedValue ?? '')
+                : null,
           ),
         );
       case ShapeFormQuestionType.optionList:
@@ -471,6 +491,9 @@ class ShapeFormQuestion extends Equatable {
               }
             },
             buttonText: 'Select',
+            originalValue: originalValue != null
+                ? buildOptionItems(originalValue as List<ShapeFormOption>)
+                : null,
           ),
         );
       case ShapeFormQuestionType.phone:

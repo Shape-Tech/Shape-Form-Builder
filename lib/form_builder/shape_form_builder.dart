@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address_form_field.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
@@ -36,7 +37,7 @@ class _ShapeFormBuilderState extends State<ShapeFormBuilder> {
       );
       if (newQuestionUI != null) {
         children.add(newQuestionUI);
-        children.add(Gap(widget.styling?.spacingMedium ?? 10));
+        children.add(Gap(widget.styling?.spacingSmall ?? spacing));
       }
     }
     return children;

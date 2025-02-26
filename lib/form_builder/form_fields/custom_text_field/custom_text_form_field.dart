@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomTextFormField extends FormField<String> {
@@ -25,6 +26,9 @@ class CustomTextFormField extends FormField<String> {
               return TextFormField(
                 controller: textfieldController,
                 decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: styling?.spacingMedium ?? padding,
+                      vertical: styling?.spacingMedium ?? padding),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(
                           styling?.borderRadiusMedium ?? 10.0),

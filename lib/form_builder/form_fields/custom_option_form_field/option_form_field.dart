@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:shape_form_builder/extensions/string_extensions.dart';
+import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
+
+import '../../constants.dart';
 
 class OptionsDataItem {
   String displayLabel;
@@ -58,66 +62,61 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                     borderRadius: BorderRadius.circular(
                         styling?.borderRadiusMedium ?? 10),
                   ),
-              child: Padding(
-                padding: EdgeInsets.all(styling?.spacingMedium ?? 20.0),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(label),
+                        Spacer(),
+                      ],
+                    ),
+                    if (labelDescription != null) ...[
+                      Gap(spacing),
+                      Text(labelDescription),
+                    ],
+                    Gap(spacing),
+                    OptionListPicker(
+                      buttonText: buttonText,
+                      multiSelectEnabled: multiSelectEnabled,
+                      options: options,
+                      onSaved: (value) {
+                        state.setState(() {
+                          state.setValue(value);
+                        });
+                        onSaved(value);
+                      },
+                      addOption: addOption,
+                      styling: styling,
+                    ),
+                    if (originalValue != null)
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(label),
-                          Spacer(),
+                          Gap(spacing),
+                          Text("Original Value:"),
+                          Gap(spacing),
+                          ListView.builder(
+                              itemCount: originalValue.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return SelectedOptionsDataItem(
+                                    selectedItem: originalValue[index]);
+                              }),
                         ],
                       ),
-                      if (labelDescription != null)
-                        Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: Text(labelDescription)),
-                      Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: OptionListPicker(
-                            buttonText: buttonText,
-                            multiSelectEnabled: multiSelectEnabled,
-                            options: options,
-                            onSaved: (value) {
-                              state.setState(() {
-                                state.setValue(value);
-                              });
-                              onSaved(value);
-                            },
-                            addOption: addOption,
-                            styling: styling,
-                          )),
-                      if (originalValue != null)
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5),
-                              child: Text("Original Value:"),
-                            ),
-                            ListView.builder(
-                                itemCount: originalValue.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return SelectedOptionsDataItem(
-                                      selectedItem: originalValue[index]);
-                                }),
-                          ],
-                        ),
-                      if (state.hasError == true)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Text(state.errorText!,
-                              style: TextStyle(color: Colors.red)),
-                        ),
-                    ]),
-              ),
+                    if (state.hasError == true) ...[
+                      Gap(spacing),
+                      Text(state.errorText!,
+                          style:
+                              TextStyle(color: styling?.error ?? Colors.red)),
+                    ],
+                  ]).allPadding(styling?.spacingMedium ?? padding),
             );
           },
         );
@@ -162,8 +161,15 @@ class _OptionListPickerState extends State<OptionListPicker> {
             itemCount: selectedItems.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              return SelectedOptionsDataItem(
-                  selectedItem: selectedItems[index]);
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SelectedOptionsDataItem(selectedItem: selectedItems[index]),
+                  Gap(spacing),
+                ],
+              );
             }),
       ElevatedButton(
         child: Container(
@@ -308,103 +314,108 @@ class _OptionListPickerState extends State<OptionListPicker> {
                   ],
                 ),
                 body: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding:
-                          EdgeInsets.all(widget.styling?.spacingMedium ?? 10),
-                      child: CustomTextFormField(
-                        textfieldController: searchController,
-                        hintText: "Search",
-                        onChanged: searchOptions,
-                      ),
+                    CustomTextFormField(
+                      textfieldController: searchController,
+                      hintText: "Search",
+                      onChanged: searchOptions,
                     ),
+                    Gap(spacing),
                     Expanded(
                       child: ListView.builder(
                         itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                                bottom: widget.styling?.spacingMedium ?? 10),
-                            child: Container(
-                              decoration: widget.styling?.containerDecoration ??
-                                  BoxDecoration(
-                                    color: widget.styling?.background ??
-                                        Colors.white,
-                                    border: Border.all(
-                                        color: widget.styling?.border ??
-                                            Colors.grey,
-                                        width: 1),
-                                    borderRadius: BorderRadius.circular(
-                                        widget.styling?.borderRadiusMedium ??
-                                            10),
-                                  ),
-                              child: ListTile(
-                                title: Text(dialogOptions[index]
-                                    .displayLabel
-                                    .capitalizeLabelCase()),
-                                subtitle:
-                                    dialogOptions[index].displayDescription !=
-                                            null
-                                        ? Text((dialogOptions[index]
-                                                    .displayDescription ??
-                                                "")
-                                            .capitalizeLabelCase())
-                                        : null,
-                                trailing: Checkbox(
-                                    value: dialogOptions[index].selected,
-                                    activeColor: widget.styling?.secondary ??
-                                        FormColors.secondary,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectItem(
-                                            widget.options
-                                                .firstWhere((element) =>
-                                                    element.displayLabel ==
-                                                    dialogOptions[index]
-                                                        .displayLabel)
-                                                .displayLabel,
-                                            dialogContext,
-                                            setDialogState);
-                                      });
-                                      if (widget.multiSelectEnabled == false) {
-                                        Navigator.pop(dialogContext);
-                                      }
-                                    }),
-                                onTap: () {
-                                  setState(() {
-                                    selectItem(
-                                        widget.options
-                                            .firstWhere((element) =>
-                                                element.displayLabel ==
-                                                dialogOptions[index]
-                                                    .displayLabel)
-                                            .displayLabel,
-                                        dialogContext,
-                                        setDialogState);
-                                  });
-                                  if (widget.multiSelectEnabled == false) {
-                                    Navigator.pop(dialogContext);
-                                  }
-                                },
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: widget.styling?.background ??
+                                      Colors.white,
+                                  border: Border.all(
+                                      color:
+                                          widget.styling?.border ?? Colors.grey,
+                                      width: 1),
+                                  borderRadius: BorderRadius.circular(
+                                      widget.styling?.borderRadiusMedium ?? 10),
+                                ),
+                                child: ListTile(
+                                  title: Text(dialogOptions[index]
+                                      .displayLabel
+                                      .capitalizeLabelCase()),
+                                  subtitle:
+                                      dialogOptions[index].displayDescription !=
+                                              null
+                                          ? Text((dialogOptions[index]
+                                                      .displayDescription ??
+                                                  "")
+                                              .capitalizeLabelCase())
+                                          : null,
+                                  trailing: Checkbox(
+                                      value: dialogOptions[index].selected,
+                                      activeColor: widget.styling?.secondary ??
+                                          FormColors.secondary,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectItem(
+                                              widget.options
+                                                  .firstWhere((element) =>
+                                                      element.displayLabel ==
+                                                      dialogOptions[index]
+                                                          .displayLabel)
+                                                  .displayLabel,
+                                              dialogContext,
+                                              setDialogState);
+                                        });
+                                        if (widget.multiSelectEnabled ==
+                                            false) {
+                                          Navigator.pop(dialogContext);
+                                        }
+                                      }),
+                                  onTap: () {
+                                    setState(() {
+                                      selectItem(
+                                          widget.options
+                                              .firstWhere((element) =>
+                                                  element.displayLabel ==
+                                                  dialogOptions[index]
+                                                      .displayLabel)
+                                              .displayLabel,
+                                          dialogContext,
+                                          setDialogState);
+                                    });
+                                    if (widget.multiSelectEnabled == false) {
+                                      Navigator.pop(dialogContext);
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
+                              Gap(spacing),
+                            ],
                           );
                         },
                         itemCount: dialogOptions.length,
                         shrinkWrap: true,
-                        padding: EdgeInsets.all(10),
                         scrollDirection: Axis.vertical,
                       ),
                     ),
                   ],
-                ),
+                ).allPadding(widget.styling?.spacingMedium ?? padding),
                 persistentFooterButtons: [
                   ElevatedButton(
-                      child: Text("Save Selection"),
-                      onPressed: () {
-                        Navigator.pop(dialogContext);
-                      },
-                      style: widget.styling?.secondaryButtonStyle ??
-                          FormButtonStyles.secondaryButton)
+                          child: Text("Save Selection"),
+                          onPressed: () {
+                            Navigator.pop(dialogContext);
+                          },
+                          style: widget.styling?.secondaryButtonStyle ??
+                              FormButtonStyles.secondaryButton)
+                      .horizontalPadding(
+                          widget.styling?.spacingSmall ?? spacing)
+                      .verticalPadding(widget.styling?.spacingSmall ?? spacing),
                 ],
               ),
             ),
@@ -505,25 +516,19 @@ class SelectedOptionsDataItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-            border: Border.all(
-                style: BorderStyle.solid, color: Colors.grey, width: 2),
-            color: Colors.white,
-            borderRadius: new BorderRadius.all(const Radius.circular(10))),
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(selectedItem.displayLabel.capitalizeLabelCase()),
-            ],
-          ),
-        ),
-      ),
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+          border: Border.all(
+              style: BorderStyle.solid, color: Colors.grey, width: 2),
+          color: Colors.white,
+          borderRadius: new BorderRadius.all(const Radius.circular(10))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(selectedItem.displayLabel.capitalizeLabelCase()),
+        ],
+      ).allPadding(spacing),
     );
   }
 }

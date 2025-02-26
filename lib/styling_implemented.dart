@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 ShapeFormStyling styleImplemented = ShapeFormStyling(
@@ -15,8 +16,8 @@ ShapeFormStyling styleImplemented = ShapeFormStyling(
   body: 16.0,
 
   // Spacing
-  spacingSmall: 8.0,
-  spacingMedium: 10.0,
+  spacingSmall: spacing,
+  spacingMedium: padding,
 
   // Text Styles
   heading1Style: TextStyle(
