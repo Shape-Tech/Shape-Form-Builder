@@ -8,7 +8,7 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_
 class NewMapsRepository extends MapsRepo {
   Dio client = Dio();
 
-  static const String apiKey = String.fromEnvironment('API_KEY');
+  static const String apiKey = String.fromEnvironment('MAP_API_KEY');
 
   @override
   Future<List<Suggestion>> getSuggestions(String? input) async {
