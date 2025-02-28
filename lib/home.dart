@@ -147,6 +147,7 @@ class HomePage extends StatelessWidget {
             question: "Tick this box if you want to invite friends",
             type: ShapeFormQuestionType.checkbox,
             isRequired: true,
+            originalValue: true,
             hintText: "Tick this box if you want to invite friends",
             validator: (newValue) {
               if (newValue == null) {

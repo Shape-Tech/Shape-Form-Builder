@@ -80,6 +80,8 @@ class ShapeFormQuestion extends Equatable {
           type == ShapeFormQuestionType.multiLineText) {
         textController.text = originalValue?.toString() ?? '';
         response = originalValue as String;
+      } else if (type == ShapeFormQuestionType.checkbox) {
+        response = originalValue as bool;
       }
     }
   }
@@ -373,6 +375,7 @@ class ShapeFormQuestion extends Equatable {
               }
             },
             styling: styling,
+            initialValue: originalValue ?? false,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
