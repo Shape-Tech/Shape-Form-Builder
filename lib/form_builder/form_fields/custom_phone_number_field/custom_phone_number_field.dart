@@ -11,6 +11,7 @@ class CustomPhoneNumberField extends FormField<String> {
     bool? isRequired,
     Function(String?)? onSaved,
     ShapeFormStyling? styling,
+    Function(String?)? onChanged,
     String? label,
   }) : super(
             onSaved: onSaved,
@@ -95,6 +96,11 @@ class CustomPhoneNumberField extends FormField<String> {
                       enabled: true,
                       validator: _getValidator(state.context),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
+                      onChanged: (value) {
+                        if (onChanged != null) {
+                          onChanged(value.nsn);
+                        }
+                      },
                     ),
                   ],
                 ).allPadding(styling?.spacingMedium ?? padding),

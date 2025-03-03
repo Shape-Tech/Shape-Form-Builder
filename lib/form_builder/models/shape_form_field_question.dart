@@ -522,6 +522,9 @@ class ShapeFormQuestion extends Equatable {
             },
             styling: styling,
             label: question,
+            onChanged: (value) {
+              updateResponse(value);
+            },
           ),
         );
       case ShapeFormQuestionType.address:
