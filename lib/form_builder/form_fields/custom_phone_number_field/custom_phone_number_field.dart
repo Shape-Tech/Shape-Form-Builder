@@ -98,7 +98,7 @@ class CustomPhoneNumberField extends FormField<String> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       onChanged: (value) {
                         if (onChanged != null) {
-                          onChanged(value.nsn);
+                          onChanged(value.international);
                         }
                       },
                     ),
