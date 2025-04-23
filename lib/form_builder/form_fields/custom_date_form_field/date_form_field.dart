@@ -19,11 +19,6 @@ class DateFormField extends FormField<DateTime> {
           validator: validator,
           initialValue: originalValue,
           builder: (FormFieldState<DateTime> state) {
-            if (originalValue != null) {
-              if (state.value == null) {
-                state.setValue(originalValue);
-              }
-            }
             return Container(
               decoration: styling?.containerDecoration ??
                   BoxDecoration(
@@ -64,7 +59,7 @@ class DateFormField extends FormField<DateTime> {
                             state.setValue(selectedDate);
                             onSaved(selectedDate);
                           },
-                          preSelectedDate: originalValue,
+                          preSelectedDate: state.value,
                           initialValue: initialValue,
                           styling: styling,
                         ),

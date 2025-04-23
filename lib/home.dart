@@ -96,52 +96,71 @@ class HomePage extends StatelessWidget {
         //   isRequired: true,
         //   hintText: "Describe your lunch",
         // ),
-        ShapeFormQuestion(
-            fieldName: "next_lunch_availability",
-            question: "What is the next lunch availability?",
-            type: ShapeFormQuestionType.dateRange,
-            isRequired: true,
-            hintText: "Select the date range for your next lunch",
-            validator: (newValue) {
-              if (newValue == null) {
-                return "Is required";
-              } else if (newValue != null) {
-                DateTime start = (newValue as DateTimeRange).start;
+        // ShapeFormQuestion(
+        //     fieldName: "next_lunch_availability",
+        //     question: "What is the next lunch availability?",
+        //     type: ShapeFormQuestionType.dateRange,
+        //     isRequired: true,
+        //     hintText: "Select the date range for your next lunch",
+        //     validator: (newValue) {
+        //       if (newValue == null) {
+        //         return "Is required";
+        //       } else if (newValue != null) {
+        //         DateTime start = (newValue as DateTimeRange).start;
 
-                DateTime end = (newValue as DateTimeRange).end;
-                int difference = end.difference(start).inDays;
-                if (difference < 2) {
-                  return "Must be more than 2 days apart";
-                }
-              } else {
-                return null;
-              }
-            },
-            showConditionalQuestionsCase: (response) {
-              if (response != null) {
-                return 1;
-              }
-              return 0;
-            },
-            conditionalQuestions: [
-              ShapeFormQuestion(
-                fieldName: "lunch_date",
-                question: "What is the date of your lunch?",
-                type: ShapeFormQuestionType.date,
-                isRequired: false,
-                // validator: (newValue) {
-                //   if (newValue == null) {
-                //     return "Is required";
-                //   } else if ((newValue as DateTime).compareTo(DateTime.now()) <
-                //       0) {
-                //     return "Must be in the future";
-                //   } else {
-                //     return null;
-                //   }
-                // },
-                conditionalQuestionsCase: 1,
-              ),
-            ]),
+        //         DateTime end = (newValue as DateTimeRange).end;
+        //         int difference = end.difference(start).inDays;
+        //         if (difference < 2) {
+        //           return "Must be more than 2 days apart";
+        //         }
+        //       } else {
+        //         return null;
+        //       }
+        //     },
+        //     showConditionalQuestionsCase: (response) {
+        //       if (response != null) {
+        //         return 1;
+        //       }
+        //       return 0;
+        //     },
+        //     conditionalQuestions: [
+        //       ShapeFormQuestion(
+        //         fieldName: "lunch_date",
+        //         question: "What is the date of your lunch?",
+        //         type: ShapeFormQuestionType.date,
+        //         isRequired: false,
+        //         originalValue: DateTime.now().subtract(Duration(days: 1)),
+        //         // validator: (newValue) {
+        //         //   if (newValue == null) {
+        //         //     return "Is required";
+        //         //   } else if ((newValue as DateTime).compareTo(DateTime.now()) <
+        //         //       0) {
+        //         //     return "Must be in the future";
+        //         //   } else {
+        //         //     return null;
+        //         //   }
+        //         // },
+        //         conditionalQuestionsCase: 1,
+        //       ),
+        //     ]),
+
+        ShapeFormQuestion(
+          fieldName: "lunch_date",
+          question: "What is the date of your lunch?",
+          type: ShapeFormQuestionType.date,
+          isRequired: false,
+          originalValue: DateTime.now().subtract(Duration(days: 1)),
+          // validator: (newValue) {
+          //   if (newValue == null) {
+          //     return "Is required";
+          //   } else if ((newValue as DateTime).compareTo(DateTime.now()) <
+          //       0) {
+          //     return "Must be in the future";
+          //   } else {
+          //     return null;
+          //   }
+          // },
+        ),
         // ShapeFormQuestion(
         //     fieldName: "invite_friends",
         //     question: "Tick this box if you want to invite friends",
