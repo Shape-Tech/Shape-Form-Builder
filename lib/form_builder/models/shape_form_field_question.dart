@@ -118,7 +118,9 @@ class ShapeFormQuestion extends Equatable {
       case ShapeFormQuestionType.multiLineText:
         return response;
       case ShapeFormQuestionType.date:
-        return (response as DateTime).toIso8601String();
+        return response != null
+            ? (response as DateTime).toIso8601String()
+            : null;
       case ShapeFormQuestionType.dateRange:
         return {
           "start": (response as DateTimeRange).start.toIso8601String(),
@@ -309,9 +311,7 @@ class ShapeFormQuestion extends Equatable {
             labelDescription: description,
             originalValue: originalValue as DateTime?,
             onSaved: (newValue) {
-              if (newValue != null) {
-                updateResponse(newValue);
-              }
+              updateResponse(newValue);
             },
             styling: styling,
             validator: (value) {

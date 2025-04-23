@@ -135,7 +135,25 @@ class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
                         widget.styling?.borderRadiusMedium ?? 10))),
             child: Padding(
               padding: EdgeInsets.all(widget.styling?.spacingMedium ?? 10.0),
-              child: Text(DateFormat('E MMM d, ' 'yy').format(_selectedDate!)),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                        DateFormat('E MMM d, ' 'yy').format(_selectedDate!)),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _selectedDate = null;
+                        if (widget.onDateSelected != null) {
+                          widget.onDateSelected!(null);
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           ElevatedButton(
