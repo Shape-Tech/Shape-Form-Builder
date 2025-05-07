@@ -74,14 +74,18 @@ class ShapeFormQuestion extends Equatable {
   }) {
     if (response != null) {
       textController.text = response?.toString() ?? '';
-    } else if (originalValue != null) {
+    } else if (originalValue != null || initialValue != null) {
       if (type == ShapeFormQuestionType.text ||
           type == ShapeFormQuestionType.secureText ||
           type == ShapeFormQuestionType.multiLineText) {
-        textController.text = originalValue?.toString() ?? '';
-        response = originalValue as String;
+        textController.text =
+            initialValue?.toString() ?? originalValue?.toString() ?? "";
+        response = initialValue ?? originalValue as String;
       } else if (type == ShapeFormQuestionType.checkbox) {
-        response = originalValue as bool;
+        response = initialValue ?? originalValue as bool;
+      } else if (type == ShapeFormQuestionType.phone) {
+        phoneController.value = initialValue ?? originalValue as PhoneNumber;
+        response = initialValue ?? originalValue as PhoneNumber;
       }
     }
   }
@@ -220,9 +224,11 @@ class ShapeFormQuestion extends Equatable {
           CustomTextFormField(
             textfieldController: textController,
             hintText: hintText,
-            initalText: originalValue as String?,
+            initalText: initialValue as String?,
+            originalValue: originalValue as String?,
             textInputAction: textInputAction,
             label: question,
+            description: description,
             styling: styling,
             onChanged: (value) {
               updateResponse(value);
@@ -250,8 +256,9 @@ class ShapeFormQuestion extends Equatable {
             textfieldController: textController,
             hintText: hintText,
             secure: true,
-            initalText: originalValue as String?,
+            initalText: initialValue as String?,
             label: question,
+            description: description,
             textInputAction: textInputAction,
             styling: styling,
             onChanged: (value) {
@@ -280,7 +287,9 @@ class ShapeFormQuestion extends Equatable {
             textfieldController: textController,
             hintText: hintText,
             label: question,
-            initalText: originalValue as String?,
+            description: description,
+            initalText: initialValue as String?,
+            originalValue: originalValue as String?,
             textInputAction: textInputAction,
             maxLines: 5,
             styling: styling,
@@ -367,15 +376,18 @@ class ShapeFormQuestion extends Equatable {
       case ShapeFormQuestionType.checkbox:
         return wrapWithConditional(
           CustomCheckboxFormField(
-            title: Text(question),
-            description: description,
+            title: Text(question, style: styling?.bodyTextBoldStyle),
+            description: description != null
+                ? Text(description!, style: styling?.bodyTextStyle)
+                : null,
             onSaved: (newValue) {
               if (newValue != null) {
                 updateResponse(newValue);
               }
             },
             styling: styling,
-            initialValue: originalValue ?? false,
+            initialValue: initialValue ?? false,
+            originalValue: originalValue,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
@@ -401,6 +413,8 @@ class ShapeFormQuestion extends Equatable {
             styling: styling,
             trueLabel: options?[0].label ?? '',
             falseLabel: options?[1].label ?? '',
+            initialValue: initialValue,
+            originalValue: originalValue,
             onSaved: (newValue) {
               if (newValue != null) {
                 updateResponse(newValue);
@@ -449,6 +463,7 @@ class ShapeFormQuestion extends Equatable {
               }
             },
             label: question,
+            description: description,
             styling: styling,
             initialValue: initialValue != null
                 ? CustomPopUpMenuItem(
@@ -520,8 +535,10 @@ class ShapeFormQuestion extends Equatable {
             onSaved: (newVal) {
               updateResponse(newVal);
             },
+            originalValue: originalValue,
             styling: styling,
             label: question,
+            description: description,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -552,6 +569,8 @@ class ShapeFormQuestion extends Equatable {
             },
             mapsRepo: mapsRepoForAddress,
             styling: styling,
+            originalValue: originalValue,
+            initialValue: initialValue,
           ),
         );
       case ShapeFormQuestionType.imageUpload:

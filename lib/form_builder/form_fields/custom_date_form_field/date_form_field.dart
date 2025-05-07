@@ -37,13 +37,13 @@ class DateFormField extends FormField<DateTime> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(label),
+                        Text(label, style: styling?.bodyTextBoldStyle),
                         Spacer(),
                       ],
                     ),
                     if (labelDescription != null) ...[
                       Gap(spacing),
-                      Text(labelDescription),
+                      Text(labelDescription, style: styling?.bodyTextStyle),
                     ],
                     Gap(spacing),
                     Column(
@@ -65,9 +65,11 @@ class DateFormField extends FormField<DateTime> {
                         ),
                         if (originalValue != null) ...[
                           Gap(spacing),
-                          Text("Original Value: " +
-                              DateFormat('E MMM d, ' 'yy')
-                                  .format(originalValue)),
+                          Text(
+                              "Original Value: " +
+                                  DateFormat('E MMM d, ' 'yy')
+                                      .format(originalValue),
+                              style: styling?.captionStyle),
                         ],
                         if (state.hasError == true) ...[
                           Gap(spacing),

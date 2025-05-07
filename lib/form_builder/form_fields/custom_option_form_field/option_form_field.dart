@@ -71,13 +71,13 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(label),
+                        Text(label, style: styling?.bodyTextBoldStyle),
                         Spacer(),
                       ],
                     ),
                     if (labelDescription != null) ...[
                       Gap(spacing),
-                      Text(labelDescription),
+                      Text(labelDescription, style: styling?.bodyTextStyle),
                     ],
                     Gap(spacing),
                     OptionListPicker(
@@ -94,22 +94,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                       styling: styling,
                     ),
                     if (originalValue != null)
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Gap(spacing),
-                          Text("Original Value:"),
-                          Gap(spacing),
-                          ListView.builder(
-                              itemCount: originalValue.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return SelectedOptionsDataItem(
-                                    selectedItem: originalValue[index]);
-                              }),
-                        ],
-                      ),
+                      OriginalOptionList(originalValue: originalValue),
                     if (state.hasError == true) ...[
                       Gap(spacing),
                       Text(state.errorText!,
@@ -120,6 +105,55 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
             );
           },
         );
+}
+
+class OriginalOptionList extends StatefulWidget {
+  final List<OptionsDataItem> originalValue;
+  ShapeFormStyling? styling;
+  OriginalOptionList({
+    super.key,
+    required this.originalValue,
+    this.styling,
+  });
+
+  @override
+  State<OriginalOptionList> createState() => _OriginalOptionListState();
+}
+
+class _OriginalOptionListState extends State<OriginalOptionList> {
+  bool showOriginalValue = false;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Gap(spacing),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              showOriginalValue = !showOriginalValue;
+            });
+          },
+          child: Text(
+            showOriginalValue
+                ? "Hide Originally Selected Values"
+                : "Show Originally Selected Values",
+          ),
+          style: widget.styling?.textButtonStyle ?? FormButtonStyles.textButton,
+        ),
+        Gap(spacing),
+        if (showOriginalValue)
+          ListView.builder(
+              itemCount: widget.originalValue.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return SelectedOptionsDataItem(
+                    selectedItem: widget.originalValue[index]);
+              }),
+      ],
+    );
+  }
 }
 
 class OptionListPicker extends StatefulWidget {

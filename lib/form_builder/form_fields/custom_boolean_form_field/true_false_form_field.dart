@@ -67,11 +67,12 @@ class TrueFalseFormField extends FormField<bool> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(label),
+                    Text(label, style: styling?.bodyTextBoldStyle),
                     if (labelDescription != null)
                       Padding(
                           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Text(labelDescription)),
+                          child: Text(labelDescription,
+                              style: styling?.bodyTextStyle)),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -116,22 +117,11 @@ class TrueFalseFormField extends FormField<bool> {
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 10),
-                                  child: Text("Originally Selected: "),
+                                  child: Text(
+                                    "Originally Selected: ${originalValue == true ? trueLabel : falseLabel}",
+                                    style: styling?.captionStyle,
+                                  ),
                                 ),
-                                if (originalValue == true)
-                                  ElevatedButton(
-                                    child: Text(trueLabel),
-                                    onPressed: (() {}),
-                                    style: styling?.secondaryButtonStyle ??
-                                        FormButtonStyles.secondaryButton,
-                                  ),
-                                if (originalValue == false)
-                                  ElevatedButton(
-                                    child: Text(falseLabel),
-                                    onPressed: (() {}),
-                                    style: styling?.secondaryButtonStyle ??
-                                        FormButtonStyles.secondaryButton,
-                                  ),
                               ],
                             ),
                           ),

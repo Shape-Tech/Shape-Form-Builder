@@ -13,6 +13,8 @@ class CustomPhoneNumberField extends FormField<String> {
     ShapeFormStyling? styling,
     Function(String?)? onChanged,
     String? label,
+    String? description,
+    PhoneNumber? originalValue,
   }) : super(
             onSaved: onSaved,
             builder: (FormFieldState<String> state) {
@@ -51,7 +53,11 @@ class CustomPhoneNumberField extends FormField<String> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (label != null) ...[
-                      Text(label!),
+                      Text(label!, style: styling?.bodyTextBoldStyle),
+                      Gap(styling?.spacingSmall ?? spacing),
+                    ],
+                    if (description != null) ...[
+                      Text(description!, style: styling?.bodyTextStyle),
                       Gap(styling?.spacingSmall ?? spacing),
                     ],
                     PhoneFormField(
@@ -102,6 +108,13 @@ class CustomPhoneNumberField extends FormField<String> {
                         }
                       },
                     ),
+                    if (originalValue != null) ...[
+                      Gap(spacing),
+                      Text(
+                        "Original Value: ${originalValue.international}",
+                        style: styling?.captionStyle,
+                      ),
+                    ],
                   ],
                 ).allPadding(styling?.spacingMedium ?? padding),
               );

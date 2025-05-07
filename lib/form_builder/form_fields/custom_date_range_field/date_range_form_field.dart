@@ -42,17 +42,19 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(label),
+                        Text(label, style: styling?.bodyTextBoldStyle),
                         const Spacer(),
                       ],
                     ),
                     if (labelDescription != null) ...[
                       Gap(spacing),
-                      Text(labelDescription),
+                      Text(labelDescription, style: styling?.bodyTextStyle),
                     ],
                     Gap(spacing),
                     Column(
                       mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         DateRangeFormFiledPicker(
                           validator: (dateRange) {
@@ -62,8 +64,8 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                             state.setValue(selectedDateRange);
                             onSaved(selectedDateRange);
                           },
-                          preSelectedStartDate: originalValue?.start,
-                          preSelectedEndDate: originalValue?.end,
+                          preSelectedStartDate: initialValue?.start,
+                          preSelectedEndDate: initialValue?.end,
                           initialValue: initialValue,
                           styling: styling,
                         ),
@@ -71,6 +73,7 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                           Gap(spacing),
                           Text(
                             "Original Value: ${DateFormat('E MMM d, ' 'yy').format(originalValue.start)} - ${DateFormat('E MMM d, ' 'yy').format(originalValue.end)}",
+                            style: styling?.captionStyle,
                           ),
                         ],
                         if (state.hasError == true) ...[

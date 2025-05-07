@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_form_field/phone_form_field.dart';
+import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
@@ -65,89 +67,80 @@ class HomePage extends StatelessWidget {
   ShapeFormData createFormData() {
     return ShapeFormData(
       questions: [
-        // ShapeFormQuestion(
-        //   fieldName: "name",
-        //   question: "What is your name?",
-        //   type: ShapeFormQuestionType.text,
-        //   isRequired: true,
-        //   hintText: "Enter your name",
-        //   originalValue: "John Doe",
-        //   showOuterContainer: false,
-        // ),
-        // ShapeFormQuestion(
-        //     fieldName: "password",
-        //     question: "Enter your password",
-        //     type: ShapeFormQuestionType.secureText,
-        //     isRequired: true,
-        //     hintText: "Enter your password",
-        //     validator: (newValue) {
-        //       if (newValue == null) {
-        //         return "Is required";
-        //       } else if ((newValue as String).isEmpty) {
-        //         return "Is required";
-        //       } else {
-        //         return null;
-        //       }
-        //     }),
-        // ShapeFormQuestion(
-        //   fieldName: "lunch_description",
-        //   question: "Describe your lunch",
-        //   type: ShapeFormQuestionType.multiLineText,
-        //   isRequired: true,
-        //   hintText: "Describe your lunch",
-        // ),
-        // ShapeFormQuestion(
-        //     fieldName: "next_lunch_availability",
-        //     question: "What is the next lunch availability?",
-        //     type: ShapeFormQuestionType.dateRange,
-        //     isRequired: true,
-        //     hintText: "Select the date range for your next lunch",
-        //     validator: (newValue) {
-        //       if (newValue == null) {
-        //         return "Is required";
-        //       } else if (newValue != null) {
-        //         DateTime start = (newValue as DateTimeRange).start;
+        ShapeFormQuestion(
+          fieldName: "name",
+          question: "What is your name?",
+          type: ShapeFormQuestionType.text,
+          description: "This is a description",
+          isRequired: true,
+          hintText: "Enter your name",
+          originalValue: "John Doe",
+          initialValue: "Jane",
+          showOuterContainer: true,
+        ),
+        ShapeFormQuestion(
+            fieldName: "password",
+            question: "Enter your password",
+            type: ShapeFormQuestionType.secureText,
+            description: "This is a description",
+            isRequired: true,
+            hintText: "Enter your password",
+            validator: (newValue) {
+              if (newValue == null) {
+                return "Is required";
+              } else if ((newValue as String).isEmpty) {
+                return "Is required";
+              } else {
+                return null;
+              }
+            }),
+        ShapeFormQuestion(
+          fieldName: "lunch_description",
+          question: "Describe your lunch",
+          type: ShapeFormQuestionType.multiLineText,
+          description: "This is a description",
+          isRequired: true,
+          hintText: "Describe your lunch",
+          originalValue: "I had a great lunch yesterday",
+          initialValue: "I had a great lunch today",
+        ),
+        ShapeFormQuestion(
+          fieldName: "next_lunch_availability",
+          question: "What is the next lunch availability?",
+          type: ShapeFormQuestionType.dateRange,
+          description: "This is a description",
+          isRequired: true,
+          hintText: "Select the date range for your next lunch",
+          initialValue: DateTimeRange(
+            start: DateTime.now(),
+            end: DateTime.now().add(Duration(days: 2)),
+          ),
+          originalValue: DateTimeRange(
+            start: DateTime.now().subtract(Duration(days: 1)),
+            end: DateTime.now().add(Duration(days: 1)),
+          ),
+          validator: (newValue) {
+            if (newValue == null) {
+              return "Is required";
+            } else if (newValue != null) {
+              DateTime start = (newValue as DateTimeRange).start;
 
-        //         DateTime end = (newValue as DateTimeRange).end;
-        //         int difference = end.difference(start).inDays;
-        //         if (difference < 2) {
-        //           return "Must be more than 2 days apart";
-        //         }
-        //       } else {
-        //         return null;
-        //       }
-        //     },
-        //     showConditionalQuestionsCase: (response) {
-        //       if (response != null) {
-        //         return 1;
-        //       }
-        //       return 0;
-        //     },
-        //     conditionalQuestions: [
-        //       ShapeFormQuestion(
-        //         fieldName: "lunch_date",
-        //         question: "What is the date of your lunch?",
-        //         type: ShapeFormQuestionType.date,
-        //         isRequired: false,
-        //         originalValue: DateTime.now().subtract(Duration(days: 1)),
-        //         // validator: (newValue) {
-        //         //   if (newValue == null) {
-        //         //     return "Is required";
-        //         //   } else if ((newValue as DateTime).compareTo(DateTime.now()) <
-        //         //       0) {
-        //         //     return "Must be in the future";
-        //         //   } else {
-        //         //     return null;
-        //         //   }
-        //         // },
-        //         conditionalQuestionsCase: 1,
-        //       ),
-        //     ]),
+              DateTime end = (newValue as DateTimeRange).end;
+              int difference = end.difference(start).inDays;
+              if (difference < 2) {
+                return "Must be more than 2 days apart";
+              }
+            } else {
+              return null;
+            }
+          },
+        ),
 
         ShapeFormQuestion(
           fieldName: "lunch_date",
           question: "What is the date of your lunch?",
           type: ShapeFormQuestionType.date,
+          description: "This is a description",
           isRequired: false,
           originalValue: DateTime.now().subtract(Duration(days: 1)),
           // validator: (newValue) {
@@ -161,183 +154,209 @@ class HomePage extends StatelessWidget {
           //   }
           // },
         ),
-        // ShapeFormQuestion(
-        //     fieldName: "invite_friends",
-        //     question: "Tick this box if you want to invite friends",
-        //     type: ShapeFormQuestionType.checkbox,
-        //     isRequired: true,
-        //     originalValue: true,
-        //     hintText: "Tick this box if you want to invite friends",
-        //     validator: (newValue) {
-        //       if (newValue == null) {
-        //         return "Is required";
-        //       } else if (newValue != null) {
-        //         bool selection = (newValue as bool);
+        ShapeFormQuestion(
+          fieldName: "invite_friends",
+          question: "Tick this box if you want to invite friends",
+          description: "This is a description",
+          type: ShapeFormQuestionType.checkbox,
+          isRequired: true,
+          originalValue: true,
+          initialValue: false,
+          hintText: "Tick this box if you want to invite friends",
+          validator: (newValue) {
+            if (newValue == null) {
+              return "Is required";
+            } else if (newValue != null) {
+              bool selection = (newValue as bool);
 
-        //         if (selection != true) {
-        //           return "Must be ticked";
-        //         }
-        //       } else {
-        //         return null;
-        //       }
-        //     },
+              if (selection != true) {
+                return "Must be ticked";
+              }
+            } else {
+              return null;
+            }
+          },
+        ),
         //     conditionalQuestions: [
-        //       ShapeFormQuestion(
-        //         fieldName: 'which_friends',
-        //         question: "Which friends?",
-        //         type: ShapeFormQuestionType.text,
-        //         isRequired: true,
-        //         hintText: "Enter the names of the friends you want to invite",
-        //         showConditionalQuestionsCase: (response) {
-        //           if ((response as String).toLowerCase().contains("anna")) {
-        //             return 1;
-        //           }
-        //           if ((response as String).toLowerCase().contains("phil")) {
-        //             return 2;
-        //           }
-        //           return 0;
-        //         },
-        //         conditionalQuestionsCase: 1,
-        //         conditionalQuestions: [
-        //           ShapeFormQuestion(
-        //             fieldName: 'why_anna',
-        //             question: "Why Anna?",
-        //             type: ShapeFormQuestionType.text,
-        //             isRequired: true,
-        //             hintText: "Enter the reason why Anna is invited",
-        //             conditionalQuestionsCase: 1,
-        //           ),
-        //           ShapeFormQuestion(
-        //             fieldName: 'why_phil',
-        //             question: "Why Phil?",
-        //             type: ShapeFormQuestionType.text,
-        //             isRequired: true,
-        //             hintText: "Enter the reason why Phil is invited",
-        //             conditionalQuestionsCase: 2,
-        //           )
-        //         ],
-        //       )
+        ShapeFormQuestion(
+          fieldName: 'which_friends',
+          question: "Which friends?",
+          type: ShapeFormQuestionType.text,
+          isRequired: true,
+          hintText: "Enter the names of the friends you want to invite",
+          showConditionalQuestionsCase: (response) {
+            if ((response as String).toLowerCase().contains("anna")) {
+              return 1;
+            }
+            if ((response as String).toLowerCase().contains("phil")) {
+              return 2;
+            }
+            return 0;
+          },
+          conditionalQuestionsCase: 1,
+          conditionalQuestions: [
+            ShapeFormQuestion(
+              fieldName: 'why_anna',
+              question: "Why Anna?",
+              type: ShapeFormQuestionType.text,
+              isRequired: true,
+              hintText: "Enter the reason why Anna is invited",
+              conditionalQuestionsCase: 1,
+            ),
+            ShapeFormQuestion(
+              fieldName: 'why_phil',
+              question: "Why Phil?",
+              type: ShapeFormQuestionType.text,
+              isRequired: true,
+              hintText: "Enter the reason why Phil is invited",
+              conditionalQuestionsCase: 2,
+            )
+          ],
+        ),
         //     ],
         //     showConditionalQuestionsCase: (response) {
         //       return (response as bool) ? 1 : 0;
         //     }),
-        // ShapeFormQuestion(
-        //     fieldName: "need_vegan_options",
-        //     question: "Do you need vegan options?",
-        //     type: ShapeFormQuestionType.boolean,
-        //     isRequired: true,
-        //     hintText: "Do you need vegan options?",
-        //     options: [
-        //       ShapeFormOption(
-        //         label: 'Yes',
-        //         selectedValue: true,
-        //       ),
-        //       ShapeFormOption(
-        //         label: 'No',
-        //         selectedValue: false,
-        //       )
-        //     ],
-        //     showConditionalQuestionsCase: (response) {
-        //       return (response as bool) == false ? 1 : 0;
-        //     },
-        //     conditionalQuestions: [
-        //       ShapeFormQuestion(
-        //           fieldName: 'why_no',
-        //           question: "Why no?",
-        //           type: ShapeFormQuestionType.text,
-        //           isRequired: true,
-        //           hintText: "Enter the reason why no")
-        //     ]),
-        // ShapeFormQuestion(
-        //   fieldName: "preffered_lunch_time",
-        //   question: "What is your preferred lunch time?",
-        //   type: ShapeFormQuestionType.dropdown,
-        //   isRequired: true,
-        //   hintText: "Select your preferred lunch time",
-        //   options: [
-        //     ShapeFormOption(
-        //       label: '12:00',
-        //       description: "PM",
-        //       selectedValue: "12:00",
-        //     ),
-        //     ShapeFormOption(
-        //       label: '13:00',
-        //       selectedValue: "13:00",
-        //     ),
-        //     ShapeFormOption(
-        //       label: '14:00',
-        //       selectedValue: "14:00",
-        //     )
-        //   ],
-        //   initialValue: ShapeFormOption(
-        //     label: '12:00',
-        //     selectedValue: "12:00",
-        //   ),
-        //   validator: (newValue) {
-        //     if (newValue == null) {
-        //       return "Is required";
-        //     } else if (newValue != null) {
-        //       String selection = (newValue.value as String);
+        ShapeFormQuestion(
+            fieldName: "need_vegan_options",
+            question: "Do you need vegan options?",
+            type: ShapeFormQuestionType.boolean,
+            description: "This is a description",
+            isRequired: true,
+            hintText: "Do you need vegan options?",
+            originalValue: true,
+            // initialValue: false,
+            options: [
+              ShapeFormOption(
+                label: 'Yes',
+                selectedValue: true,
+              ),
+              ShapeFormOption(
+                label: 'No',
+                selectedValue: false,
+              )
+            ],
+            showConditionalQuestionsCase: (response) {
+              return (response as bool) == false ? 1 : 0;
+            },
+            conditionalQuestions: [
+              ShapeFormQuestion(
+                  fieldName: 'why_no',
+                  question: "Why no?",
+                  type: ShapeFormQuestionType.text,
+                  isRequired: true,
+                  hintText: "Enter the reason why no")
+            ]),
+        ShapeFormQuestion(
+          fieldName: "preffered_lunch_time",
+          question: "What is your preferred lunch time?",
+          description: "This is a description",
+          type: ShapeFormQuestionType.dropdown,
+          isRequired: true,
+          hintText: "Select your preferred lunch time",
+          options: [
+            ShapeFormOption(
+              label: '12:00',
+              description: "PM",
+              selectedValue: "12:00",
+            ),
+            ShapeFormOption(
+              label: '13:00',
+              selectedValue: "13:00",
+            ),
+            ShapeFormOption(
+              label: '14:00',
+              selectedValue: "14:00",
+            )
+          ],
+          initialValue: ShapeFormOption(
+            label: '12:00',
+            selectedValue: "12:00",
+          ),
+          originalValue: ShapeFormOption(
+            label: '12:00',
+            selectedValue: "12:00",
+          ),
+          validator: (newValue) {
+            if (newValue == null) {
+              return "Is required";
+            } else if (newValue != null) {
+              String selection = (newValue.value as String);
 
-        //       if (selection != "12:00" && selection != "13:00") {
-        //         return "Must be 12:00 or 13:00";
-        //       } else {
-        //         return null;
-        //       }
-        //     } else {
-        //       return null;
-        //     }
-        //   },
-        // ),
-        // ShapeFormQuestion(
-        //   fieldName: "preferred_lunch_option",
-        //   question: "What are your preferred lunch options?",
-        //   type: ShapeFormQuestionType.optionList,
-        //   isRequired: true,
-        //   hintText: "Select your preferred lunch options",
-        //   options: foodOptions,
-        //   validator: (newValue) {
-        //     if (newValue == null) {
-        //       return "Is required";
-        //     } else if (newValue != null) {
-        //       List<dynamic> selection = (newValue as List<dynamic>);
+              if (selection != "12:00" && selection != "13:00") {
+                return "Must be 12:00 or 13:00";
+              } else {
+                return null;
+              }
+            } else {
+              return null;
+            }
+          },
+        ),
+        ShapeFormQuestion(
+          fieldName: "preferred_lunch_option",
+          question: "What are your preferred lunch options?",
+          description: "This is a description",
+          type: ShapeFormQuestionType.optionList,
+          isRequired: true,
+          hintText: "Select your preferred lunch options",
+          options: foodOptions,
+          validator: (newValue) {
+            if (newValue == null) {
+              return "Is required";
+            } else if (newValue != null) {
+              List<dynamic> selection = (newValue as List<dynamic>);
 
-        //       if (selection.contains("Italian") == false) {
-        //         return "Must include Italian";
-        //       } else {
-        //         return null;
-        //       }
-        //     } else {
-        //       return null;
-        //     }
-        //   },
-        //   originalValue: [
-        //     ShapeFormOption(
-        //       label: 'Italian',
-        //       description: "Italian is a delicious food",
-        //       selectedValue: "Italian",
-        //     ),
-        //   ],
-        // ),
-        // ShapeFormQuestion(
-        //   fieldName: "phone_number",
-        //   question: "What is your phone number",
-        //   type: ShapeFormQuestionType.phone,
-        //   isRequired: true,
-        // ),
-        // ShapeFormQuestion(
-        //   fieldName: "address",
-        //   question: "What is your address",
-        //   type: ShapeFormQuestionType.address,
-        //   isRequired: true,
-        //   mapsRepoForAddress: NewMapsRepository(),
-        // ),
-        // ShapeFormQuestion(
-        //   fieldName: "profile_image",
-        //   question: "Upload your profile image",
-        //   type: ShapeFormQuestionType.imageUpload,
-        //   isRequired: true,
-        // ),
+              if (selection.contains("Italian") == false) {
+                return "Must include Italian";
+              } else {
+                return null;
+              }
+            } else {
+              return null;
+            }
+          },
+          originalValue: [
+            ShapeFormOption(
+              label: 'Italian',
+              description: "Italian is a delicious food",
+              selectedValue: "Italian",
+            ),
+          ],
+        ),
+        ShapeFormQuestion(
+          fieldName: "phone_number",
+          question: "What is your phone number",
+          description: "This is a description",
+          type: ShapeFormQuestionType.phone,
+          isRequired: true,
+          originalValue: PhoneNumber(isoCode: IsoCode.GB, nsn: "7595608102"),
+          initialValue: PhoneNumber(isoCode: IsoCode.GB, nsn: "7595608102"),
+        ),
+        ShapeFormQuestion(
+          fieldName: "address",
+          question: "What is your address",
+          description: "This is a description",
+          type: ShapeFormQuestionType.address,
+          isRequired: true,
+          mapsRepoForAddress: NewMapsRepository(),
+          originalValue: Address(
+            addressLineOne: "123 Main St",
+            addressLineTwo: "Apt 1",
+            city: "Anytown",
+            state: "CA",
+            zip: "12345",
+            country: "United States",
+          ),
+          initialValue: Address(
+            addressLineOne: "123 Main St",
+            addressLineTwo: "Apt 1",
+            city: "Anytown",
+            state: "CA",
+            zip: "12345",
+            country: "United States",
+          ),
+        ),
       ],
     );
   }

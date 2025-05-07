@@ -14,6 +14,7 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
     CustomPopUpMenuItem? originalValue,
     String? hintText,
     String? label,
+    String? description,
     required List<CustomPopUpMenuItem> menuItems,
     ShapeFormStyling? styling,
   }) : super(
@@ -44,7 +45,12 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (label != null) ...[
-                                Text(label),
+                                Text(label, style: styling?.bodyTextBoldStyle),
+                                Gap(spacing),
+                              ],
+                              if (description != null) ...[
+                                Text(description,
+                                    style: styling?.bodyTextStyle),
                                 Gap(spacing),
                               ],
                               CustomPopUpMenu(
@@ -68,10 +74,10 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
+                                        padding: const EdgeInsets.only(top: 10),
                                         child: Text(
-                                            "Originally Selected: ${originalValue.value}"),
+                                            "Originally Selected: ${originalValue.value}",
+                                            style: styling?.captionStyle),
                                       ),
                                     ],
                                   ),

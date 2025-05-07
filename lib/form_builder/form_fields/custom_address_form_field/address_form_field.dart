@@ -46,13 +46,13 @@ class AddressFormField extends FormField<Address> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(label),
+                          Text(label, style: styling?.bodyTextBoldStyle),
                           const Spacer(),
                         ],
                       ),
                       if (labelDescription != null) ...[
                         Gap(spacing),
-                        Text(labelDescription),
+                        Text(labelDescription, style: styling?.bodyTextStyle),
                       ],
                       Gap(spacing),
                       Column(
@@ -69,9 +69,11 @@ class AddressFormField extends FormField<Address> {
                             },
                             mapsRepo: mapsRepo,
                             styling: styling,
+                            initialValue: initialValue,
                           ),
                           if (originalValue != null) ...[
-                            Gap(spacing),
+                            Text("Originally Selected Address",
+                                style: styling?.captionStyle),
                             AddressSelected(selectedAddress: originalValue),
                           ],
                           if (state.hasError == true) ...[
@@ -94,12 +96,14 @@ class AddressFormFieldSearch extends StatefulWidget {
   String? Function(Address?)? onAddressSelected;
   MapsRepo? mapsRepo;
   ShapeFormStyling? styling;
+  Address? initialValue;
   AddressFormFieldSearch({
     Key? key,
     this.validator,
     required this.onAddressSelected,
     this.mapsRepo,
     this.styling,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -122,6 +126,12 @@ class _AddressFormFieldSearchState extends State<AddressFormFieldSearch> {
       TextEditingController();
 
   bool _isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedAddress = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {

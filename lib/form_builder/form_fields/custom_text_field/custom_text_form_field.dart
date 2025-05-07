@@ -6,11 +6,15 @@ import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomTextFormField extends FormField<String> {
+  final String? originalValue;
+
   CustomTextFormField({
     TextEditingController? textfieldController,
     String? hintText,
     String? label,
+    String? description,
     String? initalText,
+    this.originalValue,
     FormFieldValidator<String>? validator,
     bool? secure,
     TextInputType? textInputType,
@@ -45,8 +49,12 @@ class CustomTextFormField extends FormField<String> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (showOuterContainer == true && label != null) ...[
-                      Text(label!),
+                      Text(label!, style: styling?.bodyTextBoldStyle),
                       Gap(styling?.spacingSmall ?? spacing),
+                      if (description != null) ...[
+                        Text(description!, style: styling?.bodyTextStyle),
+                        Gap(styling?.spacingSmall ?? spacing),
+                      ],
                     ],
                     TextFormField(
                       controller: textfieldController,
@@ -114,6 +122,13 @@ class CustomTextFormField extends FormField<String> {
                       textInputAction: textInputAction,
                       onFieldSubmitted: onSaved,
                     ),
+                    if (originalValue != null) ...[
+                      Gap(styling?.spacingSmall ?? spacing),
+                      Text(
+                        "Original Value: " + originalValue!,
+                        style: styling?.captionStyle,
+                      ),
+                    ],
                   ],
                 ).allPadding(showOuterContainer == true
                     ? (styling?.spacingMedium ?? padding)
