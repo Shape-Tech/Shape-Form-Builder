@@ -154,10 +154,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_country_selector
-      sha256: "814bddd55153cfbce221e94c67005412ae72364e04e4685f260e6335abc76fc9"
+      sha256: e2b2854d9c7c4ed3fb6782790038a0a79e8a0a099fd92b6d163040c0f0271533
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.11"
+    version: "1.0.16"
   flutter_dropzone:
     dependency: "direct main"
     description:
@@ -337,18 +337,18 @@ packages:
     dependency: "direct main"
     description:
       name: phone_form_field
-      sha256: "14f3c6f0c6c2a49087d4f6c002157f359c3a37ede06fe4bb78ce89c162a305c7"
+      sha256: "4a7e741626e8f2157c8bf2d41228665dd950e9cf829a9d91f77a173817caa0a7"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.5"
+    version: "10.0.6"
   phone_numbers_parser:
     dependency: transitive
     description:
       name: phone_numbers_parser
-      sha256: "62451b689d842791ed1fd5dc9eacf36ffa8bad23a78ad6cde732dc2fb222fae2"
+      sha256: "8aaa49708c9314d450d80767753c6512402e848138e5a91bf59ed3e0d3ac5d9b"
       url: "https://pub.dev"
     source: hosted
-    version: "8.3.0"
+    version: "9.0.3"
   plugin_platform_interface:
     dependency: transitive
     description:
