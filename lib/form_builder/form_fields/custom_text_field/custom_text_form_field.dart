@@ -56,19 +56,26 @@ class CustomTextFormField extends FormField<String> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(label!, style: styling?.bodyTextBoldStyle),
-                              Gap(styling?.spacingSmall ?? spacing),
-                              if (description != null) ...[
-                                Text(description!,
-                                    style: styling?.bodyTextStyle),
+                          Flexible(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(label!,
+                                    style: styling?.bodyTextBoldStyle,
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis),
                                 Gap(styling?.spacingSmall ?? spacing),
+                                if (description != null) ...[
+                                  Text(description!,
+                                      style: styling?.bodyTextStyle,
+                                      maxLines: 4,
+                                      overflow: TextOverflow.ellipsis),
+                                  Gap(styling?.spacingSmall ?? spacing),
+                                ],
                               ],
-                            ],
+                            ),
                           ),
                           Gap(styling?.spacingMedium ?? padding),
                           if (optionalRequiredChip != null &&

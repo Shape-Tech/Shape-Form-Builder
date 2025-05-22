@@ -52,23 +52,30 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (label != null) ...[
-                                        Text(label,
-                                            style: styling?.bodyTextBoldStyle),
-                                        Gap(spacing),
+                                  Flexible(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        if (label != null) ...[
+                                          Text(label,
+                                              style: styling?.bodyTextBoldStyle,
+                                              maxLines: 4,
+                                              overflow: TextOverflow.ellipsis),
+                                          Gap(spacing),
+                                        ],
+                                        if (description != null) ...[
+                                          Text(description,
+                                              style: styling?.bodyTextStyle,
+                                              maxLines: 4,
+                                              overflow: TextOverflow.ellipsis),
+                                          Gap(spacing),
+                                        ],
                                       ],
-                                      if (description != null) ...[
-                                        Text(description,
-                                            style: styling?.bodyTextStyle),
-                                        Gap(spacing),
-                                      ],
-                                    ],
+                                    ),
                                   ),
                                   Gap(styling?.spacingMedium ?? padding),
                                   if (optionalRequiredChip != null &&

@@ -233,7 +233,8 @@ class HomePage extends StatelessWidget {
             fieldName: "need_vegan_options",
             question: "Do you need vegan options?",
             type: ShapeFormQuestionType.boolean,
-            description: "This is a description",
+            description:
+                "This is a description that is long so that it wraps and i know it works",
             isRequired: true,
             hintText: "Do you need vegan options?",
             optionalRequiredChip: OptionalRequiredChip(
@@ -354,7 +355,8 @@ class HomePage extends StatelessWidget {
         ),
         ShapeFormQuestion(
           fieldName: "address",
-          question: "What is your address",
+          question:
+              "What is your address i need this to be a long question so that it wraps and i know it works",
           description: "This is a description",
           type: ShapeFormQuestionType.address,
           isRequired: true,

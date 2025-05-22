@@ -48,8 +48,25 @@ class AddressFormField extends FormField<Address> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(label, style: styling?.bodyTextBoldStyle),
-                          const Spacer(),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(label,
+                                    style: styling?.bodyTextBoldStyle,
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis),
+                                if (labelDescription != null) ...[
+                                  Gap(spacing),
+                                  Text(labelDescription,
+                                      style: styling?.bodyTextStyle),
+                                ],
+                              ],
+                            ),
+                          ),
+                          const Gap(spacing),
                           if (optionalRequiredChip != null &&
                               optionalRequiredChip.showChip == true) ...[
                             if (optionalRequiredChip.showChip) ...[
@@ -58,10 +75,6 @@ class AddressFormField extends FormField<Address> {
                           ],
                         ],
                       ),
-                      if (labelDescription != null) ...[
-                        Gap(spacing),
-                        Text(labelDescription, style: styling?.bodyTextStyle),
-                      ],
                       Gap(spacing),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,

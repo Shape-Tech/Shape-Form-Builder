@@ -42,17 +42,21 @@ class ImageFormField extends FormField<PlatformFile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(label),
-                          if (labelDescription != null) ...[
-                            Gap(spacing),
-                            Text(labelDescription),
+                      Flexible(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label,
+                                maxLines: 4, overflow: TextOverflow.ellipsis),
+                            if (labelDescription != null) ...[
+                              Gap(spacing),
+                              Text(labelDescription,
+                                  maxLines: 4, overflow: TextOverflow.ellipsis),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
                       Gap(styling?.spacingMedium ?? padding),
                       if (optionalRequiredChip != null &&

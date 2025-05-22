@@ -14,11 +14,11 @@ class OptionalRequiredChip {
       side: BorderSide(
           color: isOptional
               ? Colors.grey.shade300
-              : styling?.secondaryLight ?? Colors.grey.shade900),
+              : styling?.secondary ?? Colors.grey.shade900),
       labelStyle: styling?.captionStyle.copyWith(
         color: isOptional
             ? Colors.grey.shade500
-            : styling?.secondaryLight ?? Colors.grey.shade900,
+            : styling?.secondary ?? Colors.grey.shade900,
       ),
     );
   }

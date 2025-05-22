@@ -74,22 +74,30 @@ class TrueFalseFormField extends FormField<bool> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(label, style: styling?.bodyTextBoldStyle),
-                            if (labelDescription != null)
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                  child: Text(labelDescription,
-                                      style: styling?.bodyTextStyle)),
-                          ],
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(label,
+                                  style: styling?.bodyTextBoldStyle,
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis),
+                              if (labelDescription != null)
+                                Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    child: Text(labelDescription,
+                                        style: styling?.bodyTextStyle,
+                                        maxLines: 4,
+                                        overflow: TextOverflow.ellipsis)),
+                            ],
+                          ),
                         ),
                         if (optionalRequiredChip != null &&
                             optionalRequiredChip.showChip == true) ...[
+                          Gap(styling?.spacingMedium ?? spacing),
                           optionalRequiredChip.getChip(styling),
                         ],
                       ],

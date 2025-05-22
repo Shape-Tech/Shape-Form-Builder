@@ -45,18 +45,25 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(label, style: styling?.bodyTextBoldStyle),
-                            if (labelDescription != null) ...[
-                              Gap(spacing),
-                              Text(labelDescription,
-                                  style: styling?.bodyTextStyle),
+                        Flexible(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(label,
+                                  style: styling?.bodyTextBoldStyle,
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis),
+                              if (labelDescription != null) ...[
+                                Gap(spacing),
+                                Text(labelDescription,
+                                    style: styling?.bodyTextStyle,
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                         Gap(styling?.spacingMedium ?? padding),
                         if (optionalRequiredChip != null &&

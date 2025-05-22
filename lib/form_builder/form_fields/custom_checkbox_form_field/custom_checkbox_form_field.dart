@@ -74,9 +74,13 @@ class CustomCheckboxFormField extends FormField<bool> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           if (originalValue != null) ...[
-                            Text(
-                              "Original Value: " + originalValue.toString(),
-                              style: styling?.captionStyle,
+                            Flexible(
+                              child: Text(
+                                "Original Value: " + originalValue.toString(),
+                                style: styling?.captionStyle,
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                           Gap(styling?.spacingMedium ?? padding),
