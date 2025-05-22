@@ -65,9 +65,11 @@ ShapeFormStyling styleImplemented = ShapeFormStyling(
   ),
 
   textButtonStyle: ButtonStyle(
-    backgroundColor:
-        WidgetStateProperty.all(const Color.fromARGB(92, 33, 0, 98)),
-    foregroundColor: WidgetStateProperty.all(Color.fromARGB(255, 255, 0, 230)),
+    backgroundColor: WidgetStateProperty.all(Colors.deepPurple.shade100),
+    foregroundColor: WidgetStateProperty.all(Colors.deepPurple.shade900),
+    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    )),
     padding: WidgetStateProperty.all(
         EdgeInsets.symmetric(horizontal: 10, vertical: 8)),
   ),

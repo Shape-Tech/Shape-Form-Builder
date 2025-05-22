@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomTextFormField extends FormField<String> {
@@ -25,6 +26,7 @@ class CustomTextFormField extends FormField<String> {
     Function(String value)? onChanged,
     ShapeFormStyling? styling,
     bool? showOuterContainer = true,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
             initialValue: initalText,
             validator: validator,
@@ -49,12 +51,32 @@ class CustomTextFormField extends FormField<String> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (showOuterContainer == true && label != null) ...[
-                      Text(label!, style: styling?.bodyTextBoldStyle),
-                      Gap(styling?.spacingSmall ?? spacing),
-                      if (description != null) ...[
-                        Text(description!, style: styling?.bodyTextStyle),
-                        Gap(styling?.spacingSmall ?? spacing),
-                      ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(label!, style: styling?.bodyTextBoldStyle),
+                              Gap(styling?.spacingSmall ?? spacing),
+                              if (description != null) ...[
+                                Text(description!,
+                                    style: styling?.bodyTextStyle),
+                                Gap(styling?.spacingSmall ?? spacing),
+                              ],
+                            ],
+                          ),
+                          Gap(styling?.spacingMedium ?? padding),
+                          if (optionalRequiredChip != null &&
+                              optionalRequiredChip.showChip == true) ...[
+                            optionalRequiredChip.getChip(styling),
+                          ],
+                        ],
+                      ),
                     ],
                     TextFormField(
                       controller: textfieldController,

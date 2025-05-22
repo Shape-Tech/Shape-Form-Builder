@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 
 class ShapeFormStyling {
   // Text Sizes

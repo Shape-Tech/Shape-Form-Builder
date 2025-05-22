@@ -20,6 +20,7 @@ import 'package:shape_form_builder/form_builder/form_fields/custom_option_form_f
 import 'package:shape_form_builder/form_builder/form_fields/custom_phone_number_field/custom_phone_number_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
 import 'package:shape_form_builder/form_builder/models/form_field_theme.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question_type.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_option.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
@@ -49,6 +50,7 @@ class ShapeFormQuestion extends Equatable {
   final PhoneController phoneController = PhoneController();
   ShapeFormStyling? styling;
   bool? showOuterContainer;
+  OptionalRequiredChip? optionalRequiredChip;
 
   ShapeFormQuestion({
     this.id,
@@ -71,6 +73,7 @@ class ShapeFormQuestion extends Equatable {
     this.showConditionalQuestionsCase,
     this.conditionalQuestionsCase,
     this.showOuterContainer = true,
+    this.optionalRequiredChip,
   }) {
     if (response != null) {
       textController.text = response?.toString() ?? '';
@@ -230,6 +233,7 @@ class ShapeFormQuestion extends Equatable {
             label: question,
             description: description,
             styling: styling,
+            optionalRequiredChip: optionalRequiredChip,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -261,6 +265,7 @@ class ShapeFormQuestion extends Equatable {
             description: description,
             textInputAction: textInputAction,
             styling: styling,
+            optionalRequiredChip: optionalRequiredChip,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -293,6 +298,7 @@ class ShapeFormQuestion extends Equatable {
             textInputAction: textInputAction,
             maxLines: 5,
             styling: styling,
+            optionalRequiredChip: optionalRequiredChip,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -319,6 +325,7 @@ class ShapeFormQuestion extends Equatable {
             label: question,
             labelDescription: description,
             originalValue: originalValue as DateTime?,
+            optionalRequiredChip: optionalRequiredChip,
             onSaved: (newValue) {
               updateResponse(newValue);
             },
@@ -350,6 +357,7 @@ class ShapeFormQuestion extends Equatable {
             labelDescription: description,
             initialValue: initialValue as DateTimeRange?,
             originalValue: originalValue as DateTimeRange?,
+            optionalRequiredChip: optionalRequiredChip,
             styling: styling,
             onSaved: (newValue) {
               if (newValue != null) {
@@ -388,6 +396,7 @@ class ShapeFormQuestion extends Equatable {
             styling: styling,
             initialValue: initialValue ?? false,
             originalValue: originalValue,
+            optionalRequiredChip: optionalRequiredChip,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
@@ -415,6 +424,7 @@ class ShapeFormQuestion extends Equatable {
             falseLabel: options?[1].label ?? '',
             initialValue: initialValue,
             originalValue: originalValue,
+            optionalRequiredChip: optionalRequiredChip,
             onSaved: (newValue) {
               if (newValue != null) {
                 updateResponse(newValue);
@@ -465,6 +475,7 @@ class ShapeFormQuestion extends Equatable {
             label: question,
             description: description,
             styling: styling,
+            optionalRequiredChip: optionalRequiredChip,
             initialValue: initialValue != null
                 ? CustomPopUpMenuItem(
                     label: (initialValue as ShapeFormOption).label ?? '',
@@ -489,6 +500,7 @@ class ShapeFormQuestion extends Equatable {
             label: question,
             labelDescription: description,
             multiSelectEnabled: true,
+            optionalRequiredChip: optionalRequiredChip,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
@@ -539,6 +551,7 @@ class ShapeFormQuestion extends Equatable {
             styling: styling,
             label: question,
             description: description,
+            optionalRequiredChip: optionalRequiredChip,
             onChanged: (value) {
               updateResponse(value);
             },
@@ -552,6 +565,7 @@ class ShapeFormQuestion extends Equatable {
             onSaved: (newVal) {
               updateResponse(newVal);
             },
+            optionalRequiredChip: optionalRequiredChip,
             validator: (newValue) {
               if (isRequired) {
                 if (newValue == null) {
@@ -577,6 +591,8 @@ class ShapeFormQuestion extends Equatable {
         return wrapWithConditional(
           ImageFormField(
             label: question,
+            labelDescription: description,
+            optionalRequiredChip: optionalRequiredChip,
             onSaved: (newVal) {
               updateResponse(newVal);
             },

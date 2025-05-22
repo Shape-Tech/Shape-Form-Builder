@@ -7,6 +7,7 @@ import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/repository/google_maps_repo.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 import 'package:shape_form_builder/repositories/new_maps_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -25,6 +26,7 @@ class AddressFormField extends FormField<Address> {
     bool? disableDecoration,
     MapsRepo? mapsRepo,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -48,6 +50,12 @@ class AddressFormField extends FormField<Address> {
                         children: [
                           Text(label, style: styling?.bodyTextBoldStyle),
                           const Spacer(),
+                          if (optionalRequiredChip != null &&
+                              optionalRequiredChip.showChip == true) ...[
+                            if (optionalRequiredChip.showChip) ...[
+                              optionalRequiredChip.getChip(styling),
+                            ],
+                          ],
                         ],
                       ),
                       if (labelDescription != null) ...[

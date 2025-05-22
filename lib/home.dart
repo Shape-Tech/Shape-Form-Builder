@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_address_form_field/address.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_data.dart';
 import 'package:shape_form_builder/form_builder/models/shape_form_field_question.dart';
@@ -65,12 +66,18 @@ class HomePage extends StatelessWidget {
   }
 
   ShapeFormData createFormData() {
+    OptionalRequiredChip displayChips = OptionalRequiredChip(
+      showChip: true,
+      isOptional: false,
+    );
+
     return ShapeFormData(
       questions: [
         ShapeFormQuestion(
           fieldName: "name",
           question: "What is your name?",
           type: ShapeFormQuestionType.text,
+          optionalRequiredChip: displayChips,
           description: "This is a description",
           isRequired: true,
           hintText: "Enter your name",
@@ -81,6 +88,7 @@ class HomePage extends StatelessWidget {
         ShapeFormQuestion(
             fieldName: "password",
             question: "Enter your password",
+            optionalRequiredChip: displayChips,
             type: ShapeFormQuestionType.secureText,
             description: "This is a description",
             isRequired: true,
@@ -97,6 +105,7 @@ class HomePage extends StatelessWidget {
         ShapeFormQuestion(
           fieldName: "lunch_description",
           question: "Describe your lunch",
+          optionalRequiredChip: displayChips,
           type: ShapeFormQuestionType.multiLineText,
           description: "This is a description",
           isRequired: true,
@@ -110,6 +119,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.dateRange,
           description: "This is a description",
           isRequired: true,
+          optionalRequiredChip: displayChips,
           hintText: "Select the date range for your next lunch",
           initialValue: DateTimeRange(
             start: DateTime.now(),
@@ -142,6 +152,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.date,
           description: "This is a description",
           isRequired: false,
+          optionalRequiredChip: displayChips,
           originalValue: DateTime.now().subtract(Duration(days: 1)),
           // validator: (newValue) {
           //   if (newValue == null) {
@@ -163,6 +174,7 @@ class HomePage extends StatelessWidget {
           originalValue: true,
           initialValue: false,
           hintText: "Tick this box if you want to invite friends",
+          optionalRequiredChip: displayChips,
           validator: (newValue) {
             if (newValue == null) {
               return "Is required";
@@ -224,6 +236,10 @@ class HomePage extends StatelessWidget {
             description: "This is a description",
             isRequired: true,
             hintText: "Do you need vegan options?",
+            optionalRequiredChip: OptionalRequiredChip(
+              showChip: true,
+              isOptional: true,
+            ),
             originalValue: true,
             // initialValue: false,
             options: [
@@ -254,6 +270,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.dropdown,
           isRequired: true,
           hintText: "Select your preferred lunch time",
+          optionalRequiredChip: displayChips,
           options: [
             ShapeFormOption(
               label: '12:00',
@@ -300,6 +317,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.optionList,
           isRequired: true,
           hintText: "Select your preferred lunch options",
+          optionalRequiredChip: displayChips,
           options: foodOptions,
           validator: (newValue) {
             if (newValue == null) {
@@ -316,13 +334,13 @@ class HomePage extends StatelessWidget {
               return null;
             }
           },
-          originalValue: [
-            ShapeFormOption(
-              label: 'Italian',
-              description: "Italian is a delicious food",
-              selectedValue: "Italian",
-            ),
-          ],
+          // originalValue: [
+          //   ShapeFormOption(
+          //     label: 'Italian',
+          //     description: "Italian is a delicious food",
+          //     selectedValue: "Italian",
+          //   ),
+          // ],
         ),
         ShapeFormQuestion(
           fieldName: "phone_number",
@@ -330,6 +348,7 @@ class HomePage extends StatelessWidget {
           description: "This is a description",
           type: ShapeFormQuestionType.phone,
           isRequired: true,
+          optionalRequiredChip: displayChips,
           originalValue: PhoneNumber(isoCode: IsoCode.GB, nsn: "7595608102"),
           initialValue: PhoneNumber(isoCode: IsoCode.GB, nsn: "7595608102"),
         ),
@@ -340,6 +359,7 @@ class HomePage extends StatelessWidget {
           type: ShapeFormQuestionType.address,
           isRequired: true,
           mapsRepoForAddress: NewMapsRepository(),
+          optionalRequiredChip: displayChips,
           originalValue: Address(
             addressLineOne: "123 Main St",
             addressLineTwo: "Apt 1",
@@ -356,6 +376,14 @@ class HomePage extends StatelessWidget {
             zip: "12345",
             country: "United States",
           ),
+        ),
+        ShapeFormQuestion(
+          fieldName: "image_example",
+          question: "Image Example",
+          type: ShapeFormQuestionType.imageUpload,
+          isRequired: true,
+          hintText: "Image Example",
+          optionalRequiredChip: displayChips,
         ),
       ],
     );

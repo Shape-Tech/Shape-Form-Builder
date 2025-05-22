@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class TrueFalseFormField extends FormField<bool> {
@@ -15,6 +16,7 @@ class TrueFalseFormField extends FormField<bool> {
     bool? initialValue,
     bool? originalValue,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -66,13 +68,32 @@ class TrueFalseFormField extends FormField<bool> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(label, style: styling?.bodyTextBoldStyle),
-                    if (labelDescription != null)
-                      Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Text(labelDescription,
-                              style: styling?.bodyTextStyle)),
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label, style: styling?.bodyTextBoldStyle),
+                            if (labelDescription != null)
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  child: Text(labelDescription,
+                                      style: styling?.bodyTextStyle)),
+                          ],
+                        ),
+                        if (optionalRequiredChip != null &&
+                            optionalRequiredChip.showChip == true) ...[
+                          optionalRequiredChip.getChip(styling),
+                        ],
+                      ],
+                    ),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,

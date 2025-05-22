@@ -4,6 +4,7 @@ import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_drop_down_form_field/custom_pop_up_menu_item.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
@@ -17,6 +18,7 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
     String? description,
     required List<CustomPopUpMenuItem> menuItems,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -44,15 +46,38 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              if (label != null) ...[
-                                Text(label, style: styling?.bodyTextBoldStyle),
-                                Gap(spacing),
-                              ],
-                              if (description != null) ...[
-                                Text(description,
-                                    style: styling?.bodyTextStyle),
-                                Gap(spacing),
-                              ],
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (label != null) ...[
+                                        Text(label,
+                                            style: styling?.bodyTextBoldStyle),
+                                        Gap(spacing),
+                                      ],
+                                      if (description != null) ...[
+                                        Text(description,
+                                            style: styling?.bodyTextStyle),
+                                        Gap(spacing),
+                                      ],
+                                    ],
+                                  ),
+                                  Gap(styling?.spacingMedium ?? padding),
+                                  if (optionalRequiredChip != null &&
+                                      optionalRequiredChip.showChip ==
+                                          true) ...[
+                                    optionalRequiredChip.getChip(styling),
+                                  ],
+                                ],
+                              ),
                               CustomPopUpMenu(
                                 hintText: hintText,
                                 maxWidth: constraints.maxWidth,

@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:shape_form_builder/extensions/string_extensions.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_text_field/custom_text_form_field.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 import '../../constants.dart';
@@ -44,6 +45,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
     Function()? addOption,
     List<OptionsDataItem>? originalValue,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -68,17 +70,30 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(label, style: styling?.bodyTextBoldStyle),
-                        Spacer(),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label, style: styling?.bodyTextBoldStyle),
+                            if (labelDescription != null) ...[
+                              Gap(spacing),
+                              Text(labelDescription,
+                                  style: styling?.bodyTextStyle),
+                            ],
+                          ],
+                        ),
+                        Gap(styling?.spacingMedium ?? padding),
+                        if (optionalRequiredChip != null &&
+                            optionalRequiredChip.showChip == true) ...[
+                          optionalRequiredChip.getChip(styling),
+                        ],
                       ],
                     ),
-                    if (labelDescription != null) ...[
-                      Gap(spacing),
-                      Text(labelDescription, style: styling?.bodyTextStyle),
-                    ],
                     Gap(spacing),
                     OptionListPicker(
                       buttonText: buttonText,
@@ -93,8 +108,11 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                       addOption: addOption,
                       styling: styling,
                     ),
-                    if (originalValue != null)
-                      OriginalOptionList(originalValue: originalValue),
+                    if (originalValue != null && originalValue.isNotEmpty)
+                      OriginalOptionList(
+                        originalValue: originalValue,
+                        styling: styling,
+                      ),
                     if (state.hasError == true) ...[
                       Gap(spacing),
                       Text(state.errorText!,

@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomPhoneNumberField extends FormField<String> {
@@ -15,6 +16,7 @@ class CustomPhoneNumberField extends FormField<String> {
     String? label,
     String? description,
     PhoneNumber? originalValue,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
             onSaved: onSaved,
             builder: (FormFieldState<String> state) {
@@ -52,14 +54,33 @@ class CustomPhoneNumberField extends FormField<String> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (label != null) ...[
-                      Text(label!, style: styling?.bodyTextBoldStyle),
-                      Gap(styling?.spacingSmall ?? spacing),
-                    ],
-                    if (description != null) ...[
-                      Text(description!, style: styling?.bodyTextStyle),
-                      Gap(styling?.spacingSmall ?? spacing),
-                    ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (label != null) ...[
+                              Text(label!, style: styling?.bodyTextBoldStyle),
+                              Gap(styling?.spacingSmall ?? spacing),
+                            ],
+                            if (description != null) ...[
+                              Text(description!, style: styling?.bodyTextStyle),
+                              Gap(styling?.spacingSmall ?? spacing),
+                            ],
+                          ],
+                        ),
+                        Gap(styling?.spacingMedium ?? padding),
+                        if (optionalRequiredChip != null &&
+                            optionalRequiredChip.showChip == true) ...[
+                          optionalRequiredChip.getChip(styling),
+                        ],
+                      ],
+                    ),
                     PhoneFormField(
                       controller: phoneController,
                       autofillHints: const [AutofillHints.telephoneNumber],

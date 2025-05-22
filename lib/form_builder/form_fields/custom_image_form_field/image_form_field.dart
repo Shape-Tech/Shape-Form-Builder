@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
 import 'package:shape_form_builder/form_builder/form_fields/custom_image_form_field/custom_dropzone_view.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class ImageFormField extends FormField<PlatformFile> {
@@ -16,6 +17,7 @@ class ImageFormField extends FormField<PlatformFile> {
     PlatformFile? originalValue,
     bool? disableDecoration,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
     // ImageRepo? imageRepo,
   }) : super(
           onSaved: onSaved,
@@ -38,15 +40,27 @@ class ImageFormField extends FormField<PlatformFile> {
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(label),
-                      const Spacer(),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(label),
+                          if (labelDescription != null) ...[
+                            Gap(spacing),
+                            Text(labelDescription),
+                          ],
+                        ],
+                      ),
+                      Gap(styling?.spacingMedium ?? padding),
+                      if (optionalRequiredChip != null &&
+                          optionalRequiredChip.showChip == true) ...[
+                        optionalRequiredChip.getChip(styling),
+                      ],
                     ],
                   ),
-                  if (labelDescription != null) ...[
-                    Gap(spacing),
-                    Text(labelDescription),
-                  ],
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class DateRangeFormField extends FormField<DateTimeRange> {
@@ -15,6 +16,7 @@ class DateRangeFormField extends FormField<DateTimeRange> {
     DateTimeRange? initialValue,
     DateTimeRange? originalValue,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -39,17 +41,30 @@ class DateRangeFormField extends FormField<DateTimeRange> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(label, style: styling?.bodyTextBoldStyle),
-                        const Spacer(),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(label, style: styling?.bodyTextBoldStyle),
+                            if (labelDescription != null) ...[
+                              Gap(spacing),
+                              Text(labelDescription,
+                                  style: styling?.bodyTextStyle),
+                            ],
+                          ],
+                        ),
+                        Gap(styling?.spacingMedium ?? padding),
+                        if (optionalRequiredChip != null &&
+                            optionalRequiredChip.showChip == true) ...[
+                          optionalRequiredChip.getChip(styling),
+                        ],
                       ],
                     ),
-                    if (labelDescription != null) ...[
-                      Gap(spacing),
-                      Text(labelDescription, style: styling?.bodyTextStyle),
-                    ],
                     Gap(spacing),
                     Column(
                       mainAxisSize: MainAxisSize.min,

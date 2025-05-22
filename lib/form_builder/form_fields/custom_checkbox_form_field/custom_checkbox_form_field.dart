@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shape_form_builder/extensions/widget_extensions.dart';
 import 'package:shape_form_builder/form_builder/constants.dart';
+import 'package:shape_form_builder/form_builder/models/optional_required_chip.dart';
 import 'package:shape_form_builder/form_builder/shape_form_styling.dart';
 
 class CustomCheckboxFormField extends FormField<bool> {
@@ -16,6 +17,7 @@ class CustomCheckboxFormField extends FormField<bool> {
     this.originalValue,
     bool autovalidate = false,
     ShapeFormStyling? styling,
+    OptionalRequiredChip? optionalRequiredChip,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -64,10 +66,25 @@ class CustomCheckboxFormField extends FormField<bool> {
                               ? description
                               : null,
                     ),
-                    if (originalValue != null) ...[
-                      Text(
-                        "Original Value: " + originalValue.toString(),
-                        style: styling?.captionStyle,
+                    if (originalValue != null ||
+                        optionalRequiredChip != null) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          if (originalValue != null) ...[
+                            Text(
+                              "Original Value: " + originalValue.toString(),
+                              style: styling?.captionStyle,
+                            ),
+                          ],
+                          Gap(styling?.spacingMedium ?? padding),
+                          if (optionalRequiredChip != null &&
+                              optionalRequiredChip.showChip == true) ...[
+                            optionalRequiredChip.getChip(styling),
+                          ],
+                        ],
                       ).horizontalPadding(padding),
                       Gap(styling?.spacingMedium ?? padding),
                     ],
