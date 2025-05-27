@@ -82,7 +82,7 @@ class TrueFalseFormField extends FormField<bool> {
                             children: [
                               Text(label,
                                   style: styling?.bodyTextBoldStyle,
-                                  maxLines: 4,
+                                  maxLines: 10,
                                   overflow: TextOverflow.ellipsis),
                               if (labelDescription != null)
                                 Padding(
@@ -90,7 +90,7 @@ class TrueFalseFormField extends FormField<bool> {
                                         const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                     child: Text(labelDescription,
                                         style: styling?.bodyTextStyle,
-                                        maxLines: 4,
+                                        maxLines: 10,
                                         overflow: TextOverflow.ellipsis)),
                             ],
                           ),

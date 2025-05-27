@@ -82,13 +82,13 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                             children: [
                               Text(label,
                                   style: styling?.bodyTextBoldStyle,
-                                  maxLines: 4,
+                                  maxLines: 10,
                                   overflow: TextOverflow.ellipsis),
                               if (labelDescription != null) ...[
                                 Gap(spacing),
                                 Text(labelDescription,
                                     style: styling?.bodyTextStyle,
-                                    maxLines: 4,
+                                    maxLines: 10,
                                     overflow: TextOverflow.ellipsis),
                               ],
                             ],

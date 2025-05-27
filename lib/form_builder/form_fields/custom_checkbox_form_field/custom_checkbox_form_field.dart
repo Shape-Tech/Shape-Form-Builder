@@ -78,7 +78,7 @@ class CustomCheckboxFormField extends FormField<bool> {
                               child: Text(
                                 "Original Value: " + originalValue.toString(),
                                 style: styling?.captionStyle,
-                                maxLines: 4,
+                                maxLines: 10,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),

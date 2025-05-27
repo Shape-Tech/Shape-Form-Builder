@@ -68,14 +68,14 @@ class CustomPhoneNumberField extends FormField<String> {
                               if (label != null) ...[
                                 Text(label!,
                                     style: styling?.bodyTextBoldStyle,
-                                    maxLines: 4,
+                                    maxLines: 10,
                                     overflow: TextOverflow.ellipsis),
                                 Gap(styling?.spacingSmall ?? spacing),
                               ],
                               if (description != null) ...[
                                 Text(description!,
                                     style: styling?.bodyTextStyle,
-                                    maxLines: 4,
+                                    maxLines: 10,
                                     overflow: TextOverflow.ellipsis),
                                 Gap(styling?.spacingSmall ?? spacing),
                               ],

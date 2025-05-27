@@ -48,13 +48,13 @@ class DateFormField extends FormField<DateTime> {
                             children: [
                               Text(label,
                                   style: styling?.bodyTextBoldStyle,
-                                  maxLines: 4,
+                                  maxLines: 10,
                                   overflow: TextOverflow.ellipsis),
                               if (labelDescription != null) ...[
                                 Gap(spacing),
                                 Text(labelDescription,
                                     style: styling?.bodyTextStyle,
-                                    maxLines: 4,
+                                    maxLines: 10,
                                     overflow: TextOverflow.ellipsis),
                               ],
                             ],

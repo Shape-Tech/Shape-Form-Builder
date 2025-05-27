@@ -56,7 +56,7 @@ class AddressFormField extends FormField<Address> {
                               children: [
                                 Text(label,
                                     style: styling?.bodyTextBoldStyle,
-                                    maxLines: 4,
+                                    maxLines: 10,
                                     overflow: TextOverflow.ellipsis),
                                 if (labelDescription != null) ...[
                                   Gap(spacing),

@@ -296,7 +296,7 @@ class ShapeFormQuestion extends Equatable {
             initalText: initialValue as String?,
             originalValue: originalValue as String?,
             textInputAction: textInputAction,
-            maxLines: 5,
+            maxLines: 10,
             styling: styling,
             optionalRequiredChip: optionalRequiredChip,
             onChanged: (value) {

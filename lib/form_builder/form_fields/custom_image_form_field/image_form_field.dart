@@ -49,11 +49,12 @@ class ImageFormField extends FormField<PlatformFile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(label,
-                                maxLines: 4, overflow: TextOverflow.ellipsis),
+                                maxLines: 10, overflow: TextOverflow.ellipsis),
                             if (labelDescription != null) ...[
                               Gap(spacing),
                               Text(labelDescription,
-                                  maxLines: 4, overflow: TextOverflow.ellipsis),
+                                  maxLines: 10,
+                                  overflow: TextOverflow.ellipsis),
                             ],
                           ],
                         ),

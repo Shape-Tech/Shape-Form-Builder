@@ -63,14 +63,14 @@ class CustomDropDownFormField extends FormField<CustomPopUpMenuItem> {
                                         if (label != null) ...[
                                           Text(label,
                                               style: styling?.bodyTextBoldStyle,
-                                              maxLines: 4,
+                                              maxLines: 10,
                                               overflow: TextOverflow.ellipsis),
                                           Gap(spacing),
                                         ],
                                         if (description != null) ...[
                                           Text(description,
                                               style: styling?.bodyTextStyle,
-                                              maxLines: 4,
+                                              maxLines: 10,
                                               overflow: TextOverflow.ellipsis),
                                           Gap(spacing),
                                         ],
