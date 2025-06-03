@@ -46,6 +46,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
     List<OptionsDataItem>? originalValue,
     ShapeFormStyling? styling,
     OptionalRequiredChip? optionalRequiredChip,
+    bool saveOnChange = false,
   }) : super(
           onSaved: onSaved,
           validator: validator,
@@ -55,6 +56,16 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                 state.setValue(originalValue);
               }
             }
+            if (state.value == null) {
+              if (options
+                  .where((element) => element.selected == true)
+                  .isNotEmpty) {
+                state.setValue(options
+                    .where((element) => element.selected == true)
+                    .toList());
+              }
+            }
+
             return Container(
               decoration: styling?.containerDecoration ??
                   BoxDecoration(
@@ -114,6 +125,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
                       },
                       addOption: addOption,
                       styling: styling,
+                      saveOnChange: saveOnChange,
                     ),
                     if (originalValue != null && originalValue.isNotEmpty)
                       OriginalOptionList(
@@ -188,6 +200,7 @@ class OptionListPicker extends StatefulWidget {
   FormFieldSetter<List<OptionsDataItem>> onSaved;
   Function()? addOption;
   ShapeFormStyling? styling;
+  bool? saveOnChange;
   OptionListPicker({
     Key? key,
     required this.buttonText,
@@ -196,6 +209,7 @@ class OptionListPicker extends StatefulWidget {
     required this.onSaved,
     this.addOption,
     this.styling,
+    this.saveOnChange,
   }) : super(key: key);
 
   @override
@@ -205,11 +219,16 @@ class OptionListPicker extends StatefulWidget {
 class _OptionListPickerState extends State<OptionListPicker> {
   List<OptionsDataItem> selectedItems = [];
   List<OptionsDataItem> dialogOptions = [];
+  List<OptionsDataItem> tempSelectedItems =
+      []; // New list for temporary selections
+
   @override
   void initState() {
     super.initState();
     selectedItems =
         widget.options.where((element) => element.selected == true).toList();
+    tempSelectedItems = List.from(
+        selectedItems); // Initialize temp list with current selections
   }
 
   @override
@@ -244,6 +263,23 @@ class _OptionListPickerState extends State<OptionListPicker> {
   }
 
   _showOptionPicker(BuildContext context, bool multiSelectEnabled) {
+    // Reset tempSelectedItems to match current selectedItems when opening dialog
+    tempSelectedItems = List.from(selectedItems);
+
+    // Reset all selected states in widget.options first
+    for (var option in widget.options) {
+      option.selected = false;
+    }
+
+    // Set selected states based on tempSelectedItems
+    for (var selectedItem in tempSelectedItems) {
+      var option = widget.options.firstWhere(
+        (element) => element.displayLabel == selectedItem.displayLabel,
+        orElse: () => selectedItem,
+      );
+      option.selected = true;
+    }
+
     // widget.options.sort(((a, b) => a.displayLabel.compareTo(b.displayLabel)));
     widget.options.sort((a, b) {
       // First, compare selected items. Selected items come first.
@@ -257,40 +293,27 @@ class _OptionListPickerState extends State<OptionListPicker> {
       return a.displayLabel.compareTo(b.displayLabel);
     });
 
+    // Clear and rebuild dialogOptions
+    dialogOptions.clear();
     for (var option in widget.options) {
-      bool inSelectedOptions = selectedItems
+      bool inSelectedOptions = tempSelectedItems
           .where((element) =>
               element.displayLabel == option.displayLabel &&
               element.displayDescription == option.displayDescription)
           .isNotEmpty;
-      bool containsOption = dialogOptions
-          .where((dialoOption) =>
-              dialoOption.displayLabel == option.displayLabel &&
-              dialoOption.displayDescription == option.displayDescription)
-          .isNotEmpty;
 
-      if (containsOption == false) {
-        dialogOptions.add(OptionsDataItem(
-          displayLabel: option.displayLabel,
-          displayDescription: option.displayDescription,
-          selected:
-              inSelectedOptions == false ? option.selected : inSelectedOptions,
-          object: option.object,
-        ));
-      } else {
-        dialogOptions
-                .where((dialoOption) =>
-                    dialoOption.displayLabel == option.displayLabel &&
-                    dialoOption.displayDescription == option.displayDescription)
-                .first
-                .selected =
-            inSelectedOptions == false ? option.selected : inSelectedOptions;
-      }
+      dialogOptions.add(OptionsDataItem(
+        displayLabel: option.displayLabel,
+        displayDescription: option.displayDescription,
+        selected: inSelectedOptions,
+        object: option.object,
+      ));
     }
     TextEditingController searchController = TextEditingController();
 
     return showDialog(
       context: context,
+      barrierDismissible: widget.saveOnChange ?? false,
       builder: (dialogContext) {
         return StatefulBuilder(builder: (context, setDialogState) {
           void searchOptions(String query) {
@@ -313,6 +336,30 @@ class _OptionListPickerState extends State<OptionListPicker> {
             }
           }
 
+          void selectAllOptions() {
+            setDialogState(() {
+              for (var option in dialogOptions) {
+                option.selected = true;
+              }
+            });
+            tempSelectedItems = List.from(dialogOptions);
+          }
+
+          void clearAllOptions() {
+            setDialogState(() {
+              // Clear all selected states in dialogOptions
+              for (var option in dialogOptions) {
+                option.selected = false;
+              }
+              // Clear all selected states in widget.options
+              for (var option in widget.options) {
+                option.selected = false;
+              }
+              // Clear temporary selections
+              tempSelectedItems = [];
+            });
+          }
+
           return Dialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -331,45 +378,40 @@ class _OptionListPickerState extends State<OptionListPicker> {
                   foregroundColor: Colors.white,
                   title: Text(widget.buttonText),
                   actions: [
-                    if (widget.multiSelectEnabled == true)
+                    if (widget.multiSelectEnabled == true) ...[
                       TextButton(
                         onPressed: () {
-                          setState(() {
-                            setDialogState(() {
-                              for (var element in widget.options) {
-                                element.selected = true;
-                              }
-                            });
-                            selectedItems = widget.options
-                                .where((element) => element.selected == true)
-                                .toList();
-                            widget.onSaved(selectedItems);
-                          });
+                          selectAllOptions();
                         },
                         child: Text('Select All'),
+                        style: widget.styling?.textButtonStyle ??
+                            FormButtonStyles.textButton,
                       ),
-                    if (widget.multiSelectEnabled == true)
+                      Gap(widget.styling?.spacingMedium ?? spacing),
+                    ],
+                    if (widget.multiSelectEnabled == true) ...[
                       TextButton(
                         onPressed: () {
-                          setState(() {
-                            setDialogState(() {
-                              for (var element in widget.options) {
-                                element.selected = false;
-                              }
-                            });
-                            selectedItems = [];
-                            widget.onSaved(null);
-                          });
+                          clearAllOptions();
                         },
                         child: Text('Clear'),
+                        style: widget.styling?.textButtonStyle ??
+                            FormButtonStyles.textButton,
                       ),
-                    if (widget.addOption != null)
+                      Gap(widget.styling?.spacingMedium ?? spacing),
+                    ],
+                    if (widget.addOption != null) ...[
                       IconButton(
-                          onPressed: () {
-                            Navigator.of(dialogContext).pop();
-                            widget.addOption!();
-                          },
-                          icon: Icon(Icons.add)),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                          widget.addOption!();
+                        },
+                        icon: Icon(Icons.add),
+                        style: widget.styling?.textButtonStyle ??
+                            FormButtonStyles.textButton,
+                      ),
+                      Gap(widget.styling?.spacingMedium ?? spacing),
+                    ],
                   ],
                 ),
                 body: Column(
@@ -405,16 +447,14 @@ class _OptionListPickerState extends State<OptionListPicker> {
                                       widget.styling?.borderRadiusMedium ?? 10),
                                 ),
                                 child: ListTile(
-                                  title: Text(dialogOptions[index]
-                                      .displayLabel
-                                      .capitalizeLabelCase()),
+                                  title:
+                                      Text(dialogOptions[index].displayLabel),
                                   subtitle:
                                       dialogOptions[index].displayDescription !=
                                               null
                                           ? Text((dialogOptions[index]
-                                                      .displayDescription ??
-                                                  "")
-                                              .capitalizeLabelCase())
+                                                  .displayDescription ??
+                                              ""))
                                           : null,
                                   trailing: Checkbox(
                                       value: dialogOptions[index].selected,
@@ -468,9 +508,23 @@ class _OptionListPickerState extends State<OptionListPicker> {
                 ).allPadding(widget.styling?.spacingMedium ?? padding),
                 persistentFooterButtons: [
                   ElevatedButton(
+                          child: Text("Cancel"),
+                          onPressed: () {
+                            Navigator.pop(dialogContext);
+                          },
+                          style: widget.styling?.secondaryButtonStyle ??
+                              FormButtonStyles.secondaryButton)
+                      .horizontalPadding(
+                          widget.styling?.spacingSmall ?? spacing)
+                      .verticalPadding(widget.styling?.spacingSmall ?? spacing),
+                  ElevatedButton(
                           child: Text("Save Selection"),
                           onPressed: () {
                             Navigator.pop(dialogContext);
+                            selectedItems = List.from(tempSelectedItems);
+                            setState(() {});
+                            widget.onSaved(
+                                selectedItems.isEmpty ? [] : selectedItems);
                           },
                           style: widget.styling?.secondaryButtonStyle ??
                               FormButtonStyles.secondaryButton)
@@ -500,22 +554,18 @@ class _OptionListPickerState extends State<OptionListPicker> {
             .first
             .selected = newSelectedState;
 
-        // Update selectedItems list
+        // Update tempSelectedItems list
         if (!newSelectedState) {
-          selectedItems
+          tempSelectedItems
               .removeWhere((element) => element.displayLabel == displayLabel);
         } else {
-          if (!selectedItems
+          if (!tempSelectedItems
               .any((element) => element.displayLabel == displayLabel)) {
-            selectedItems.add(widget.options
+            tempSelectedItems.add(widget.options
                 .where((element) => element.displayLabel == displayLabel)
                 .first);
           }
         }
-
-        // Call setState to ensure the parent widget updates
-        setState(() {});
-        widget.onSaved(selectedItems.isEmpty ? null : selectedItems);
       } else {
         // For single select, check if we're clicking the already selected item
         if (widget.options
@@ -532,9 +582,7 @@ class _OptionListPickerState extends State<OptionListPicker> {
           if (dialogIndex != -1) {
             dialogOptions[dialogIndex].selected = false;
           }
-          selectedItems = [];
-          setState(() {});
-          widget.onSaved(null);
+          tempSelectedItems = [];
         } else {
           // Select new item
           for (var element in widget.options) {
@@ -554,13 +602,11 @@ class _OptionListPickerState extends State<OptionListPicker> {
             dialogOptions[dialogIndex].selected = true;
           }
 
-          selectedItems = [
+          tempSelectedItems = [
             widget.options
                 .where((element) => element.displayLabel == displayLabel)
                 .first
           ];
-          setState(() {});
-          widget.onSaved(selectedItems);
         }
       }
     });

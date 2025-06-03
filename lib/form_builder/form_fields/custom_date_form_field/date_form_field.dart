@@ -79,6 +79,7 @@ class DateFormField extends FormField<DateTime> {
                           },
                           onDateSelected: (selectedDate) {
                             state.setValue(selectedDate);
+                            state.didChange(selectedDate);
                             onSaved(selectedDate);
                           },
                           preSelectedDate: state.value,
@@ -126,6 +127,15 @@ class DateFormFieldPicker extends StatefulWidget {
 
 class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
   DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      _selectedDate = widget.initialValue;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_selectedDate == null) {
