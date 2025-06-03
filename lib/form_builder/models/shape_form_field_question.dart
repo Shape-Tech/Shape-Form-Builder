@@ -463,7 +463,11 @@ class ShapeFormQuestion extends Equatable {
                   }
                 }
               } else {
-                return null;
+                if (validator != null) {
+                  return validator!(value);
+                } else {
+                  return null;
+                }
               }
             },
             menuItems: buildDropDownMenuItems(options),
@@ -501,6 +505,7 @@ class ShapeFormQuestion extends Equatable {
             labelDescription: description,
             multiSelectEnabled: true,
             optionalRequiredChip: optionalRequiredChip,
+            saveOnChange: false,
             validator: (value) {
               if (isRequired) {
                 if (value == null) {
