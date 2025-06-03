@@ -63,8 +63,8 @@ class HomePage extends StatelessWidget {
                       children: [
                         DateFormField(
                           label: "Date",
+                          suggestedDate: DateTime.now().add(Duration(days: 30)),
                           initialValue: DateTime.now(),
-                          // originalValue: DateTime.now(),
                           onSaved: (newValue) {
                             debugPrint(newValue.toString());
                           },

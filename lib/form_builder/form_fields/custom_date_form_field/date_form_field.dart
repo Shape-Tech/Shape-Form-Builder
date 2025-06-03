@@ -12,6 +12,7 @@ class DateFormField extends FormField<DateTime> {
     String? labelDescription,
     required FormFieldSetter<DateTime> onSaved,
     required FormFieldValidator<DateTime> validator,
+    DateTime? suggestedDate,
     DateTime? initialValue,
     DateTime? originalValue,
     ShapeFormStyling? styling,
@@ -82,8 +83,9 @@ class DateFormField extends FormField<DateTime> {
                             state.didChange(selectedDate);
                             onSaved(selectedDate);
                           },
-                          preSelectedDate: state.value,
+                          preSelectedDate: state.value ?? initialValue,
                           initialValue: initialValue,
+                          suggestedDate: suggestedDate,
                           styling: styling,
                         ),
                         if (originalValue != null) ...[
@@ -113,12 +115,14 @@ class DateFormFieldPicker extends StatefulWidget {
   String? Function(DateTime?)? onDateSelected;
   DateTime? preSelectedDate;
   DateTime? initialValue;
+  DateTime? suggestedDate;
   ShapeFormStyling? styling;
   DateFormFieldPicker(
       {this.validator,
       this.onDateSelected,
       this.preSelectedDate,
       this.initialValue,
+      this.suggestedDate,
       this.styling});
 
   @override
@@ -190,7 +194,8 @@ class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
                 width: double.infinity,
                 child: Center(child: Text("Select Different Date"))),
             onPressed: () {
-              _selectDate(context, _selectedDate, widget.initialValue);
+              _selectDate(context, _selectedDate, widget.initialValue,
+                  widget.suggestedDate);
             },
             style: widget.styling?.secondaryButtonStyle ??
                 FormButtonStyles.secondaryButton,
@@ -208,7 +213,8 @@ class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
                 width: double.infinity,
                 child: Center(child: Text("Select Date"))),
             onPressed: () {
-              _selectDate(context, _selectedDate, widget.initialValue);
+              _selectDate(context, _selectedDate, widget.initialValue,
+                  widget.suggestedDate);
             },
             style: widget.styling?.secondaryButtonStyle ??
                 FormButtonStyles.secondaryButton,
@@ -219,13 +225,15 @@ class _DateFormFieldPickerState extends State<DateFormFieldPicker> {
   }
 
   _selectDate(BuildContext context, DateTime? selectedDate,
-      DateTime? initialDate) async {
+      DateTime? initialDate, DateTime? suggestedDate) async {
     DateTime _initalDate = DateTime.now();
 
     if (selectedDate != null) {
       _initalDate = selectedDate;
     } else if (initialDate != null) {
       _initalDate = initialDate;
+    } else if (suggestedDate != null) {
+      _initalDate = suggestedDate;
     }
 
     final DateTime? picked = await showDatePicker(
