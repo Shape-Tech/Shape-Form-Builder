@@ -22,6 +22,9 @@ class DateFormField extends FormField<DateTime> {
           validator: validator,
           initialValue: originalValue,
           builder: (FormFieldState<DateTime> state) {
+            if (initialValue != null && state.value == null) {
+              state.setValue(initialValue);
+            }
             return Container(
               decoration: styling?.containerDecoration ??
                   BoxDecoration(
