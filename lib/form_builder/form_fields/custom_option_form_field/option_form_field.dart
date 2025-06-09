@@ -48,7 +48,7 @@ class OptionFormField extends FormField<List<OptionsDataItem>> {
     OptionalRequiredChip? optionalRequiredChip,
     bool saveOnChange = false,
   }) : super(
-          onSaved: onSaved,
+          // onSaved: onSaved,
           validator: validator,
           builder: (FormFieldState<List<OptionsDataItem>> state) {
             if (originalValue != null) {
